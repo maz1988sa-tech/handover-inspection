@@ -1031,7 +1031,9 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
   }
   function thread(o) {
     var t = devReplies(o.id).map(function (e) { return { by: 'dev', act: 'fix', note: e.note, ph: e.ph || [], at: new Date(e.at).getTime() || 0, k: e.id }; })
-      .concat(decisions(o.id).map(function (d) { return { by: 'owner', act: d.act, note: d.note, ph: d.ph || [], at: d.at, k: d.after + 0.5 }; }));
+      .concat(decisions(o.id).filter(function (d, i, a) { // a decision pressed twice shows once
+        var q = a[i - 1]; return !(q && q.act === d.act && q.after === d.after && !d.note && !(d.ph || []).length);
+      }).map(function (d) { return { by: 'owner', act: d.act, note: d.note, ph: d.ph || [], at: d.at, k: d.after + 0.5 }; }));
     return t.sort(function (a, b) { return a.k - b.k || a.at - b.at; });
   }
   function setEvents(list) {
