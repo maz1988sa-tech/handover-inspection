@@ -2270,7 +2270,7 @@ a{color:var(--accent)}
     if (!CFG) return;
     var h = parseHash();
     if (VIEW_ID) { if (h.o || h.d || (h.r && h.r !== VIEW_ID)) location.reload(); return; }
-    if (h.r && UUID_RE.test(h.r)) { location.reload(); return; }
+    if (h.d || (h.r && UUID_RE.test(h.r))) { location.reload(); return; } // a developer or view link opened in the owner's tab
     if (h.o && h.o !== C.id + '.' + C.key) { HASH = h; bootCloud(); }
   });
   function ownerFromHash() {
