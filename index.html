@@ -635,6 +635,8 @@ p{margin:0}
 .b-map .row{display:flex;gap:6mm;justify-content:center;align-items:flex-start}
 .b-map figure{margin:0;display:grid;gap:1.5mm;justify-items:center;font:600 8pt 'Noto Kufi Arabic',sans-serif;color:#465267}
 .b-none{font-size:10pt;color:#465267;padding:8mm 0}
+.b-map figure small{display:block;text-align:center;font:500 7.5pt 'IBM Plex Sans Arabic',sans-serif;margin-top:.5mm}
+.b-map figure small.ok{color:#137333}.b-map figure small.todo{color:#A84B06}
 .b-foot{padding:0 14mm 17mm;display:grid;gap:4mm;align-content:end}
 .b-foot p{font-size:8pt;color:#6B7689;line-height:1.7;margin:0}
 .btab{width:100%;border-collapse:collapse;font-size:8.6pt}
@@ -660,6 +662,10 @@ p{margin:0}
 .dreg .t b{display:block;font-weight:600;font-size:8.3pt}
 .dreg .t small{display:block;color:#6B7689;font-size:7.2pt;margin-top:.5mm}
 .dreg .chip{font-size:6.8pt;padding:1.1mm 1.8mm}
+.dreg tr.none td{padding:6mm 3mm;text-align:center;background:#F7F9FC;border-bottom:.25mm solid #E6EAF0}
+.dreg tr.none b{display:block;font:700 10pt 'Noto Kufi Arabic',sans-serif}
+.dreg tr.none b.ok{color:#137333}.dreg tr.none b.todo{color:#A84B06}
+.dreg tr.none span{display:block;font-size:8.2pt;color:#6B7689;margin-top:1mm}
 .d-sub{font:700 9.5pt 'Noto Kufi Arabic',sans-serif;margin:6mm 0 0}
 .rooms-t{width:100%;border-collapse:collapse;font-size:7.8pt;margin-top:4mm}
 .rooms-t th{color:#6B7689;font-weight:600;text-align:right;padding:1mm 1.5mm;border-bottom:.3mm solid #D9DFE8}
@@ -2149,8 +2155,7 @@ p{margin:0}
     return {
       obs: obs, W: W, ph: {}, issued: today(),
       ref: 'HI-' + (String(m.unit || '').replace(/[^0-9A-Za-z-]/g, '') || '000') + '-' + String(m.date || today()).replace(/-/g, ''),
-      floors: FLOORS.map(function (f) { return { f: f, list: obs.filter(function (o) { var r = ROOM[o.room]; return r && r.id !== 'house' && r.fl === f.id; }) }; })
-        .filter(function (g) { return g.list.length; }),
+      floors: FLOORS.map(function (f) { return { f: f, list: obs.filter(function (o) { var r = ROOM[o.room]; return r && r.id !== 'house' && r.fl === f.id; }) }; }),
       house: obs.filter(function (o) { return o.room === 'house'; }),
       none: obs.filter(function (o) { return !ROOM[o.room]; })
     };
@@ -2203,6 +2208,16 @@ p{margin:0}
       });
     });
     return rows;
+  }
+  function pdfFloorProg(f) {
+    var mapI = obsMap(), d = 0, a = 0;
+    ROOMS.forEach(function (r) { if (r.fl === f.id) { var p = prog(r, mapI); d += p.done; a += p.all; } });
+    return { done: d, all: a };
+  }
+  function pdfNoObs(f) { // the floor's line in the cover map and its table when it has no observations
+    var p = pdfFloorProg(f);
+    return p.done ? { cls: 'ok', t: 'لا ملاحظات على هذا الدور', s: 'البنود المفحوصة فيه: ' + p.done + ' من ' + p.all, cap: 'لا ملاحظات' }
+      : { cls: 'todo', t: 'لم يُفحص هذا الدور بعد', s: 'لا ملاحظات مسجلة عليه', cap: 'لم يُفحص بعد' };
   }
   function pdfRoomRows(f) { // what was checked in each space of the floor
     var mapI = obsMap();
@@ -2303,25 +2318,29 @@ p{margin:0}
       }).join('') + '</tbody></table>';
     var pg = B.page('', 'cover');
     function draw(w) {
-      var map = !obs.length ? '<p class="b-none">لا ملاحظات مسجلة في هذا الفحص.</p>' : !M.floors.length ? '' :
-        '<div class="b-map"><h3>خريطة الملاحظات</h3><div class="row">' + M.floors.map(function (g) { return '<figure>' + pdfPlan(g.f, w, M) + '<span>' + esc(g.f.ar) + '</span></figure>'; }).join('') + '</div>' + PDF_LEGEND + '</div>';
+      var map = '<div class="b-map"><h3>خريطة الملاحظات</h3><div class="row">' + M.floors.map(function (g) {
+        var e = g.list.length ? null : pdfNoObs(g.f);
+        return '<figure>' + pdfPlan(g.f, w, M) + '<span>' + esc(g.f.ar) + (e ? '<small class="' + e.cls + '">' + e.cap + '</small>' : '') + '</span></figure>';
+      }).join('') + '</div>' + (obs.length ? PDF_LEGEND : '<p class="b-none">لا ملاحظات مسجلة في هذا الفحص.</p>') + '</div>';
       pg.pb.innerHTML = '<div class="b-cover"><div class="b-top"><span class="eye">HANDOVER INSPECTION · FLOOR BOOK</span><h1>تقرير استلام العقار</h1><span class="prop">' + esc(prop) + '</span>' +
         (addr ? '<span class="addr">' + esc(addr) + '</span>' : '') + '</div>' +
         '<div class="b-mid"><div class="b-info">' + info.map(function (x) { return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
         '<div class="b-sum"><div><b>' + obs.length + '</b><span>ملاحظة</span></div><div class="c"><b>' + count(obs, function (o) { return o.sev === 'c'; }) + '</b><span>حرجة</span></div>' +
         '<div class="M"><b>' + (obs.length - fixed) + '</b><span>لم تُغلق بعد</span></div><div class="ok"><b>' + fixed + '</b><span>أُغلقت</span></div></div>' + map + '</div>' +
-        '<div class="b-foot">' + (obs.length ? table : '') + '<p>لكل دور صفحة فيها مخططه وأرقام ملاحظاته، ثم بطاقة لكل ملاحظة بصورها وما تمّ فيها مع المطوّر؛ الرقم نفسه على المخطط والبطاقة.</p></div></div>';
+        '<div class="b-foot">' + table + '<p>لكل دور صفحة فيها مخططه وأرقام ملاحظاته، ثم بطاقة لكل ملاحظة بصورها وما تمّ فيها مع المطوّر؛ الرقم نفسه على المخطط والبطاقة.</p></div></div>';
       return pg.pb.querySelector('.b-foot').getBoundingClientRect().bottom <= pg.pb.getBoundingClientRect().bottom + 0.5;
     }
     [40, 34, 28].some(draw); // smaller plans when many locations need the room
   }
   function pdfFloor(B, M, g) {
-    var f = g.f, at = B.at(f.ar, '<div class="fl-head"><h2>' + esc(f.ar) + '</h2><span>' + nObs(g.list.length) + '</span></div>');
-    var grid = B.add(at.host, '<div class="d-floor"><div></div><div class="d-plan">' + pdfPlan(f, 78, M) + PDF_LEGEND + '</div></div>');
+    var f = g.f, n = g.list.length, e = n ? null : pdfNoObs(f);
+    var at = B.at(f.ar, '<div class="fl-head"><h2>' + esc(f.ar) + '</h2><span>' + (n ? nObs(n) : 'لا ملاحظات') + '</span></div>');
+    var grid = B.add(at.host, '<div class="d-floor"><div></div><div class="d-plan">' + pdfPlan(f, 78, M) + (n ? PDF_LEGEND : '') + '</div></div>');
     function more() { return B.at(f.ar, '<div class="fl-head"><h2>' + esc(f.ar) + '</h2><span>تابع</span></div>'); }
-    var col = flowTable(B, { pg: at.pg, host: grid.firstChild }, more, { cls: 'dreg', head: PDF_REG_HEAD, rows: pdfRegRows(g.list, M, true) });
+    var rows = n ? pdfRegRows(g.list, M, true) : [{ h: '<tr class="none"><td colspan="4"><b class="' + e.cls + '">' + e.t + '</b><span>' + e.s + '</span></td></tr>' }];
+    var col = flowTable(B, { pg: at.pg, host: grid.firstChild }, more, { cls: 'dreg', head: PDF_REG_HEAD, rows: rows });
     flowTable(B, col, more, { cls: 'rooms-t', lead: '<p class="d-sub">ما فُحص في غرف هذا الدور</p>', head: '<tr><th>الغرفة</th><th class="n">المفحوص</th><th class="n">ملاحظات</th></tr>', rows: pdfRoomRows(f) });
-    flowCards(B, B.at(f.ar, '<div class="d-sec"><i></i><h2>ملاحظات ' + esc(f.ar) + '</h2><span>غرفةً غرفة · الصورة قبل وبعد</span></div>'), function () { return B.at(f.ar); },
+    if (n) flowCards(B, B.at(f.ar, '<div class="d-sec"><i></i><h2>ملاحظات ' + esc(f.ar) + '</h2><span>غرفةً غرفة · الصورة قبل وبعد</span></div>'), function () { return B.at(f.ar); },
       pdfByRoom(g.list).map(function (x) {
         var h = '<div class="d-room">' + esc(x.r.ar) + '<span>' + nObs(x.list.length) + '</span></div>';
         return { head: h, more: h.replace('</span></div>', ' · تابع</span></div>'), cards: x.list.map(function (o) { return pdfCard(o, M); }) };
