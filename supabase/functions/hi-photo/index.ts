@@ -3,7 +3,7 @@
 // Owner: uploads (p_… ids) and deletes. Developer: uploads new reply photos only (d_… ids, never overwrites).
 // Videos (owner only, v_… ids): the poster frame goes up like a photo (<id>.jpg); for the clip itself, POST with
 // ?v=1 and headers x-hi-type / x-hi-size returns a one-time signed upload URL for <id>.mp4, so the clip goes
-// straight to storage (up to 50 MB) instead of through this function. DELETE of a v_… id removes both files.
+// straight to storage (any size the storage limit allows) instead of through this function. DELETE of a v_… id removes both files.
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const BUCKET = 'handover-photos';
@@ -21,7 +21,6 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const PID = /^[A-Za-z0-9_-]{4,64}$/;
 const TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const VTYPES = new Set(['video/mp4', 'video/quicktime', 'video/webm']);
-const MAX_VIDEO = 50 * 1024 * 1024;
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
 
@@ -45,7 +44,7 @@ Deno.serve(async (req) => {
     if (dev || !pid.startsWith('v_')) return json(403, { error: 'not allowed' });
     const vt = (req.headers.get('x-hi-type') ?? '').split(';')[0].trim(), size = Number(req.headers.get('x-hi-size') ?? '0');
     if (!VTYPES.has(vt)) return json(415, { error: 'unsupported type' });
-    if (!(size > 0) || size > MAX_VIDEO) return json(413, { error: 'size' });
+    if (!(size > 0)) return json(413, { error: 'size' }); // no cap here: storage's own file limit applies
     const { data: s, error: e } = await sb.storage.from(BUCKET).createSignedUploadUrl(`${id}/${pid}.mp4`, { upsert: true });
     return e || !s ? json(500, { error: e?.message ?? 'sign failed' }) : json(200, { url: s.signedUrl });
   }

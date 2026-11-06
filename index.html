@@ -1758,7 +1758,6 @@ p{margin:0}
   }
 
   /* ================= video clips on an observation ================= */
-  var MAX_VIDEO = 50 * 1024 * 1024;
   function vidType(f) {
     var t = (f.type || '').toLowerCase();
     if (/^video\/(mp4|quicktime|webm)$/.test(t)) return t;
@@ -1797,17 +1796,16 @@ p{margin:0}
     if (!file || !ED) return;
     var type = vidType(file);
     if (!type) { toast('هذا الملف ليس فيديو مدعوماً؛ اختر مقطعاً من الكاميرا.'); return; }
-    if (file.size > MAX_VIDEO) { toast('المقطع ' + (file.size / 1048576).toFixed(0) + ' ميغابايت، والحد 50؛ صوّر مقطعاً أقصر (نحو دقيقة).'); return; }
     toast('جارٍ تجهيز الفيديو…', true);
     try {
       var pst; try { pst = await videoPoster(file); } catch (e) { pst = await plainPoster(); }
       var id = 'v_' + uid();
-      await Store.put('ph', 'vid:' + id, { buf: await blobToBuf(file), type: type, size: file.size, at: Date.now() });
+      await Store.put('ph', 'vid:' + id, { buf: file, type: type, size: file.size, at: Date.now() });
       await Store.put('ph', id, { buf: await blobToBuf(pst.blob), type: 'image/jpeg', w: pst.w, h: pst.h, at: Date.now() });
       if (!ED) { await Store.del('ph', id); await Store.del('ph', 'vid:' + id); return; }
       ED.obs.ph.push(id); ED.added.push(id); renderSheetPhotos();
       toast('أُضيف الفيديو');
-    } catch (e) { toast('تعذّر حفظ الفيديو على الجهاز؛ جرّب مقطعاً أقصر.'); }
+    } catch (e) { toast('تعذّر حفظ الفيديو على الجهاز؛ تأكد من وجود مساحة كافية.'); }
   }
   function vidRemoteId() { return VIEW_ID === 'dev' ? (DV && DV.id) : (VIEW_ID || C.id); }
   function vidPubURL(id, pid) { return CFG.url + '/storage/v1/object/public/' + (CFG.bucket || 'photos') + '/' + id + '/' + encodeURIComponent(pid) + '.mp4'; }
@@ -2681,13 +2679,17 @@ p{margin:0}
   }
   async function sendVideo(pid) { // the clip goes straight to storage through a one-time signed address
     var rec = await Store.get('ph', 'vid:' + pid); if (!rec) return; // made on another device: already up there
-    var r = await fetch(fnURL(pid) + '&v=1', { method: 'POST', headers: apiHeaders({ 'x-hi-key': C.key, 'x-hi-type': rec.type || 'video/mp4', 'x-hi-size': String(rec.size || rec.buf.byteLength) }) });
+    var r = await fetch(fnURL(pid) + '&v=1', { method: 'POST', headers: apiHeaders({ 'x-hi-key': C.key, 'x-hi-type': rec.type || 'video/mp4', 'x-hi-size': String(rec.size || rec.buf.size || rec.buf.byteLength) }) });
     var j = null; try { j = await r.json(); } catch (e) { }
     if (!r.ok || !j || !j.url) { var er = new Error('video ' + r.status); er.status = r.status; if (r.status === 403 || r.status >= 500 || r.ok) throw er; return; }
     var tok = (String(j.url).match(/[?&]token=([^&]+)/) || [])[1]; if (!tok) throw new Error('video token');
     var put = await fetch(CFG.url + '/storage/v1/object/upload/sign/' + (CFG.bucket || 'photos') + '/' + C.id + '/' + encodeURIComponent(pid) + '.mp4?token=' + tok,
       { method: 'PUT', headers: apiHeaders({ 'Content-Type': rec.type || 'video/mp4', 'x-upsert': 'true' }), body: rec.buf });
-    if (!put.ok) { var e2 = new Error('video put ' + put.status); e2.status = put.status; if (put.status === 403 || put.status >= 500) throw e2; }
+    if (!put.ok) {
+      var pt = ''; try { pt = await put.text(); } catch (e) { }
+      if (put.status === 413 || /exceed|too large|maximum allowed size/i.test(pt)) return 'big';
+      var e2 = new Error('video put ' + put.status); e2.status = put.status; if (put.status === 403 || put.status >= 500) throw e2;
+    }
   }
   async function dropPhoto(pid) {
     var r = await fetch(fnURL(pid), { method: 'DELETE', headers: apiHeaders({ 'x-hi-key': C.key }) });
@@ -2741,7 +2743,7 @@ p{margin:0}
       if (!C.pulled && (await pull()) !== 'ok') throw new Error('pull');
       var ids = refPhotos().filter(function (p) { return !C.up[p]; });
       SYNC.pending = ids.length; renderSync();
-      for (var k = 0; k < ids.length; k++) { await sendPhoto(ids[k]); if (isVid(ids[k])) await sendVideo(ids[k]); C.up[ids[k]] = 1; SYNC.pending = ids.length - k - 1; renderSync(); }
+      for (var k = 0; k < ids.length; k++) { await sendPhoto(ids[k]); if (isVid(ids[k]) && (await sendVideo(ids[k])) === 'big') toast('السحابة رفضت مقطعاً لكبر حجمه؛ بقي على جهازك ولم يظهر للمطوّر، وظهرت لقطة منه فقط.'); C.up[ids[k]] = 1; SYNC.pending = ids.length - k - 1; renderSync(); }
       var seq = SYNC.seq;
       C.at = await rpc('hi_save', { p_id: C.id, p_key: C.key, p_state: cloudState() });
       if (seq === SYNC.seq) C.dirty = false;
