@@ -243,8 +243,10 @@ a{color:var(--accent)}
 .fold-ic{width:28px;height:28px;border-radius:50%;background:var(--accent-weak);display:grid;place-items:center}
 .fold-ic svg{width:16px;height:16px}
 .rv-fold[aria-expanded="true"]{border-color:var(--accent-weak)}
+.rv-fold-t .n-prog{background:var(--surface);color:var(--ink-2)}
 .rv-empty{margin:0;border:1px dashed var(--line);border-radius:var(--r);padding:14px;font-size:13.5px;line-height:1.6;color:var(--ink-3)}
 .rv-chk{display:grid;gap:8px;margin-top:6px}
+#rvChkBody{display:grid;gap:12px}
 .seg-sm button{min-height:34px;font-size:13px}
 .grp-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px 14px;border-top:1px solid var(--line);background:var(--surface)}
 .grp-acts.one{grid-template-columns:1fr}
@@ -1488,10 +1490,14 @@ p{margin:0}
       : '<h3 class="rv-h3"><span>الملاحظات</span><span class="n" id="rvObsN">0</span></h3>';
     h += list.length ? '<div class="oc-list" id="rvObs"' + (fo ? '' : ' hidden') + '>' + list.map(function (o) { return obsCardHTML(o, true); }).join('') + '</div>'
       : '<p class="rv-empty">لا ملاحظات هنا بعد. أي عيب تراه: «ملاحظة» مع صورة، فيظهر على المخطط وفي التقرير تحت اسم ' + (isHouse ? 'البيت' : 'الغرفة') + '.</p>';
-    h += '<div class="rv-chk"><h3 class="rv-h3"><span>البنود حسب القسم</span><span class="n" id="rvChkN">' + p.done + ' / ' + p.all + '</span></h3>' +
-      '<div class="seg seg-sm" role="group" aria-label="عرض البنود"><button type="button" data-act="todo" data-v="0" aria-pressed="' + !UI.todo + '">الكل</button><button type="button" data-act="todo" data-v="1" aria-pressed="' + UI.todo + '">لم يُفحص</button></div></div>';
+    // the whole checklist folds like the observations: one tap hides every section, one tap brings them all back
+    var co = UI.chkOpen !== false;
+    h += '<h3 class="rv-h3 rv-fold-h"><button type="button" class="rv-fold" data-act="chkFold" aria-expanded="' + co + '" aria-controls="rvChkBody"><span class="rv-fold-t">البنود حسب القسم<span class="n n-prog" id="rvChkN">' + p.done + ' / ' + p.all + '</span></span><span class="rv-fold-a">' + (co ? 'طي' : 'عرض') + '<span class="fold-ic">' + (co ? IC.dash : IC.plus) + '</span></span></button></h3>';
+    h += '<div id="rvChkBody"' + (co ? '' : ' hidden') + '><div class="rv-chk">' +
+      '<div class="seg seg-sm" role="group" aria-label="عرض البنود"><button type="button" data-act="todo" data-v="0" aria-pressed="' + !UI.todo + '">الكل</button><button type="button" data-act="todo" data-v="1" aria-pressed="' + UI.todo + '">لم يُفحص</button></div>' +
+      '<div class="seg seg-sm" role="group" aria-label="الأقسام"><button type="button" data-act="secAll" data-v="1" aria-pressed="false">فتح كل الأقسام</button><button type="button" data-act="secAll" data-v="0" aria-pressed="false">طي كل الأقسام</button></div></div>';
     var groups = groupSecs(r).map(function (s) { return groupHTML(r, s, m); }).join('');
-    h += '<div class="sec-list" id="rvGroups">' + (groups || '<div class="empty"><b>كل البنود هنا مفحوصة</b><span>اختر «الكل» لمراجعة ما فحصته.</span></div>') + '</div>';
+    h += '<div class="sec-list" id="rvGroups">' + (groups || '<div class="empty"><b>كل البنود هنا مفحوصة</b><span>اختر «الكل» لمراجعة ما فحصته.</span></div>') + '</div></div>';
     h += '<nav class="rv-nav" aria-label="التنقل بين الغرف">' + navBtn(prev, 'prev') + '<button type="button" class="btn ghost rv-nb rv-home" data-act="closeRoom" aria-label="العودة إلى المخطط">' + IC.plan + '<span class="nb-t"><small>المخطط</small></span></button>' + navBtn(next, 'next') + '</nav>';
     $('#roomView').innerHTML = h; hydrate($('#roomView'));
   }
@@ -1522,7 +1528,7 @@ p{margin:0}
   function openRoom(id) {
     var r = ROOM[id]; if (!r) return;
     if (!UI.room && UI.tab === 'house') UI.houseY = window.scrollY;
-    UI.room = id; UI.item = null; UI.todo = false; UI.obsOpen = false;
+    UI.room = id; UI.item = null; UI.todo = false; UI.obsOpen = false; UI.chkOpen = true;
     if (r.id !== 'house' && !r.hs[UI.floor]) UI.floor = r.fl;
     if (!UI.seen[id]) { UI.seen[id] = 1; var s = firstOpenGroup(r); if (s) UI.open[key(id, s)] = true; }
     UI.tab = 'house'; showTab(); saveUI();
@@ -3235,6 +3241,16 @@ p{margin:0}
     cloudNow: function () { push(true); },
     hideOn: function () { hideToggle(false); },
     obsFold: function () { UI.obsOpen = !UI.obsOpen; renderRoom(); },
+    chkFold: function () { UI.chkOpen = UI.chkOpen === false; renderRoom(); },
+    secAll: function (el) {
+      var open = el.getAttribute('data-v') === '1';
+      $$('#rvGroups .sec').forEach(function (sec) {
+        UI.open[key(UI.room, sec.getAttribute('data-sec'))] = open; sec.classList.toggle('is-open', open);
+        var h = $('.sec-h', sec); if (h) h.setAttribute('aria-expanded', String(open));
+      });
+      if (!open) UI.item = null;
+      saveUI();
+    },
     hideShow: function () { hideToggle(true); },
     shareLink: function () { shareLink(); },
     copyShare: function () { copyText(devURL(), 'نُسخ رابط المطوّر'); },
