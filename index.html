@@ -656,6 +656,11 @@ p{margin:0}
 .plan .rm.rv{border-color:#1747A6;background:rgba(23,71,166,.12)}
 .plan .pins{position:absolute;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;align-content:center;gap:.8mm;padding:.6mm}
 .pin{display:inline-grid;place-items:center;min-width:5mm;height:5mm;padding:0 1mm;border-radius:5mm;font:700 7pt/1 'IBM Plex Mono',monospace;color:#fff;background:#B42318;box-shadow:0 0 0 .4mm #fff}
+.plan .pin.fit{position:absolute;display:block;min-width:0;padding:0;box-sizing:border-box;text-align:center;box-shadow:0 0 0 .3mm #fff}
+.pin.more{background:#fff;color:#1F2937;box-shadow:0 0 0 .35mm #1F2937;direction:ltr;unicode-bidi:isolate}
+.legend .pin.more{box-shadow:none;border:.3mm solid #1F2937;min-width:5mm}
+.plan .pin.fit.more{box-shadow:0 0 0 .3mm #1F2937}
+.legend .lg-n{color:#667085}
 .pin.M{background:#A84B06}.pin.m{background:#475467}.pin.ok{background:#137333}
 .legend{display:flex;gap:4mm;flex-wrap:wrap;font-size:7.8pt;color:#465267;margin-top:3mm;align-items:center}
 .legend span{display:inline-flex;align-items:center;gap:1.2mm}
@@ -2283,7 +2288,10 @@ p{margin:0}
   var PDF_ST = { open: 'مفتوحة', review: 'بانتظار التحقق', fixed: 'أُغلقت', notfixed: 'لم يُقبل', reopened: 'أُعيد فتحها' };
   var PDF_STAMP = { open: 'op', review: 'rv', fixed: 'ok', notfixed: 'no', reopened: 'no' };
   var PDF_REG_HEAD = '<tr><th>#</th><th>الملاحظة</th><th>الخطورة</th><th>الحالة</th></tr>';
-  var PDF_LEGEND = '<div class="legend"><span><b class="pin">1</b>حرجة</span><span><b class="pin M">2</b>رئيسية</span><span><b class="pin m">3</b>ثانوية</span><span><b class="pin ok">4</b>أُغلقت</span></div>';
+  var PDF_LEGEND_BASE = '<span><b class="pin">1</b>حرجة</span><span><b class="pin M">2</b>رئيسية</span><span><b class="pin m">3</b>ثانوية</span><span><b class="pin ok">4</b>أُغلقت</span>';
+  function pdfLegend(M, count) {
+    return '<div class="legend">' + PDF_LEGEND_BASE + (count ? '<span class="lg-n">الرقم على الغرفة = عدد ملاحظاتها</span>' : '') + (M.more ? '<span><b class="pin more" dir="ltr">+n</b>ملاحظات أخرى في الغرفة، أرقامها في الجدول</span>' : '') + '</div>';
+  }
   function nPages(n) { return n === 1 ? 'صفحة واحدة' : n === 2 ? 'صفحتان' : (n >= 3 && n <= 10) ? n + ' صفحات' : n + ' صفحة'; }
   function dayOf(v) { var d = new Date(typeof v === 'number' ? v : Date.parse(v)); return isNaN(d) ? '' : d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
   function withTimeout(p, ms) { return Promise.race([p, new Promise(function (res) { setTimeout(res, ms); })]); }
@@ -2351,20 +2359,58 @@ p{margin:0}
     return ids.sort(function (a, b) { return at(a) - at(b); }).map(function (k) { return { r: ROOM[k] || null, list: by[k].sort(function (a, b) { return a.no - b.no; }) }; });
   }
   function pdfPin(o, M) { return '<b class="pin ' + (M.W[o.id] === 'fixed' ? 'ok' : o.sev) + '">' + o.no + '</b>'; }
-  function pdfPlan(f, w, M) { // the floor plan with every space that has observations marked, and their numbers
-    var marks = {}, order = [];
+  // Numbered pins are laid out in a grid that fits inside the space's own rectangle(s): the pin size shrinks until they
+  // fit, and what still cannot fit becomes one «+n» chip (the table lists every number). Nothing leaves its room.
+  function pdfFitPins(rects, list, wMM, hMM, M) {
+    var n = list.length, G = 0.5, MINS = 3.0, MAXS = 5.0;
+    var dig = list.reduce(function (a, o) { return Math.max(a, String(o.no).length); }, 1), wf2 = dig >= 3 ? 1.3 : dig === 2 ? 1.1 : 1;
+    var bx = rects.map(function (q) { return { x: q[0] / 100 * wMM, y: q[1] / 100 * hMM, w: q[2] / 100 * wMM, h: q[3] / 100 * hMM }; })
+      .sort(function (a, b) { return b.w * b.h - a.w * a.h; });
+    function cap(sz) {
+      var cw = sz * wf2 + G, ch = sz + G;
+      return bx.map(function (b) { return Math.max(0, Math.floor((b.w - 0.6 + G) / cw)) * Math.max(0, Math.floor((b.h - 0.6 + G) / ch)); });
+    }
+    var sz = MAXS, caps = cap(sz);
+    while (sz > MINS && caps.reduce(function (a, b) { return a + b; }, 0) < n) { sz = Math.round((sz - 0.2) * 10) / 10; caps = cap(sz); }
+    var total = caps.reduce(function (a, b) { return a + b; }, 0);
+    if (!total) return null; // the space is too small for any pin: the caller draws one count chip instead
+    var items = list.map(function (o) { return { cls: M.W[o.id] === 'fixed' ? 'ok' : o.sev, t: String(o.no) }; }), more = 0;
+    if (n > total) { more = n - (total - 1); items = items.slice(0, total - 1); items.push({ cls: 'more', t: '+' + more }); }
+    var cw = sz * wf2 + G, ch = sz + G, h = '', at = 0;
+    bx.forEach(function (b, k) {
+      var c = caps[k]; if (!c || at >= items.length) return;
+      var cols = Math.max(1, Math.floor((b.w - 0.6 + G) / cw)), take = items.slice(at, at + c); at += take.length;
+      var rows = Math.ceil(take.length / cols), y0 = b.y + (b.h - (rows * ch - G)) / 2;
+      for (var r = 0; r < rows; r++) {
+        var rowItems = take.slice(r * cols, (r + 1) * cols), x0 = b.x + (b.w - (rowItems.length * cw - G)) / 2;
+        rowItems.forEach(function (it, q) {
+          h += '<b class="pin ' + it.cls + ' fit" style="left:' + (x0 + q * cw).toFixed(2) + 'mm;top:' + (y0 + r * ch).toFixed(2) + 'mm;width:' + (sz * wf2).toFixed(2) + 'mm;height:' + sz.toFixed(2) + 'mm;font-size:' + (sz * 1.32).toFixed(1) + 'pt">' + it.t + '</b>';
+        });
+      }
+    });
+    if (more) M.more = true;
+    return h;
+  }
+  function pdfPlan(f, w, M, count) { // the floor plan with every space that has observations marked; count: one count per space (cover), else the numbers
+    var marks = {}, order = [], hMM = w * (f.ratio || 2.3893);
     M.obs.forEach(function (o) {
       var r = ROOM[o.room]; if (!r || r.id === 'house' || r.fl !== f.id) return;
       var s = M.W[o.id], mk = marks[o.room];
-      if (!mk) { mk = marks[o.room] = { cls: 'ok', pins: [] }; order.push(o.room); }
+      if (!mk) { mk = marks[o.room] = { cls: 'ok', list: [] }; order.push(o.room); }
       if (s !== 'fixed') mk.cls = s !== 'review' ? '' : (mk.cls === 'ok' ? 'rv' : mk.cls);
-      mk.pins.push(pdfPin(o, M));
+      mk.list.push(o);
     });
-    var h = '<div class="plan" style="width:' + w + 'mm;height:' + (w * (f.ratio || 2.3893)).toFixed(1) + 'mm"><img src="' + f.img + '" alt="">';
+    var h = '<div class="plan" style="width:' + w + 'mm;height:' + hMM.toFixed(1) + 'mm"><img src="' + f.img + '" alt="">';
     order.forEach(function (rid) {
       var rects = ROOM[rid].hs[f.id] || []; if (!rects.length) return;
-      rects.forEach(function (q) { h += '<i class="rm ' + marks[rid].cls + '" style="' + rectStyle(q) + '"></i>'; });
-      h += '<span class="pins" style="' + rectStyle(rects[biggest(rects)]) + '">' + marks[rid].pins.join('') + '</span>';
+      var mk = marks[rid], list = mk.list.sort(function (a, b) { return a.no - b.no; });
+      rects.forEach(function (q) { h += '<i class="rm ' + mk.cls + '" style="' + rectStyle(q) + '"></i>'; });
+      var fit = count ? null : pdfFitPins(rects, list, w, hMM, M);
+      if (fit) { h += fit; return; }
+      var open = list.filter(function (o) { return M.W[o.id] !== 'fixed'; }), rank = { c: 3, M: 2, m: 1 }, worst = 'ok';
+      open.forEach(function (o) { if (worst === 'ok' || rank[o.sev] > rank[worst]) worst = o.sev; });
+      var q = rects[biggest(rects)], cx = (q[0] + q[2] / 2) / 100 * w, cy = (q[1] + q[3] / 2) / 100 * hMM, sz = Math.max(3.2, Math.min(5, Math.min(q[2] / 100 * w, q[3] / 100 * hMM) - 0.8));
+      h += '<b class="pin ' + worst + ' fit cnt" style="left:' + (cx - sz / 2).toFixed(2) + 'mm;top:' + (cy - sz / 2).toFixed(2) + 'mm;width:' + sz.toFixed(2) + 'mm;height:' + sz.toFixed(2) + 'mm;font-size:' + (sz * 1.4).toFixed(1) + 'pt">' + list.length + '</b>';
     });
     return h + '</div>';
   }
@@ -2491,8 +2537,8 @@ p{margin:0}
     function draw(w) {
       var map = '<div class="b-map"><h3>خريطة الملاحظات</h3><div class="row">' + M.floors.map(function (g) {
         var e = g.list.length ? null : pdfNoObs(g.f);
-        return '<figure>' + pdfPlan(g.f, w, M) + '<span>' + esc(g.f.ar) + (e ? '<small class="' + e.cls + '">' + e.cap + '</small>' : '') + '</span></figure>';
-      }).join('') + '</div>' + (obs.length ? PDF_LEGEND : '<p class="b-none">لا ملاحظات مسجلة في هذا الفحص.</p>') + '</div>';
+        return '<figure>' + pdfPlan(g.f, w, M, true) + '<span>' + esc(g.f.ar) + (e ? '<small class="' + e.cls + '">' + e.cap + '</small>' : '') + '</span></figure>';
+      }).join('') + '</div>' + (obs.length ? pdfLegend(M, true) : '<p class="b-none">لا ملاحظات مسجلة في هذا الفحص.</p>') + '</div>';
       pg.pb.innerHTML = '<div class="b-cover"><div class="b-top"><span class="eye">HANDOVER INSPECTION · FLOOR BOOK</span><h1>تقرير استلام العقار</h1><span class="prop">' + esc(prop) + '</span>' +
         (addr ? '<span class="addr">' + esc(addr) + '</span>' : '') + '</div>' +
         '<div class="b-mid"><div class="b-info">' + info.map(function (x) { return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
@@ -2506,7 +2552,7 @@ p{margin:0}
   function pdfFloor(B, M, g) {
     var f = g.f, n = g.list.length, e = n ? null : pdfNoObs(f);
     var at = B.at(f.ar, '<div class="fl-head"><h2>' + esc(f.ar) + '</h2><span>' + (n ? nObs(n) : 'لا ملاحظات') + '</span></div>');
-    var grid = B.add(at.host, '<div class="d-floor"><div></div><div class="d-plan">' + pdfPlan(f, 78, M) + (n ? PDF_LEGEND : '') + '</div></div>');
+    var grid = B.add(at.host, '<div class="d-floor"><div></div><div class="d-plan">' + pdfPlan(f, 78, M) + (n ? pdfLegend(M, false) : '') + '</div></div>');
     function more() { return B.at(f.ar, '<div class="fl-head"><h2>' + esc(f.ar) + '</h2><span>تابع</span></div>'); }
     var rows = n ? pdfRegRows(g.list, M, true) : [{ h: '<tr class="none"><td colspan="4"><b class="' + e.cls + '">' + e.t + '</b><span>' + e.s + '</span></td></tr>' }];
     var col = flowTable(B, { pg: at.pg, host: grid.firstChild }, more, { cls: 'dreg', head: PDF_REG_HEAD, rows: rows });
