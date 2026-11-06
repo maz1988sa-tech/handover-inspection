@@ -114,6 +114,8 @@ a{color:var(--accent)}
 .search svg{width:18px;height:18px;color:var(--ink-3);flex:0 0 auto}
 .search input{border:0;outline:0;background:none;flex:1;min-width:0;min-height:44px;font-size:15px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.row3 .btn{padding-inline:8px;gap:6px}
 
 /* ---------- checklist ---------- */
 .tools{display:grid;gap:10px}
@@ -234,6 +236,13 @@ a{color:var(--accent)}
 .rv-add{min-height:50px;font-size:15px}
 .rv-h3{margin:4px 2px 0;font:700 14.5px/1.4 var(--font-display);color:var(--ink-2);display:flex;justify-content:space-between;align-items:center;gap:8px}
 .rv-h3 .n{font:600 12px/1 var(--font-data);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rv-fold{appearance:none;width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink-2);font:inherit;cursor:pointer;text-align:start}
+.rv-fold-t{display:inline-flex;align-items:center;gap:8px}
+.rv-fold-t .n{min-width:24px;height:24px;padding:0 7px;border-radius:99px;background:var(--crit-weak);color:var(--crit);display:inline-grid;place-items:center;font:700 12.5px/1 var(--font-data)}
+.rv-fold-a{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 var(--font-body);color:var(--accent)}
+.fold-ic{width:28px;height:28px;border-radius:50%;background:var(--accent-weak);display:grid;place-items:center}
+.fold-ic svg{width:16px;height:16px}
+.rv-fold[aria-expanded="true"]{border-color:var(--accent-weak)}
 .rv-empty{margin:0;border:1px dashed var(--line);border-radius:var(--r);padding:14px;font-size:13.5px;line-height:1.6;color:var(--ink-3)}
 .rv-chk{display:grid;gap:8px;margin-top:6px}
 .seg-sm button{min-height:34px;font-size:13px}
@@ -341,7 +350,7 @@ a{color:var(--accent)}
 .ph img{width:100%;height:100%;object-fit:cover;display:block}
 .ph-acts{position:absolute;inset:auto 0 0 0;display:grid;grid-template-columns:1fr 1fr;background:rgba(13,21,37,.62)}
 .ph-acts.one{grid-template-columns:1fr}
-.ph-acts button{appearance:none;border:0;background:none;color:#fff;font:600 12px/1 var(--font-body);min-height:34px;cursor:pointer}
+.ph-acts button{appearance:none;border:0;background:none;color:#fff;font:600 13px/1 var(--font-body);min-height:40px;cursor:pointer}
 
 /* ---------- markup ---------- */
 .mk{background:var(--surface);display:flex;flex-direction:column}
@@ -366,6 +375,8 @@ a{color:var(--accent)}
 .dlg-card p{margin:0;font-size:15px;line-height:1.6}
 .toast{position:fixed;inset-inline:16px;bottom:calc(var(--tab-h) + 14px + env(safe-area-inset-bottom,0px));z-index:76;margin:0 auto;max-width:420px;background:var(--ink);color:#fff;border-radius:12px;padding:11px 14px;font-size:14px;text-align:center;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.show{opacity:1;transform:none}
+/* inside a sheet or the photo viewer the toast sits mid-screen, clear of the photo buttons at the bottom */
+body.modal-open .toast{bottom:auto;top:42%;max-width:300px;background:rgba(17,24,39,.88)}
 
 @media (min-width:700px){
   .sheet{justify-content:center;padding:24px}
@@ -486,7 +497,12 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .pv-foot{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));background:var(--bg);border-top:1px solid var(--line)}
 .pv-foot .btn{width:100%;min-height:42px}
 .pv-foot .btn svg{width:16px;height:16px}
-.pv-hint{grid-column:2;font-size:12px;color:var(--ink-3);text-align:center}
+.pv-mid{grid-column:2;display:grid;justify-items:center;min-width:0}
+.pv-hint{font-size:12px;line-height:1.4;color:var(--ink-3);text-align:center;max-width:160px}
+.pv-foot .pv-mark{min-height:48px;padding:0 18px;font-size:15px;width:auto;white-space:nowrap}
+.pv-foot .pv-mark svg{width:18px;height:18px}
+#pvNext{grid-column:3}
+.pv-sp{width:40px}
 #pvPrev{grid-column:1}#pvNext{grid-column:3}
 .sh-lock{display:flex;gap:10px;align-items:flex-start;background:var(--ok-weak);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.6;color:var(--ink-2)}
 .sh-lock svg{width:18px;height:18px;flex:0 0 auto;margin-top:2px;color:var(--ok)}
@@ -511,6 +527,31 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .ev-re .ev-h b{color:var(--major)}
 .dv-card.st-reopened{border-color:var(--major)}
 @media (max-width:380px){.mk-tools{gap:8px}.mk-colors{gap:8px}.sw{width:28px;height:28px}}
+
+/* ---------- hide while editing ---------- */
+.vis-b{appearance:none;display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;border:1px solid var(--line);border-radius:99px;background:var(--bg);color:var(--ink-2);font:600 12px/1 var(--font-body);cursor:pointer}
+.vis-b svg{width:14px;height:14px}
+.vis-b:disabled{opacity:.5}
+.hide-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--major-weak);color:var(--major);border-top:1px solid var(--line);padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font:500 13.5px/1.4 var(--font-body)}
+.hide-bar[hidden]{display:none}
+.hide-bar .btn{min-height:36px;padding:0 14px;flex:0 0 auto;border-color:var(--major);color:var(--major);background:var(--bg)}
+.cl-hide{display:grid;gap:8px;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+.cl-hide.on{background:var(--major-weak);border-color:var(--major-weak)}
+.cl-hide b{display:flex;align-items:center;gap:6px;color:var(--major);font:700 14.5px/1.4 var(--font-body)}
+.cl-hide b svg{width:18px;height:18px}
+.cl-hide span{font-size:13px;line-height:1.55;color:var(--ink-2)}
+.lock-card{text-align:center;display:grid;gap:10px;justify-items:center}
+.lock-ic{width:56px;height:56px;border-radius:50%;background:var(--major-weak);color:var(--major);display:grid;place-items:center}
+.lock-ic svg{width:28px;height:28px}
+.lock-card h2{margin:0;justify-content:center}
+.lock-at{margin:0;font:600 12.5px/1.4 var(--font-body);color:var(--ink-3)}
+
+/* ---------- video clips: the poster frame carries a play badge ---------- */
+.is-vid{position:relative}
+.is-vid::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(17,24,39,.72) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7v10l8-5z' fill='white'/%3E%3C/svg%3E") center/20px no-repeat;pointer-events:none}
+.ph.is-vid::after{top:calc(50% - 20px)}
+.pv-stage.is-vid{touch-action:auto}
+#pvVid{max-width:calc(100% - 24px);max-height:calc(100% - 24px);background:#000;border-radius:8px}
 </style>
 <style id="rptcss">.rpt{direction:rtl;font:400 14px/1.6 "IBM Plex Sans Arabic","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif;color:#0D1525;background:#fff}
 .rpt *{box-sizing:border-box}
@@ -566,6 +607,8 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .rpt dt{color:#6B7689;font-weight:600}
 .rpt dd{margin:0}
 .rpt .r-ph{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.rpt .r-vid{position:relative;display:block;min-width:0}
+.rpt .r-vid i{position:absolute;inset:auto 6px 6px auto;background:rgba(17,24,39,.78);color:#fff;font:700 11px/1 system-ui,sans-serif;font-style:normal;padding:4px 7px;border-radius:99px;pointer-events:none}
 .rpt .r-ph img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#F3F5F9;border:1px solid #D9DFE8;border-radius:6px;display:block}
 .rpt .r-sub{font:600 12px/1.4 "IBM Plex Sans Arabic",Tahoma,sans-serif;color:#137333}
 .rpt .r-resp{font-size:12.5px;color:#465267;border-top:1px dashed #D9DFE8;padding-top:6px;display:grid;gap:4px}
@@ -616,7 +659,8 @@ p{margin:0}
 .legend span{display:inline-flex;align-items:center;gap:1.2mm}
 .legend .pin{min-width:4.2mm;height:4.2mm;font-size:6pt}
 .noph{display:grid;place-items:center;border:.3mm dashed #C9D0DB;border-radius:1.5mm;color:#98A2B3;font-size:8pt;height:100%;background:#FAFBFD;text-align:center;padding:2mm}
-.ph{background:#F3F5F9 center/cover no-repeat;border-radius:1.5mm}
+.ph{background:#F3F5F9 center/cover no-repeat;border-radius:1.5mm;position:relative}
+.pdf-vid{position:absolute;left:1.5mm;bottom:1.5mm;background:rgba(17,24,39,.8);color:#fff;font-size:7.5pt;font-weight:700;padding:.8mm 2mm;border-radius:3mm;line-height:1.2}
 .dots{color:#A0A9B8;letter-spacing:.4mm}
 
 /* cover */
@@ -725,8 +769,10 @@ p{margin:0}
         <span class="prog-n" id="progTxt">0 / 0</span>
         <span class="prog-bar"><i id="progBar"></i></span>
         <span class="sync" id="syncTxt" hidden></span>
+        <button type="button" class="vis-b" id="visBtn" data-act="hideOn" hidden aria-label="إخفاء التقرير عن المطوّر ورابط العرض أثناء التعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>إخفاء</button>
       </div>
     </div>
+    <div class="hide-bar" id="hideBar" hidden role="status"><span><b>التقرير مخفي</b> عن المطوّر ورابط العرض</span><button type="button" class="btn" data-act="hideShow">إظهار التقرير</button></div>
   </header>
 
   <main class="main">
@@ -848,9 +894,10 @@ p{margin:0}
         <div class="fld">
           <span>الصور</span>
           <div class="photos" id="shPhotos" data-pv-g="own"></div>
-          <div class="row2" id="shPhotoBtns">
-            <button type="button" class="btn" data-act="pickCam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>التقاط صورة</button>
-            <button type="button" class="btn" data-act="pickGal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>من الألبوم</button>
+          <div class="row3" id="shPhotoBtns">
+            <button type="button" class="btn" data-act="pickCam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>صورة</button>
+            <button type="button" class="btn" data-act="pickGal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>الألبوم</button>
+            <button type="button" class="btn" data-act="pickVid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>فيديو</button>
           </div>
         </div>
         <div class="follow" id="shFollowWrap" hidden>
@@ -938,6 +985,7 @@ p{margin:0}
 
   <input type="file" id="inCam" accept="image/*" capture="environment" hidden>
   <input type="file" id="inGal" accept="image/*" multiple hidden>
+  <input type="file" id="inVid" accept="video/*" hidden>
   <input type="file" id="inDecCam" accept="image/*" capture="environment" hidden>
   <input type="file" id="inDecGal" accept="image/*" multiple hidden>
   <input type="file" id="inImport" accept=".json,application/json" hidden>
@@ -1014,6 +1062,8 @@ p{margin:0}
     plan: svg('<path d="M4 4h16v16H4zM4 12h7M11 4v16M15 12h5"/>'),
     pen: svg('<path d="M4 20l4.5-1L19 8.5 15.5 5 5 15.5z"/><path d="m13.5 7 3.5 3.5"/>'),
     txt: svg('<path d="M5 6V4h14v2M12 4v16M9 20h6"/>'),
+    lock: svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
+    unlock: svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-1.9"/>'),
     zoom: svg('<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5M11 8v6M8 11h6"/>')
   };
 
@@ -1228,7 +1278,9 @@ p{margin:0}
   function hydrate(root) {
     $$('img[data-ph]', root).forEach(function (img) {
       if (img.getAttribute('src')) return;
-      photoURL(img.getAttribute('data-ph')).then(function (u) { if (u) img.src = u; });
+      var id = img.getAttribute('data-ph');
+      if (isVid(id) && img.parentElement) img.parentElement.classList.add('is-vid');
+      photoURL(id).then(function (u) { if (u) img.src = u; });
     });
   }
   function hydrateWait(root) {
@@ -1243,13 +1295,14 @@ p{margin:0}
     if (f.text) return f.text();
     return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsText(f); });
   }
+  function isVid(id) { return !!id && String(id).indexOf('v_') === 0; } // a video: its poster frame is stored like a photo under the same id
   function thumbHTML(id) { return id ? '<span class="th"><img data-ph="' + esc(id) + '" alt=""></span>' : '<span class="th">' + IC.cam + '</span>'; }
 
   /* ================= toast & confirm ================= */
   var toastT = null;
   function toast(msg, sticky) {
     var t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT);
-    if (!sticky) toastT = setTimeout(function () { t.classList.remove('show'); }, 2600);
+    if (!sticky) toastT = setTimeout(function () { t.classList.remove('show'); }, document.body.classList.contains('modal-open') ? 1500 : 2600);
   }
   function ask(msg, yes, no, kind) { // kind: the main button's style (danger by default, primary for a non-destructive choice)
     return new Promise(function (resolve) {
@@ -1288,7 +1341,7 @@ p{margin:0}
       '<span class="oc-loc">' + esc(o.detail || o.title) + '</span></span></button>';
   }
   function evPhotoTag(p, remoteId) {
-    if (remoteId) { var u = esc(pubURL(remoteId, p)); return '<button type="button" class="th" data-pv="' + esc(p) + '" data-src="' + u + '" aria-label="تكبير الصورة"><img src="' + u + '" alt="" loading="lazy"></button>'; }
+    if (remoteId) { var u = esc(pubURL(remoteId, p)); return '<button type="button" class="th' + (isVid(p) ? ' is-vid' : '') + '" data-pv="' + esc(p) + '" data-src="' + u + '" aria-label="تكبير الصورة"><img src="' + u + '" alt="" loading="lazy"></button>'; }
     return '<button type="button" class="th" data-pv="' + esc(p) + '" aria-label="تكبير الصورة"><img data-ph="' + esc(p) + '" alt=""></button>';
   }
   // who: 'owner' (the owner's app), 'dev' (developer page) or 'view' (read-only report)
@@ -1428,8 +1481,12 @@ p{margin:0}
       '<div class="rv-t"><span class="rv-en">' + esc(r.en) + '</span><h2 id="rvTitle">' + esc(r.ar) + '</h2><span class="rv-sub">' + esc(isHouse ? HOUSE_DESC : floorsText(r)) + '</span>' +
       '<span class="rv-prog"><span class="rv-bar"><i id="rvBar" style="width:' + pct.toFixed(1) + '%"></i></span><span class="rv-n" id="rvN">' + p.done + ' / ' + p.all + '</span></span></div></header>';
     h += '<button type="button" class="btn primary rv-add" data-act="newInRoom">' + IC.plus + 'ملاحظة في ' + esc(isHouse ? 'البيت كله' : r.ar) + '</button>';
-    h += '<h3 class="rv-h3"><span>الملاحظات</span><span class="n" id="rvObsN">' + list.length + '</span></h3>';
-    h += list.length ? '<div class="oc-list">' + list.map(function (o) { return obsCardHTML(o, true); }).join('') + '</div>'
+    // the room's observations fold away (closed by default) so the checklist sections stay one scroll away
+    var fo = !!UI.obsOpen;
+    h += list.length
+      ? '<h3 class="rv-h3 rv-fold-h"><button type="button" class="rv-fold" data-act="obsFold" aria-expanded="' + fo + '" aria-controls="rvObs"><span class="rv-fold-t">الملاحظات<span class="n" id="rvObsN">' + list.length + '</span></span><span class="rv-fold-a">' + (fo ? 'إخفاء' : 'عرض') + '<span class="fold-ic">' + (fo ? IC.dash : IC.plus) + '</span></span></button></h3>'
+      : '<h3 class="rv-h3"><span>الملاحظات</span><span class="n" id="rvObsN">0</span></h3>';
+    h += list.length ? '<div class="oc-list" id="rvObs"' + (fo ? '' : ' hidden') + '>' + list.map(function (o) { return obsCardHTML(o, true); }).join('') + '</div>'
       : '<p class="rv-empty">لا ملاحظات هنا بعد. أي عيب تراه: «ملاحظة» مع صورة، فيظهر على المخطط وفي التقرير تحت اسم ' + (isHouse ? 'البيت' : 'الغرفة') + '.</p>';
     h += '<div class="rv-chk"><h3 class="rv-h3"><span>البنود حسب القسم</span><span class="n" id="rvChkN">' + p.done + ' / ' + p.all + '</span></h3>' +
       '<div class="seg seg-sm" role="group" aria-label="عرض البنود"><button type="button" data-act="todo" data-v="0" aria-pressed="' + !UI.todo + '">الكل</button><button type="button" data-act="todo" data-v="1" aria-pressed="' + UI.todo + '">لم يُفحص</button></div></div>';
@@ -1465,7 +1522,7 @@ p{margin:0}
   function openRoom(id) {
     var r = ROOM[id]; if (!r) return;
     if (!UI.room && UI.tab === 'house') UI.houseY = window.scrollY;
-    UI.room = id; UI.item = null; UI.todo = false;
+    UI.room = id; UI.item = null; UI.todo = false; UI.obsOpen = false;
     if (r.id !== 'house' && !r.hs[UI.floor]) UI.floor = r.fl;
     if (!UI.seen[id]) { UI.seen[id] = 1; var s = firstOpenGroup(r); if (s) UI.open[key(id, s)] = true; }
     UI.tab = 'house'; showTab(); saveUI();
@@ -1630,8 +1687,9 @@ p{margin:0}
   function renderSheetPhotos() {
     var ph = ED.obs.ph || [], lk = ED.locked;
     $('#shPhotos').innerHTML = ph.map(function (id) {
-      return '<div class="ph"><img data-ph="' + esc(id) + '" data-pv="' + esc(id) + '" alt="صورة الملاحظة">' +
-        (lk ? '' : '<div class="ph-acts"><button type="button" data-act="mkOpen" data-ph="' + esc(id) + '">تعليم</button><button type="button" data-act="phDel" data-ph="' + esc(id) + '">حذف</button></div>') + '</div>';
+      var v = isVid(id);
+      return '<div class="ph"><img data-ph="' + esc(id) + '" data-pv="' + esc(id) + '" alt="' + (v ? 'فيديو الملاحظة' : 'صورة الملاحظة') + '">' +
+        (lk ? '' : '<div class="ph-acts' + (v ? ' one' : '') + '">' + (v ? '' : '<button type="button" data-act="mkOpen" data-ph="' + esc(id) + '">تعليم</button>') + '<button type="button" data-act="phDel" data-ph="' + esc(id) + '">حذف</button></div>') + '</div>';
     }).join('');
     hydrate($('#shPhotos'));
   }
@@ -1699,6 +1757,68 @@ p{margin:0}
     if (n) toast(n === 1 ? 'أُضيفت الصورة' : 'أُضيفت ' + n + ' صور');
   }
 
+  /* ================= video clips on an observation ================= */
+  var MAX_VIDEO = 50 * 1024 * 1024;
+  function vidType(f) {
+    var t = (f.type || '').toLowerCase();
+    if (/^video\/(mp4|quicktime|webm)$/.test(t)) return t;
+    var n = (f.name || '').toLowerCase();
+    return /\.mov$/.test(n) ? 'video/quicktime' : /\.webm$/.test(n) ? 'video/webm' : /\.(mp4|m4v)$/.test(n) || !t ? 'video/mp4' : '';
+  }
+  function videoPoster(file) { // a frame from half a second in, as a JPEG
+    return new Promise(function (res, rej) {
+      var v = document.createElement('video'), u = URL.createObjectURL(file), done = false;
+      var t = setTimeout(function () { fin(new Error('timeout')); }, 8000);
+      function fin(e, r) { if (done) return; done = true; clearTimeout(t); v.removeAttribute('src'); try { v.load(); } catch (er) { } URL.revokeObjectURL(u); if (e) rej(e); else res(r); }
+      function draw() {
+        var w = v.videoWidth, h = v.videoHeight; if (!w || !h) { fin(new Error('size')); return; }
+        var sc = Math.min(1, 1280 / Math.max(w, h)), c = document.createElement('canvas');
+        c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { if (b) fin(null, { blob: b, w: c.width, h: c.height }); else fin(new Error('blob')); }, 'image/jpeg', 0.8);
+      }
+      v.muted = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto';
+      v.onloadeddata = function () { var at = Math.min(0.5, (v.duration || 1) / 2); if (at > 0.05) { v.onseeked = draw; try { v.currentTime = at; } catch (e) { draw(); } } else draw(); };
+      v.onerror = function () { fin(new Error('decode')); };
+      v.src = u; try { v.load(); } catch (e) { }
+    });
+  }
+  function plainPoster() { // when this browser cannot read the clip's frames: a plain card that still says "video"
+    return new Promise(function (res) {
+      var c = document.createElement('canvas'); c.width = 960; c.height = 540; var x = c.getContext('2d');
+      x.fillStyle = '#1F2937'; x.fillRect(0, 0, 960, 540);
+      x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); x.arc(480, 240, 70, 0, Math.PI * 2); x.fill();
+      x.fillStyle = '#1F2937'; x.beginPath(); x.moveTo(458, 200); x.lineTo(458, 280); x.lineTo(522, 240); x.closePath(); x.fill();
+      x.fillStyle = '#fff'; x.font = textFont(44); x.textAlign = 'center'; x.direction = 'rtl'; x.fillText('فيديو', 480, 390);
+      c.toBlob(function (b) { res({ blob: b, w: 960, h: 540 }); }, 'image/jpeg', 0.85);
+    });
+  }
+  async function addVideo(file) {
+    if (!file || !ED) return;
+    var type = vidType(file);
+    if (!type) { toast('هذا الملف ليس فيديو مدعوماً؛ اختر مقطعاً من الكاميرا.'); return; }
+    if (file.size > MAX_VIDEO) { toast('المقطع ' + (file.size / 1048576).toFixed(0) + ' ميغابايت، والحد 50؛ صوّر مقطعاً أقصر (نحو دقيقة).'); return; }
+    toast('جارٍ تجهيز الفيديو…', true);
+    try {
+      var pst; try { pst = await videoPoster(file); } catch (e) { pst = await plainPoster(); }
+      var id = 'v_' + uid();
+      await Store.put('ph', 'vid:' + id, { buf: await blobToBuf(file), type: type, size: file.size, at: Date.now() });
+      await Store.put('ph', id, { buf: await blobToBuf(pst.blob), type: 'image/jpeg', w: pst.w, h: pst.h, at: Date.now() });
+      if (!ED) { await Store.del('ph', id); await Store.del('ph', 'vid:' + id); return; }
+      ED.obs.ph.push(id); ED.added.push(id); renderSheetPhotos();
+      toast('أُضيف الفيديو');
+    } catch (e) { toast('تعذّر حفظ الفيديو على الجهاز؛ جرّب مقطعاً أقصر.'); }
+  }
+  function vidRemoteId() { return VIEW_ID === 'dev' ? (DV && DV.id) : (VIEW_ID || C.id); }
+  function vidPubURL(id, pid) { return CFG.url + '/storage/v1/object/public/' + (CFG.bucket || 'photos') + '/' + id + '/' + encodeURIComponent(pid) + '.mp4'; }
+  async function videoURL(id) {
+    var k = 'vid:' + id; if (URLS.has(k)) return URLS.get(k);
+    var r = await Store.get('ph', k);
+    if (r) { var u = URL.createObjectURL(new Blob([r.buf], { type: r.type || 'video/mp4' })); URLS.set(k, u); return u; }
+    var rid = vidRemoteId();
+    return CFG && rid ? vidPubURL(rid, id) : '';
+  }
+
   /* ================= photo markup: pen and text ================= */
   // target: { kind: 'obs' } the photo in the open observation (replaced by the marked copy)
   //         { kind: 'dec' } a photo already in the reply being written
@@ -1710,7 +1830,26 @@ p{margin:0}
     MK = { id: id, img: im, ops: [], cur: null, s: 1, dpr: 1, tool: 'pen', color: MK_COLORS[0], pend: null, target: target || { kind: 'obs' } };
     $('#mkHint').textContent = MK.target.kind === 'reply' ? 'علّم ثم «حفظ» لإرفاقها بردك' : 'ارسم حول العيب أو أضف نصاً';
     $('#mkText').hidden = true; mkTools();
-    $('#mk').hidden = false; layoutMk(); drawMk();
+    $('#mk').hidden = false; fitOverlays(); layoutMk(); drawMk();
+  }
+  // full-screen layers follow the part of the page actually on screen (iPhone toolbars, keyboard, a zoomed page),
+  // so their top and bottom buttons are always reachable
+  function fitOverlays() {
+    var vv = window.visualViewport;
+    ['#pv', '#mk'].forEach(function (sel) {
+      var el = $(sel); if (!el) return;
+      if (el.hidden || !vv) { el.style.top = el.style.left = el.style.width = el.style.height = ''; return; }
+      el.style.top = Math.round(vv.offsetTop) + 'px'; el.style.left = Math.round(vv.offsetLeft) + 'px';
+      el.style.width = Math.round(vv.width) + 'px'; el.style.height = Math.round(vv.height) + 'px';
+    });
+  }
+  if (window.visualViewport) {
+    var vvT = null, onVV = function () {
+      if (!PV && !MK) return;
+      fitOverlays(); clearTimeout(vvT);
+      vvT = setTimeout(function () { if (MK) { layoutMk(); drawMk(); } if (PV) { pvFit(); pvClamp(); pvApply(); } }, 60);
+    };
+    window.visualViewport.addEventListener('resize', onVV); window.visualViewport.addEventListener('scroll', onVV);
   }
   function layoutMk() {
     if (!MK) return;
@@ -1828,17 +1967,20 @@ p{margin:0}
     var d = document.createElement('div');
     d.className = 'pv'; d.id = 'pv'; d.hidden = true;
     d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'عرض الصورة');
-    d.innerHTML = '<div class="pv-bar"><button type="button" class="icon-btn" data-act="pvClose" aria-label="إغلاق">' + IC.x + '</button><span class="pv-t" id="pvT"></span>' +
-      '<button type="button" class="btn primary" id="pvMark" data-act="pvMark" hidden>' + IC.pen + '<span id="pvMarkT">تعليم</span></button></div>' +
-      '<div class="pv-stage" id="pvStage"><img id="pvImg" alt="" draggable="false"></div>' +
-      '<div class="pv-foot"><button type="button" class="btn" id="pvPrev" data-act="pvPrev">' + IC.back + 'السابقة</button>' +
-      '<span class="pv-hint">قرّب بإصبعين أو انقر مرتين</span><button type="button" class="btn" id="pvNext" data-act="pvNext">التالية' + IC.fwd + '</button></div>';
+    // the mark button sits in the bottom bar, under the thumb, and the bar always says why when marking is not offered
+    d.innerHTML = '<div class="pv-bar"><button type="button" class="icon-btn" data-act="pvClose" aria-label="إغلاق">' + IC.x + '</button><span class="pv-t" id="pvT"></span><span class="pv-sp"></span></div>' +
+      '<div class="pv-stage" id="pvStage"><img id="pvImg" alt="" draggable="false"><video id="pvVid" controls playsinline preload="metadata" hidden></video></div>' +
+      '<div class="pv-foot"><button type="button" class="btn pv-nav" id="pvPrev" data-act="pvPrev" aria-label="الصورة السابقة">' + IC.back + '<span>السابقة</span></button>' +
+      '<div class="pv-mid"><button type="button" class="btn primary pv-mark" id="pvMark" data-act="pvMark" hidden>' + IC.pen + '<span id="pvMarkT">تعليم</span></button>' +
+      '<span class="pv-hint" id="pvHint">قرّب بإصبعين أو انقر مرتين</span></div>' +
+      '<button type="button" class="btn pv-nav" id="pvNext" data-act="pvNext" aria-label="الصورة التالية"><span>التالية</span>' + IC.fwd + '</button></div>';
     ($('.app') || document.body).appendChild(d);
     bindPV();
   }
   // which marking the viewer offers for this photo (owner's app only)
   function pvMarkKind() {
     if (!PV || VIEW_ID) return '';
+    var cur = PV.items[PV.i]; if (cur && isVid(cur.id)) return '';
     var k = PV.ctx.kind;
     if (k === 'own') return ED && !ED.locked ? 'obs' : '';
     if (k === 'dec') return DEC ? 'dec' : '';
@@ -1848,7 +1990,7 @@ p{margin:0}
   function openPV(items, idx, ctx) {
     ensurePV();
     PV = { items: items, i: 0, ctx: ctx || {}, s: 1, tx: 0, ty: 0, pts: new Map(), pinch: null, tap: 0, moved: false, down: [0, 0] };
-    $('#pv').hidden = false; document.body.classList.add('modal-open');
+    $('#pv').hidden = false; document.body.classList.add('modal-open'); fitOverlays();
     pvShow(idx || 0);
   }
   function pvFit() {
@@ -1859,13 +2001,24 @@ p{margin:0}
   async function pvShow(i) {
     if (!PV) return;
     var n = PV.items.length; PV.i = ((i % n) + n) % n; PV.s = 1; PV.tx = 0; PV.ty = 0;
-    var it = PV.items[PV.i], img = $('#pvImg');
+    var it = PV.items[PV.i], img = $('#pvImg'), vd = $('#pvVid');
     img.style.transform = ''; img.removeAttribute('src'); img.style.width = img.style.height = '';
-    var who = it.id && it.id.indexOf('d_') === 0 ? 'صورة المطوّر' : PV.ctx.kind === 'own' ? 'صورة الملاحظة' : PV.ctx.kind === 'dec' ? 'صورة ردك' : 'الصورة';
+    try { vd.pause(); } catch (e) { } vd.removeAttribute('src'); vd.removeAttribute('poster');
+    PV.vid = isVid(it.id); vd.hidden = !PV.vid; img.hidden = PV.vid; $('#pvStage').classList.toggle('is-vid', PV.vid);
+    var who = PV.vid ? 'فيديو الملاحظة' : it.id && it.id.indexOf('d_') === 0 ? 'صورة المطوّر' : PV.ctx.kind === 'own' ? 'صورة الملاحظة' : PV.ctx.kind === 'dec' ? 'صورة ردك' : 'الصورة';
     $('#pvT').textContent = who + (n > 1 ? ' · ' + (PV.i + 1) + ' من ' + n : '');
     $('#pvPrev').hidden = $('#pvNext').hidden = n < 2;
-    var mk = pvMarkKind(); $('#pvMark').hidden = !mk;
-    $('#pvMarkT').textContent = mk === 'reply' ? 'تعليم ورد' : 'تعليم';
+    var mk = pvMarkKind(); $('#pvMark').hidden = !mk; $('#pvHint').hidden = !!mk;
+    $('#pvMarkT').textContent = mk === 'reply' ? 'تعليم ورد' : 'تعليم الصورة';
+    $('#pvHint').textContent = PV.vid ? 'الفيديو لا يُعلَّم عليه؛ صوّر لقطة للتعليم' : !mk && !VIEW_ID && PV.ctx.kind === 'own' && ED && ED.locked ? 'الملاحظة مغلقة؛ أعد فتحها لتعليم الصورة' : 'قرّب بإصبعين أو انقر مرتين';
+    if (PV.vid) {
+      var poster = it.src || await photoURL(it.id), vu = await videoURL(it.id);
+      if (!PV || PV.items[PV.i] !== it) return;
+      if (poster) vd.setAttribute('poster', poster);
+      if (!vu) { toast('الفيديو لم يُرفع بعد؛ يظهر بعد اكتمال الرفع من جهاز التصوير.'); return; }
+      vd.onerror = function () { if (PV && PV.items[PV.i] === it) toast('تعذّر تشغيل الفيديو على هذا الجهاز.'); };
+      vd.src = vu; return;
+    }
     var src = it.src || (it.id ? await photoURL(it.id) : '');
     if (!PV || PV.items[PV.i] !== it) return;
     if (!src) { toast('تعذّر تحميل الصورة'); return; }
@@ -1888,7 +2041,7 @@ p{margin:0}
     var st = $('#pvStage');
     function rel(e) { var r = st.getBoundingClientRect(); return [e.clientX - r.left - r.width / 2, e.clientY - r.top - r.height / 2]; }
     st.addEventListener('pointerdown', function (e) {
-      if (!PV) return; e.preventDefault(); try { st.setPointerCapture(e.pointerId); } catch (er) { }
+      if (!PV || PV.vid) return; e.preventDefault(); try { st.setPointerCapture(e.pointerId); } catch (er) { }
       var q = rel(e); PV.pts.set(e.pointerId, q);
       if (PV.pts.size === 1) { PV.moved = false; PV.down = q; }
       if (PV.pts.size === 2) { var a = Array.from(PV.pts.values()); PV.pinch = { d: Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]) || 1, s: PV.s }; PV.moved = true; }
@@ -1916,10 +2069,11 @@ p{margin:0}
       }
     }
     st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
-    st.addEventListener('wheel', function (e) { if (!PV) return; e.preventDefault(); var q = rel(e); pvZoomAt(PV.s * (e.deltaY < 0 ? 1.2 : 1 / 1.2), q[0], q[1]); }, { passive: false });
-    window.addEventListener('resize', function () { if (PV) { PV.s = 1; PV.tx = 0; PV.ty = 0; pvFit(); pvApply(); } });
+    st.addEventListener('wheel', function (e) { if (!PV || PV.vid) return; e.preventDefault(); var q = rel(e); pvZoomAt(PV.s * (e.deltaY < 0 ? 1.2 : 1 / 1.2), q[0], q[1]); }, { passive: false });
+    window.addEventListener('resize', function () { if (PV && !PV.vid) { PV.s = 1; PV.tx = 0; PV.ty = 0; pvFit(); pvApply(); } });
   }
   function closePV() {
+    var vd = $('#pvVid'); if (vd) { try { vd.pause(); } catch (e) { } vd.removeAttribute('src'); }
     PV = null; var v = $('#pv'); if (v) v.hidden = true;
     var open = ['#sheet', '#dec', '#dvSheet'].some(function (q) { var el = $(q); return el && !el.hidden; });
     if (!open) document.body.classList.remove('modal-open');
@@ -1942,7 +2096,7 @@ p{margin:0}
       (o.note ? '<dt>الوصف</dt><dd>' + esc(o.note) + '</dd>' : '') +
       (it ? '<dt>المعيار</dt><dd>' + esc(it.ok) + ' <span class="r-code">(' + it.id + ')</span></dd>' : '') +
       '</dl>';
-    var ph = (o.ph || []).map(imgTag).join('');
+    var ph = (o.ph || []).map(function (id) { var t = imgTag(id); return t && isVid(id) ? '<span class="r-vid" data-v="' + esc(id) + '">' + t + '<i>▶ فيديو</i></span>' : t; }).join('');
     if (ph) h += '<div class="r-ph">' + ph + '</div>';
     var ph2 = (o.ph2 || []).map(imgTag).join('');
     if (ph2) h += '<span class="r-sub">بعد الإصلاح</span><div class="r-ph">' + ph2 + '</div>';
@@ -2243,7 +2397,7 @@ p{margin:0}
     var s = M.W[o.id], t = thread(o), phs = pdfPhotos(o);
     function box(id, empty) {
       if (!id) return '<div class="noph">' + empty + '</div>';
-      return M.ph[id] ? '<div class="ph" style="background-image:url(' + M.ph[id] + ')"></div>' : '<div class="noph">تعذّر تحميل الصورة</div>';
+      return M.ph[id] ? '<div class="ph" style="background-image:url(' + M.ph[id] + ')">' + (isVid(id) ? '<span class="pdf-vid">▶ فيديو</span>' : '') + '</div>' : '<div class="noph">تعذّر تحميل الصورة</div>';
     }
     var steps = [['', 'رُصدت', dayOf(o.at)]];
     t.forEach(function (x) { steps.push(x.by === 'dev' ? ['dev', 'رد المطوّر', dayOf(x.at)] : [x.act === 'accept' ? 'ok' : 'no', { accept: 'أكّد المالك', reject: 'رفض المالك', reopen: 'أعاد الفتح' }[x.act], dayOf(x.at)]); });
@@ -2481,7 +2635,7 @@ p{margin:0}
   // that checks the key (owner: upload + delete; developer: new reply photos only).
   var CFG = (!IN_ARTIFACT && window.HI_CLOUD && window.HI_CLOUD.url && window.HI_CLOUD.key) ? window.HI_CLOUD : null;
   var UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  function blankC() { return { id: '', key: '', dev: '', up: {}, del: [], dirty: false, at: '', pulled: false }; }
+  function blankC() { return { id: '', key: '', dev: '', up: {}, del: [], dirty: false, at: '', pulled: false, hidden: '' }; }
   var C = blankC();
   var SYNC = { busy: false, again: false, t: null, seq: 0, err: '', pending: 0 };
   var HASH = parseHash();
@@ -2525,6 +2679,16 @@ p{margin:0}
     var er = new Error('upload ' + r.status); er.status = r.status;
     if (r.status === 403 || r.status >= 500) throw er; // other 4xx: this file can never be stored, skip it
   }
+  async function sendVideo(pid) { // the clip goes straight to storage through a one-time signed address
+    var rec = await Store.get('ph', 'vid:' + pid); if (!rec) return; // made on another device: already up there
+    var r = await fetch(fnURL(pid) + '&v=1', { method: 'POST', headers: apiHeaders({ 'x-hi-key': C.key, 'x-hi-type': rec.type || 'video/mp4', 'x-hi-size': String(rec.size || rec.buf.byteLength) }) });
+    var j = null; try { j = await r.json(); } catch (e) { }
+    if (!r.ok || !j || !j.url) { var er = new Error('video ' + r.status); er.status = r.status; if (r.status === 403 || r.status >= 500 || r.ok) throw er; return; }
+    var tok = (String(j.url).match(/[?&]token=([^&]+)/) || [])[1]; if (!tok) throw new Error('video token');
+    var put = await fetch(CFG.url + '/storage/v1/object/upload/sign/' + (CFG.bucket || 'photos') + '/' + C.id + '/' + encodeURIComponent(pid) + '.mp4?token=' + tok,
+      { method: 'PUT', headers: apiHeaders({ 'Content-Type': rec.type || 'video/mp4', 'x-upsert': 'true' }), body: rec.buf });
+    if (!put.ok) { var e2 = new Error('video put ' + put.status); e2.status = put.status; if (put.status === 403 || put.status >= 500) throw e2; }
+  }
   async function dropPhoto(pid) {
     var r = await fetch(fnURL(pid), { method: 'DELETE', headers: apiHeaders({ 'x-hi-key': C.key }) });
     if (!r.ok && (r.status === 403 || r.status >= 500)) { var er = new Error('delete ' + r.status); er.status = r.status; throw er; }
@@ -2540,6 +2704,7 @@ p{margin:0}
   }
   async function forgetPhoto(id) {
     await Store.del('ph', id); dropURL(id);
+    if (isVid(id)) { await Store.del('ph', 'vid:' + id); dropURL('vid:' + id); }
     if (CFG && C.up[id]) { delete C.up[id]; if (C.del.indexOf(id) < 0) C.del.push(id); }
   }
   function hasContent() { var m = S.meta; return S.obs.length > 0 || Object.keys(S.res).length > 0 || !!(m.prop || m.unit || m.dev || m.addr || m.insp); }
@@ -2548,8 +2713,10 @@ p{margin:0}
   function markDirty() { if (!CFG) return; C.dirty = true; SYNC.seq++; schedulePush(2500); renderSync(); }
   function schedulePush(ms) { if (!CFG) return; clearTimeout(SYNC.t); SYNC.t = setTimeout(push, ms); }
   async function pull() {
-    var r = await rpc('hi_get', { p_id: C.id });
+    var r;
+    try { r = await rpc('hi_get_own', { p_id: C.id, p_key: C.key }); } catch (e) { if (denied(e)) return 'gone'; throw e; }
     if (!r || !r.state) return 'gone';
+    if ((r.hidden_at || '') !== C.hidden) { C.hidden = r.hidden_at || ''; renderHide(); renderCloud(); }
     var first = !C.pulled, evChanged = setEvents(r.events); C.pulled = true;
     if (first || (!C.dirty && r.updated_at && r.updated_at !== C.at)) {
       S = normalize(r.state); C.at = r.updated_at || ''; C.dirty = false;
@@ -2574,7 +2741,7 @@ p{margin:0}
       if (!C.pulled && (await pull()) !== 'ok') throw new Error('pull');
       var ids = refPhotos().filter(function (p) { return !C.up[p]; });
       SYNC.pending = ids.length; renderSync();
-      for (var k = 0; k < ids.length; k++) { await sendPhoto(ids[k]); C.up[ids[k]] = 1; SYNC.pending = ids.length - k - 1; renderSync(); }
+      for (var k = 0; k < ids.length; k++) { await sendPhoto(ids[k]); if (isVid(ids[k])) await sendVideo(ids[k]); C.up[ids[k]] = 1; SYNC.pending = ids.length - k - 1; renderSync(); }
       var seq = SYNC.seq;
       C.at = await rpc('hi_save', { p_id: C.id, p_key: C.key, p_state: cloudState() });
       if (seq === SYNC.seq) C.dirty = false;
@@ -2634,10 +2801,51 @@ p{margin:0}
     return ['ok', 'محفوظ', 'محفوظ في السحابة' + (C.at ? ' · ' + ltrTime(C.at) : '')];
   }
   function renderSync() {
+    renderHide();
     var el = $('#syncTxt'); if (!el) return;
     var s = syncInfo(); el.hidden = !s; if (!s) return;
     el.className = 'sync sync-' + s[0]; el.textContent = s[1]; el.title = s[2];
     var st = $('#clStatus'); if (st) { st.className = 'cl-status sync-' + s[0]; st.textContent = s[2]; }
+  }
+  /* ---- hide while editing: the view link and the developer link show HIDE_MSG until the owner shows the report again ---- */
+  var HIDE_MSG = {
+    t: 'التقرير قيد التحديث',
+    p: 'يضيف المالك ملاحظات وصوراً جديدة الآن. سيُفتح التقرير هنا تلقائياً فور انتهائه، ولا حاجة لإعادة فتح الرابط.',
+    since: 'مُغلق مؤقتاً منذ '
+  };
+  var HIDE_BUSY = false;
+  function renderHide() {
+    var b = $('#visBtn'), bar = $('#hideBar'); if (!b || !bar) return;
+    var on = !!(CFG && C.id && C.key);
+    b.hidden = !on || !!C.hidden; bar.hidden = !on || !C.hidden;
+    b.disabled = bar.querySelector('button').disabled = HIDE_BUSY;
+    document.body.classList.toggle('is-hidden', on && !!C.hidden);
+  }
+  async function hideToggle(show) {
+    if (!CFG || !C.id || HIDE_BUSY) return;
+    var want = !show;
+    if (!want && !(await ask('إظهار التقرير للمطوّر ولرابط العرض الآن؟ سيرون آخر تعديلاتك.', 'إظهار التقرير', 'تراجع', 'primary'))) return;
+    if (!navigator.onLine) { toast('لا يوجد اتصال؛ حاول مرة أخرى عند عودة الاتصال.'); return; }
+    HIDE_BUSY = true; renderHide();
+    try {
+      if (!want && (C.dirty || SYNC.busy)) { toast('جارٍ حفظ آخر التعديلات…', true); await push(); }
+      var r = await rpc('hi_hide', { p_id: C.id, p_key: C.key, p_on: want });
+      C.hidden = r ? String(r) : ''; await flush();
+      toast(C.hidden ? 'أُخفي التقرير؛ يرى المطوّر ورابط العرض رسالة «' + HIDE_MSG.t + '».' : 'ظهر التقرير للمطوّر ورابط العرض بآخر تعديلاتك.');
+    } catch (e) {
+      toast(denied(e) ? 'رابطك الخاص غير صالح؛ لم يتغير شيء.' : 'تعذّر التنفيذ الآن؛ تحقق من الاتصال وحاول مرة أخرى.');
+    } finally { HIDE_BUSY = false; renderHide(); renderCloud(); }
+  }
+  function lockScreenHTML(at) {
+    return '<div class="card land lock-card" id="lockCard"><span class="lock-ic">' + IC.lock + '</span><h2>' + HIDE_MSG.t + '</h2><p class="land-p">' + HIDE_MSG.p + '</p>' +
+      (at ? '<p class="lock-at">' + HIDE_MSG.since + ltrTime(at) + '</p>' : '') + '</div>';
+  }
+  // while a link shows the lock screen: check again every 30 s and when the page comes back to the front
+  var LOCK_T = null;
+  function watchLock(fn) {
+    clearInterval(LOCK_T);
+    if (!fn) return;
+    LOCK_T = setInterval(function () { if (document.visibilityState === 'visible' && navigator.onLine) fn(); }, 30000);
   }
   function renderCloud() {
     var card = $('#cloudCard'); if (!card) return;
@@ -2648,6 +2856,9 @@ p{margin:0}
         '<button type="button" class="btn primary" data-act="cloudNow">' + IC.share + 'إنشاء رابط المشاركة الآن</button>';
     } else {
       h = '<p class="cl-status" id="clStatus"></p>' +
+        (C.hidden
+          ? '<div class="cl-hide on"><b>' + IC.lock + 'التقرير مخفي الآن</b><span>المطوّر ورابط العرض يرون رسالة «' + HIDE_MSG.t + '» حتى تُظهره.</span><button type="button" class="btn primary" data-act="hideShow"' + (HIDE_BUSY ? ' disabled' : '') + '>' + IC.unlock + 'إظهار التقرير</button></div>'
+          : '<div class="cl-hide"><span class="cl-l">تضيف ملاحظات الآن؟ أخفِ التقرير عن المطوّر ورابط العرض حتى تنتهي، ثم أظهره بضغطة.</span><button type="button" class="btn" data-act="hideOn"' + (HIDE_BUSY ? ' disabled' : '') + '>' + IC.lock + 'إخفاء التقرير أثناء التعديل</button></div>') +
         '<div class="cl-link"><span class="cl-l">رابط المطوّر: يرى الملاحظات بالصور ويرد على كل ملاحظة بصورة بعد الإصلاح، ولا يستطيع تعديل ملاحظاتك</span>' +
         (devURL() ? '<input class="cl-url" id="shareUrl" type="text" readonly dir="ltr" value="' + esc(devURL()) + '" aria-label="رابط المطوّر">' +
           '<div class="row2"><button type="button" class="btn primary" data-act="shareLink">' + IC.share + 'مشاركة الرابط</button><button type="button" class="btn" data-act="copyShare">' + IC.copy + 'نسخ الرابط</button></div>'
@@ -2686,8 +2897,20 @@ p{margin:0}
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
       '<div class="toast" id="toast" role="status" aria-live="polite"></div>';
     VIEW_ID = id;
+    VIEW_NOTE = note;
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && LOCK_T) vLoad(); });
+    await vLoad();
+  }
+  var VIEW_NOTE = '';
+  async function vLoad() {
+    var id = VIEW_ID, note = VIEW_NOTE;
     try {
       var r = await rpc('hi_get', { p_id: id });
+      if (r && r.hidden) {
+        $('#vRep').innerHTML = lockScreenHTML(r.hidden_at); $('#vMeta').textContent = HIDE_MSG.t;
+        $('[data-act="vPDF"]').disabled = true; watchLock(vLoad); return;
+      }
+      watchLock(null);
       if (!r || !r.state) { $('#vRep').innerHTML = '<p class="r-empty">الرابط غير صحيح أو لم يعد متاحاً.</p>'; $('#vMeta').textContent = ''; return; }
       S = normalize(r.state); setEvents(r.events);
       $('#vRep').innerHTML = reportHTML(function (pid) { return '<img src="' + esc(pubURL(id, pid)) + '" alt="">'; });
@@ -2731,6 +2954,12 @@ p{margin:0}
       var role = await rpc('hi_role', { p_id: DV.id, p_key: DV.key });
       if (role !== 'dev') { $('#dvMain').innerHTML = '<div class="card land"><h2>الرابط غير صالح</h2><p class="land-p">رابط المطوّر غير صحيح أو استُبدل. اطلب من المالك الرابط الحالي.</p></div>'; $('#vMeta').textContent = ''; return; }
       var r = await rpc('hi_get', { p_id: DV.id });
+      if (r && r.hidden) {
+        if (DV.draft || DV.busy) return; // a reply in progress: let the developer finish sending it
+        $('#dvMain').innerHTML = lockScreenHTML(r.hidden_at); $('#vMeta').textContent = HIDE_MSG.t;
+        watchLock(devLoad); return;
+      }
+      watchLock(null);
       if (!r || !r.state) { $('#dvMain').innerHTML = '<p class="r-empty">الرابط غير صحيح أو لم يعد متاحاً.</p>'; $('#vMeta').textContent = ''; return; }
       S = normalize(r.state); setEvents(r.events);
       $('#vMeta').textContent = (S.meta.prop || H.name) + ' · آخر تحديث ' + ltrTime(r.updated_at);
@@ -2949,6 +3178,7 @@ p{margin:0}
     pickSev: function (el) { if (!ED || ED.locked) return; ED.obs.sev = el.getAttribute('data-v'); $$('#shSev button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === ED.obs.sev)); }); },
     pickCam: function () { $('#inCam').value = ''; $('#inCam').click(); },
     pickGal: function () { $('#inGal').value = ''; $('#inGal').click(); },
+    pickVid: function () { $('#inVid').value = ''; $('#inVid').click(); },
     phDel: async function (el) {
       if (!ED) return; var id = el.getAttribute('data-ph');
       ED.obs.ph = ED.obs.ph.filter(function (x) { return x !== id; }); ED.removed.push(id); renderSheetPhotos();
@@ -3001,10 +3231,13 @@ p{margin:0}
     importJson: function () { $('#inImport').value = ''; $('#inImport').click(); },
     resetAll: function () { resetAll(); },
     cloudNow: function () { push(true); },
+    hideOn: function () { hideToggle(false); },
+    obsFold: function () { UI.obsOpen = !UI.obsOpen; renderRoom(); },
+    hideShow: function () { hideToggle(true); },
     shareLink: function () { shareLink(); },
     copyShare: function () { copyText(devURL(), 'نُسخ رابط المطوّر'); },
     copyOwner: function () { copyText(ownerURL(), 'نُسخ رابطك الخاص؛ احفظه ولا تشاركه'); },
-    vReload: function () { location.reload(); },
+    vReload: function () { vLoad(); },
     vPDF: function () { exPDF(function (pid) { return remotePhotoDataURL(VIEW_ID, pid); }); }
   };
   document.addEventListener('click', function (e) {
@@ -3022,7 +3255,7 @@ p{margin:0}
     var ri = e.target.closest('.rpt .r-ph img');
     if (ri) { // report photos: the row they belong to
       var imgs = $$('img', ri.closest('.r-ph'));
-      openPV(imgs.map(function (x) { var id = x.getAttribute('data-ph') || ''; return { id: id, src: id ? '' : (x.currentSrc || x.src) }; }), imgs.indexOf(ri), { kind: 'rpt' });
+      openPV(imgs.map(function (x) { var vw = x.closest('.r-vid'), id = x.getAttribute('data-ph') || (vw ? vw.getAttribute('data-v') : '') || ''; return { id: id, src: x.getAttribute('data-ph') ? '' : (x.currentSrc || x.src) }; }), imgs.indexOf(ri), { kind: 'rpt' });
       return;
     }
     var el = e.target.closest('[data-act]'); if (!el) return;
@@ -3073,6 +3306,7 @@ p{margin:0}
   function startApp() {
     $('#inCam').addEventListener('change', function (e) { addPhotos(e.target.files, 'draft'); });
     $('#inGal').addEventListener('change', function (e) { addPhotos(e.target.files, 'draft'); });
+    $('#inVid').addEventListener('change', function (e) { addVideo(e.target.files && e.target.files[0]); });
     $('#inDecCam').addEventListener('change', function (e) { addPhotos(e.target.files, 'dec'); });
     $('#inDecGal').addEventListener('change', function (e) { addPhotos(e.target.files, 'dec'); });
     $('#inImport').addEventListener('change', function (e) { var f = e.target.files && e.target.files[0]; if (f) importBackup(f); });
