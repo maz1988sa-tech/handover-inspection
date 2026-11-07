@@ -599,6 +599,8 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .kf-chip:disabled{opacity:.5}
 .fld>span small{font-weight:500;color:var(--ink-3)}
 .dv-card.flash{outline:3px solid var(--accent);outline-offset:2px}
+
+.pv-stage.is-vid::after{display:none}
 </style>
 <style id="rptcss">.rpt{direction:rtl;font:400 14px/1.6 "IBM Plex Sans Arabic","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif;color:#0D1525;background:#fff}
 .rpt *{box-sizing:border-box}
@@ -2291,6 +2293,11 @@ p{margin:0}
       if (!PV || PV.items[PV.i] !== it) return;
       if (poster) vd.setAttribute('poster', poster);
       if (!vu) { toast('الفيديو لم يُرفع بعد؛ يظهر بعد اكتمال الرفع من جهاز التصوير.'); return; }
+      var rid = vidRemoteId(), local = vu.indexOf('blob:') === 0, inCloud = true;
+      // is the clip on the server at all? clips above the storage plan's file limit never get there
+      if (CFG && rid) { try { var hd = await fetch(vidPubURL(rid, it.id), { method: 'HEAD' }); inCloud = hd.ok; } catch (e) { inCloud = true; } if (!PV || PV.items[PV.i] !== it) return; }
+      if (!inCloud && !local) { $('#pvHint').hidden = false; $('#pvHint').textContent = 'هذا المقطع لم يصل إلى السحابة (أكبر من الحد المسموح). اطلب من المالك مقطعاً أقصر أو لقطة صورة.'; toast('المقطع غير متاح لهذا الرابط: لم يُرفع لكبر حجمه.'); return; }
+      if (!inCloud && local) { $('#pvHint').hidden = false; $('#pvHint').textContent = 'هذا المقطع على جهازك فقط ولا يراه المطوّر (أكبر من الحد المسموح). صوّر مقطعاً أقصر.'; }
       vd.onerror = function () { if (PV && PV.items[PV.i] === it) toast('تعذّر تشغيل الفيديو على هذا الجهاز.'); };
       vd.src = vu; return;
     }
