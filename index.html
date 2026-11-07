@@ -554,6 +554,51 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .ph.is-vid::after{top:calc(50% - 20px)}
 .pv-stage.is-vid{touch-action:auto}
 #pvVid{max-width:calc(100% - 24px);max-height:calc(100% - 24px);background:#000;border-radius:8px}
+
+/* ---- property-wide key findings ---- */
+.kf-list{display:grid;gap:8px;margin-bottom:12px}
+.kf-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:3px solid var(--crit);padding-top:10px}
+.kf-top h3{margin:0;font:700 14.5px/1.4 var(--font-display)}
+.kf-top small{font-size:12px;color:var(--ink-3)}
+.kf-oc{border-inline-start:4px solid var(--crit)}
+.kf-oc.is-closed{border-inline-start-color:var(--ok)}
+.kf-no{background:var(--ink)!important;color:#fff!important}
+.kf-bar{display:block;height:6px;border-radius:6px;background:var(--surface);overflow:hidden;margin-top:6px}
+.kf-bar i{display:block;height:100%;background:var(--ok);border-radius:6px}
+.kf-pill{background:var(--ink);color:#fff}
+.kf-state{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:6px;background:var(--surface)}
+.kf-state small{font-size:12px;color:var(--ink-2);line-height:1.6}
+.kf-st-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kf-st-h b{font:700 22px/1 var(--font-data)}
+.kf-st-h span:nth-child(2){flex:1;font-size:13px;color:var(--ink-2)}
+.kf-pick{display:grid;gap:6px;max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px}
+.kf-pick:empty{display:none}
+.kf-row{appearance:none;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto auto;gap:8px;align-items:center;text-align:right;width:100%;border:1px solid transparent;background:var(--bg);border-radius:10px;padding:8px;min-height:52px;font:inherit;color:inherit;cursor:pointer}
+.kf-row[aria-pressed="true"]{background:var(--accent-weak);border-color:var(--accent)}
+.kf-ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;background:var(--bg)}
+.kf-row[aria-pressed="true"] .kf-ck{background:var(--accent);border-color:var(--accent);color:#fff}
+.kf-ck svg{width:14px;height:14px}
+.kf-row .no{font:700 12px/1 var(--font-data);color:var(--ink-2)}
+.kf-rt{display:grid;gap:2px;min-width:0}
+.kf-rt b{font:600 13px/1.4 var(--font-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kf-rt small{font-size:11.5px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kf-pg{display:grid;gap:6px;margin-bottom:10px}
+.kf-pl{font-size:12px;color:var(--ink-2)}.kf-pl b{margin-inline-end:6px;font-family:var(--font-data)}
+.kf-pb{appearance:none;border:3px solid transparent;padding:0;cursor:pointer}
+.kf-pb img{opacity:.45}
+.kf-pb[aria-pressed="true"]{border-color:var(--accent)}
+.kf-pb[aria-pressed="true"] img{opacity:1}
+.kf-pk{position:absolute;top:4px;inset-inline-start:4px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:none;place-items:center}
+.kf-pb[aria-pressed="true"] .kf-pk{display:grid}
+.kf-pk svg{width:13px;height:13px}
+.kf-chips{display:flex;flex-wrap:wrap;gap:6px}
+.kf-chip{appearance:none;border:1px solid var(--line);background:var(--bg);border-radius:99px;min-height:38px;padding:6px 12px;font:600 13px/1.2 var(--font-body);color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center;max-width:100%}
+.kf-chip b{font-family:var(--font-data);color:var(--ink-2)}
+.kf-chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.kf-chip[aria-pressed="true"] b{color:#fff}
+.kf-chip:disabled{opacity:.5}
+.fld>span small{font-weight:500;color:var(--ink-3)}
+.dv-card.flash{outline:3px solid var(--accent);outline-offset:2px}
 </style>
 <style id="rptcss">.rpt{direction:rtl;font:400 14px/1.6 "IBM Plex Sans Arabic","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif;color:#0D1525;background:#fff}
 .rpt *{box-sizing:border-box}
@@ -629,6 +674,25 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .rpt .r-scroll{overflow-x:auto}
 @media (max-width:520px){.rpt .r-fgrid{grid-template-columns:minmax(0,1fr)}.rpt .r-plan{max-width:250px;justify-self:center}.rpt .r-sum{grid-template-columns:repeat(2,1fr)}.rpt .r-sign{grid-template-columns:1fr}.rpt .r-ph{grid-template-columns:repeat(2,1fr)}}
 @media print{@page{size:A4;margin:12mm}.rpt{font-size:12.5px}.rpt .r-fgrid{grid-template-columns:58mm minmax(0,1fr)}.rpt .r-ph{grid-template-columns:repeat(3,1fr)}.rpt .r-sum{grid-template-columns:repeat(4,1fr)}}
+
+.rpt .kf-sec{margin:0 0 18px;border:2px solid #B42318;border-radius:14px;padding:12px;background:#FFF8F7}
+.rpt .kf-sec h2{border-bottom-color:#F1C9C5;color:#B42318}
+.rpt .kf-sub{margin:0 0 10px;font-size:12.5px;color:#465267;line-height:1.7}
+.rpt .kf-card{background:#fff;border:1px solid #D9DFE8;border-inline-start:5px solid #B42318;border-radius:10px;padding:10px;margin:0 0 10px;display:grid;gap:8px;break-inside:avoid;page-break-inside:avoid}
+.rpt .kf-card.is-closed{border-inline-start-color:#137333}
+.rpt .kf-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start}
+.rpt .kf-note{margin:0;font-size:13px;line-height:1.7}
+.rpt .kf-cnt{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#465267}
+.rpt .kf-cnt b{font:700 14px/1 "IBM Plex Mono",ui-monospace,Menlo,monospace;color:#0D1525}
+.rpt .kf-bar{flex:1;display:block;height:7px;border-radius:7px;background:#E4E8EF;overflow:hidden}
+.rpt .kf-bar i{display:block;height:100%;background:#137333}
+.rpt .kf-ls{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.rpt .kf-go{appearance:none;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;text-align:right;border:1px solid #E4E8EF;background:#F9FAFC;border-radius:8px;padding:6px 8px;font:inherit;color:inherit}
+.rpt button.kf-go{cursor:pointer}
+.rpt .kf-lt{display:grid;gap:1px;min-width:0}.rpt .kf-lt b{font-size:13px}.rpt .kf-lt small{font-size:11.5px;color:#6B7689}
+.rpt .r-pill.kf{background:#0D1525;color:#fff}
+.dv-kf{margin-bottom:12px}
+@media print{.rpt .kf-sec{break-inside:auto}}
 </style>
 <script id="pdfcss" type="text/plain">/* PDF report: fixed A4 pages, right to left. Lives in its own hidden frame, never in the app. */
 *{box-sizing:border-box}
@@ -763,6 +827,23 @@ p{margin:0}
 .sign b{font-size:10pt}
 .so-notes{margin-top:9mm;display:grid;gap:3mm;font-size:8.5pt;color:#465267;line-height:1.75}
 .so-notes b{color:#0D1525}
+
+.kfc{border:.3mm solid #D9DFE8;border-right:1.4mm solid #B42318;border-radius:2.5mm;padding:3.2mm;display:grid;gap:2.2mm;margin-bottom:3.5mm;break-inside:avoid}
+.kfc.done{border-right-color:#137333}
+.kfc-h{display:flex;align-items:center;gap:2mm}
+.kfc-h h3{flex:1;font-size:10.5pt;margin:0;min-width:0}
+.kfc-no{font:700 8.5pt 'IBM Plex Sans Arabic',sans-serif;background:#0D1525;color:#fff;border-radius:1.2mm;padding:1.2mm 2.4mm}
+.kfc-n{margin:0;font-size:8.3pt;line-height:1.6;color:#344054}
+.kfc-c{display:flex;align-items:center;gap:2.5mm;font-size:8.3pt;color:#465267}
+.kfc-c b{font-size:10pt;color:#0D1525}
+.kfc-c i{flex:1;height:2mm;border-radius:2mm;background:#E4E8EF;overflow:hidden;display:block}
+.kfc-c u{display:block;height:100%;background:#137333;text-decoration:none}
+.kfc-p{display:grid;grid-template-columns:repeat(6,1fr);gap:1.6mm}
+.kfc-p .ph,.kfc-p .noph{height:22mm;border-radius:1.4mm;background-size:cover;background-position:center;position:relative}
+.kfc-l{display:flex;flex-wrap:wrap;gap:1.4mm}
+.kfc-l span{font-size:7.2pt;background:#F3F5F9;border-radius:1.2mm;padding:.9mm 2mm;color:#344054}
+.kfc-l span b{margin-inline-end:1.2mm;color:#0D1525}
+.kfc-l span.ok{background:#E3F2E7;color:#137333}
 </script>
 <div class="app" dir="rtl" lang="ar">
   <header class="top">
@@ -814,6 +895,7 @@ p{margin:0}
         </div>
         <div class="chips chips-scroll" id="obsFilter" aria-label="تصفية الملاحظات"></div>
       </div>
+      <div class="kf-list" id="kfList"></div>
       <div class="oc-list" id="obsList"></div>
     </section>
 
@@ -898,6 +980,10 @@ p{margin:0}
           </div>
         </div>
         <label class="fld"><span>الوصف والإجراء المطلوب</span><textarea id="shNote" rows="3" placeholder="ماذا رأيت؟ وما المطلوب من المطوّر؟"></textarea></label>
+        <div class="fld" id="shKfWrap">
+          <span>ضمّ هذه الملاحظة إلى الملاحظات الجوهرية <small>اختياري</small></span>
+          <div class="kf-chips" id="shKf"></div>
+        </div>
         <div class="fld">
           <span>الصور</span>
           <div class="photos" id="shPhotos" data-pv-g="own"></div>
@@ -921,6 +1007,43 @@ p{margin:0}
         <button type="button" class="btn danger-ghost" id="shDelete" data-act="deleteObs">حذف</button>
         <button type="button" class="btn ghost" id="shCancel" data-act="closeSheet">إلغاء</button>
         <button type="button" class="btn primary" id="shSave" data-act="saveObs">حفظ الملاحظة</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="sheet" id="kfSheet" hidden role="dialog" aria-modal="true" aria-labelledby="kfTitleH">
+    <div class="sheet-card">
+      <header class="sheet-h">
+        <h2 id="kfTitleH">ملاحظة جوهرية جديدة</h2>
+        <button type="button" class="icon-btn" data-act="kfClose" aria-label="إغلاق">✕</button>
+      </header>
+      <div class="sheet-body">
+        <div class="kf-state" id="kfState"></div>
+        <label class="fld"><span>عنوان الملاحظة الجوهرية</span><input id="kfTitle" type="text" autocomplete="off" maxlength="160" placeholder="مثال: تسرّب رطوبة في كل الحمامات"></label>
+        <div class="fld">
+          <span>الخطورة</span>
+          <div class="seg sev" id="kfSev" role="group" aria-label="الخطورة">
+            <button type="button" data-act="kfSev" data-v="c" aria-pressed="false">حرج</button>
+            <button type="button" data-act="kfSev" data-v="M" aria-pressed="false">رئيسي</button>
+            <button type="button" data-act="kfSev" data-v="m" aria-pressed="false">ثانوي</button>
+          </div>
+        </div>
+        <label class="fld"><span>الوصف والأثر على العقار</span><textarea id="kfNote" rows="3" maxlength="2000" placeholder="ما العيب المشترك؟ وأين يتكرر؟ وما المطلوب من المطوّر؟"></textarea></label>
+        <div class="fld">
+          <span>الملاحظات المربوطة <small id="kfPickN"></small></span>
+          <input id="kfQ" type="search" autocomplete="off" placeholder="ابحث بالعنوان أو الموقع أو الرقم" aria-label="بحث في الملاحظات">
+          <div class="kf-pick" id="kfPick"></div>
+        </div>
+        <div class="fld" id="kfPhWrap" hidden>
+          <span>الصور المعروضة على الملاحظة الجوهرية <small id="kfPhN"></small></span>
+          <div id="kfPhs"></div>
+          <p class="hint">اضغط الصورة لإظهارها أو إخفائها؛ تظهر للمطوّر وفي التقرير مع الملاحظة.</p>
+        </div>
+      </div>
+      <footer class="sheet-f" id="kfFoot">
+        <button type="button" class="btn danger-ghost" id="kfDelete" data-act="kfDel">حذف</button>
+        <button type="button" class="btn ghost" data-act="kfClose">إلغاء</button>
+        <button type="button" class="btn primary" id="kfSave" data-act="kfSave">حفظ</button>
       </footer>
     </div>
   </div>
@@ -1154,7 +1277,7 @@ p{margin:0}
   /* ================= state ================= */
   // v2: results are kept per place, "room|item" (or "house|item"); every observation carries its room
   function blank() {
-    return { v: 2, meta: { prop: '', unit: '', dev: '', addr: '', insp: '', date: today(), visit: VISITS[0] }, res: {}, obs: [], nextNo: 1, last: { room: '' }, reMode: false, ev: [] };
+    return { v: 2, meta: { prop: '', unit: '', dev: '', addr: '', insp: '', date: today(), visit: VISITS[0] }, res: {}, obs: [], nextNo: 1, last: { room: '' }, reMode: false, ev: [], kf: [], kfNext: 1 };
   }
   function normalize(s) {
     var b = blank();
@@ -1179,10 +1302,24 @@ p{margin:0}
     }) : [];
     var maxNo = 0; obs.forEach(function (o) { if (o.no > maxNo) maxNo = o.no; });
     obs.forEach(function (o) { if (!o.no) o.no = ++maxNo; });
-    return {
+    var out = {
       v: 2, meta: Object.assign(b.meta, s.meta || {}), res: res, obs: obs, nextNo: Math.max(s.nextNo || 1, maxNo + 1),
-      last: { room: (s.last && ROOM[s.last.room]) ? s.last.room : '' }, reMode: !!s.reMode, ev: normEv(s.ev)
+      last: { room: (s.last && ROOM[s.last.room]) ? s.last.room : '' }, reMode: !!s.reMode, ev: normEv(s.ev), kf: [], kfNext: 1
     };
+    normKf(out, s);
+    return out;
+  }
+  // property-wide key findings: {id, no, title, note, sev, obs:[observation ids], ph:[photo ids chosen from those observations]}
+  function normKf(out, s) {
+    var have = {}, own = {}; out.obs.forEach(function (o) { have[o.id] = 1; });
+    var list = Array.isArray(s.kf) ? s.kf.filter(function (k) { return k && k.id; }).map(function (k) {
+      var ids = (Array.isArray(k.obs) ? k.obs : []).map(String).filter(function (id, i, a) { return have[id] && a.indexOf(id) === i; });
+      var pool = {}; out.obs.forEach(function (o) { if (ids.indexOf(o.id) >= 0) (o.ph || []).forEach(function (p) { pool[p] = 1; }); });
+      return { id: String(k.id), no: +k.no || 0, title: String(k.title || ''), note: String(k.note || ''), sev: SEV[k.sev] ? k.sev : 'M', obs: ids,
+        ph: (Array.isArray(k.ph) ? k.ph.map(String) : []).filter(function (p, i, a) { return pool[p] && a.indexOf(p) === i; }), at: +k.at || Date.now(), up: +k.up || Date.now() };
+    }) : [];
+    var mx = 0; list.forEach(function (k) { if (k.no > mx) mx = k.no; }); list.forEach(function (k) { if (!k.no) k.no = ++mx; });
+    out.kf = list; out.kfNext = Math.max(+s.kfNext || 1, mx + 1);
   }
   // the owner's decisions on developer replies; they travel inside the owner's state
   function normEv(a) {
@@ -1223,6 +1360,16 @@ p{margin:0}
   }
   function live(o) { return wf(o) !== 'fixed'; } // still needs work or a decision
   function obsById(id) { return S.obs.filter(function (x) { return x.id === id; })[0]; }
+  function kfObs(k) { return (k.obs || []).map(obsById).filter(Boolean); }
+  // a key finding closes only when every observation linked to it is closed; with none linked it stays open
+  function kfStat(k) { var l = kfObs(k), c = l.filter(function (o) { return wf(o) === 'fixed'; }).length; return { n: l.length, c: c, closed: l.length > 0 && c === l.length }; }
+  function kfPhotos(k) { var own = {}; kfObs(k).forEach(function (o) { (o.ph || []).forEach(function (p) { own[p] = 1; }); }); return (k.ph || []).filter(function (p) { return own[p]; }); }
+  function kfPrune() { S.kf.forEach(function (k) { k.obs = k.obs.filter(function (id) { return obsById(id); }); k.ph = kfPhotos(k); }); }
+  function kfTag(k) { return 'ج' + k.no; }
+  function kfSorted() { return S.kf.slice().sort(function (a, b) { return (SEV_ORDER[a.sev] - SEV_ORDER[b.sev]) || (a.no - b.no); }); }
+  function kfOf(o) { return S.kf.filter(function (k) { return k.obs.indexOf(o.id) >= 0; }); }
+  function kfById(id) { return S.kf.filter(function (k) { return k.id === id; })[0]; }
+  function kfCount(st) { return st.n ? st.c + ' من ' + st.n + ' مغلقة' : 'لا ملاحظات مربوطة بعد'; }
   function closedLine(o) {
     var d = decisions(o.id).filter(function (x) { return x.act === 'accept'; }).pop();
     return d ? 'أكّدت الإصلاح في ' + ltrTime(new Date(d.at).toISOString()) : 'أُغلقت عند إعادة الفحص';
@@ -1365,7 +1512,7 @@ p{margin:0}
     var w = wf(o), where = inRoom ? (o.detail || '') : locOf(o);
     var h = '<article class="oc' + (w === 'review' ? ' is-review' : '') + '"><button type="button" class="oc-main" data-act="editObs" data-obs="' + o.id + '">' + thumbHTML((o.ph || [])[0]) +
       '<span class="oc-body"><span class="oc-top"><span class="no">#' + o.no + '</span><span class="pill sev-' + o.sev + '">' + SEV[o.sev] + '</span>' +
-      (w !== 'open' ? '<span class="pill st-' + w + '">' + ST[w] + '</span>' : '') + ((o.ph || []).length > 1 ? '<span class="pill sev-m">' + o.ph.length + ' صور</span>' : '') + '</span>' +
+      (w !== 'open' ? '<span class="pill st-' + w + '">' + ST[w] + '</span>' : '') + ((o.ph || []).length > 1 ? '<span class="pill sev-m">' + o.ph.length + ' صور</span>' : '') + kfOf(o).map(function (k) { return '<span class="pill kf-pill">' + kfTag(k) + '</span>'; }).join('') + '</span>' +
       '<span class="oc-t">' + esc(o.title) + '</span><span class="oc-loc">' + esc(where || (inRoom ? SEC[o.sec].ar : 'بلا موقع')) + (o.item ? ' · ' + o.item : '') + '</span></span></button>';
     if (w === 'review') {
       var r = devReplies(o.id), lr = r[r.length - 1];
@@ -1553,7 +1700,22 @@ p{margin:0}
     return Object.keys(by).sort(function (a, b) { return (a === '_none' ? 1e9 : PLACE_ORDER[a]) - (b === '_none' ? 1e9 : PLACE_ORDER[b]); })
       .map(function (k) { return { id: k, r: ROOM[k] || null, list: by[k].sort(bySevNo) }; });
   }
+  function kfCardHTML(k) {
+    var st = kfStat(k), ph = kfPhotos(k), pct = st.n ? Math.round(st.c / st.n * 100) : 0;
+    return '<article class="oc kf-oc' + (st.closed ? ' is-closed' : '') + '"><button type="button" class="oc-main" data-act="editKf" data-kf="' + k.id + '">' + thumbHTML(ph[0]) +
+      '<span class="oc-body"><span class="oc-top"><span class="no kf-no">' + kfTag(k) + '</span><span class="pill sev-' + k.sev + '">' + SEV[k.sev] + '</span>' +
+      '<span class="pill ' + (st.closed ? 'st-fixed' : 'st-open') + '">' + (st.closed ? 'مغلقة' : 'مفتوحة') + '</span></span>' +
+      '<span class="oc-t">' + esc(k.title) + '</span><span class="oc-loc">' + kfCount(st) + (ph.length ? ' · ' + ph.length + ' صور' : '') + '</span>' +
+      '<span class="kf-bar"><i style="width:' + pct + '%"></i></span></span></button></article>';
+  }
+  function renderKfList() {
+    var n = S.kf.length, open = S.kf.filter(function (k) { return !kfStat(k).closed; }).length;
+    $('#kfList').innerHTML = '<div class="kf-top"><div><h3>الملاحظات الجوهرية على مستوى العقار</h3><small>' + (n ? n + ' · المفتوحة منها ' + open : 'عيوب مشتركة تُظهَر للمطوّر في أول التقرير') + '</small></div>' +
+      '<button type="button" class="btn" data-act="newKf">' + IC.plus + 'جوهرية</button></div>' + kfSorted().map(kfCardHTML).join('');
+    hydrate($('#kfList'));
+  }
   function renderObs() {
+    renderKfList();
     $$('#obsGroup button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === UI.obsGroup)); });
     $('#obsFilter').innerHTML = OBS_FILTERS.map(function (f) {
       var n = S.obs.filter(f.f).length;
@@ -1602,7 +1764,7 @@ p{margin:0}
     return (ROOM[sel] ? '' : '<option value="" selected>اختر الغرفة…</option>') + h;
   }
   function openSheet(o, isNew) {
-    ED = { obs: JSON.parse(JSON.stringify(o)), isNew: isNew, added: [], removed: [] };
+    ED = { obs: JSON.parse(JSON.stringify(o)), isNew: isNew, added: [], removed: [], kf: S.kf.filter(function (k) { return k.obs.indexOf(o.id) >= 0; }).map(function (k) { return k.id; }) };
     fillSheet(); $('#sheet').hidden = false; document.body.classList.add('modal-open');
     $('.sheet-body').scrollTop = 0;
   }
@@ -1628,7 +1790,23 @@ p{margin:0}
     $('#shLock').hidden = !ED.locked;
     if (ED.locked) $('#shLock').innerHTML = IC.check + '<span><b>ملاحظة مغلقة: لا تُعدَّل</b>' + esc(closedLine(cur)) + '. لتغييرها: «إعادة فتح الملاحظة» في أسفلها.</span>';
     renderSheetPhotos();
+    renderShKf();
     renderFollow();
+  }
+  function renderShKf() {
+    var w = $('#shKf');
+    w.innerHTML = S.kf.length ? kfSorted().map(function (k) {
+      return '<button type="button" class="kf-chip" data-act="shKf" data-kf="' + k.id + '" aria-pressed="' + (ED.kf.indexOf(k.id) >= 0) + '"' + (ED.locked ? ' disabled' : '') + '><b>' + kfTag(k) + '</b>' + esc(k.title) + '</button>';
+    }).join('') : '<p class="hint">لا توجد ملاحظات جوهرية بعد. أنشئها من تبويب «الملاحظات» ثم اربط هذه الملاحظة بها.</p>';
+  }
+  // the links chosen in the open sheet are written into the key findings; the first photo of a newly linked observation comes with it
+  function applyKfLinks(o, ids) {
+    S.kf.forEach(function (k) {
+      var has = k.obs.indexOf(o.id) >= 0, want = ids.indexOf(k.id) >= 0;
+      if (want && !has) { k.obs.push(o.id); if ((o.ph || [])[0] && k.ph.indexOf(o.ph[0]) < 0) k.ph.push(o.ph[0]); k.up = Date.now(); }
+      else if (!want && has) { k.obs = k.obs.filter(function (x) { return x !== o.id; }); k.ph = k.ph.filter(function (p) { return (o.ph || []).indexOf(p) < 0; }); k.up = Date.now(); }
+    });
+    kfPrune();
   }
   function renderFollow() {
     var wrap = $('#shFollowWrap'), o = ED && !ED.isNew ? S.obs.filter(function (x) { return x.id === ED.obs.id; })[0] : null;
@@ -1641,6 +1819,73 @@ p{margin:0}
     if (closed) $('#shClosed').innerHTML = '<p>' + IC.check + '<span>أُغلقت: ' + esc(closedLine(o)) + '</span></p><button type="button" class="btn" data-act="reopen" data-obs="' + o.id + '">' + IC.refresh + 'إعادة فتح الملاحظة</button>';
     $$('#shDecide [data-act="decide"]').forEach(function (b) { b.setAttribute('data-obs', o.id); });
     hydrate($('#shThread'));
+  }
+
+  /* ================= key finding sheet ================= */
+  var KD = null;
+  function openKf(k) {
+    KD = { k: JSON.parse(JSON.stringify(k || { id: 'k_' + uid(), no: 0, title: '', note: '', sev: 'M', obs: [], ph: [], at: Date.now(), up: Date.now() })), isNew: !k, q: '' };
+    $('#kfQ').value = ''; fillKf(); $('#kfSheet').hidden = false; document.body.classList.add('modal-open'); $('#kfSheet .sheet-body').scrollTop = 0;
+  }
+  function kfDraft() { var k = KD.k, l = k.obs.map(obsById).filter(Boolean), c = l.filter(function (o) { return wf(o) === 'fixed'; }).length; return { n: l.length, c: c, closed: l.length > 0 && c === l.length }; }
+  function fillKf() {
+    var k = KD.k;
+    $('#kfTitleH').textContent = KD.isNew ? 'ملاحظة جوهرية جديدة' : 'الملاحظة الجوهرية ' + kfTag(k);
+    $('#kfTitle').value = k.title; $('#kfNote').value = k.note;
+    $$('#kfSev button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === k.sev)); });
+    $('#kfDelete').hidden = KD.isNew; $('#kfFoot').classList.toggle('no-del', KD.isNew);
+    renderKfPick(); renderKfState(); renderKfPhs();
+  }
+  function renderKfState() {
+    var st = kfDraft(), pct = st.n ? Math.round(st.c / st.n * 100) : 0;
+    $('#kfState').className = 'kf-state' + (st.closed ? ' is-closed' : '');
+    $('#kfState').innerHTML = '<div class="kf-st-h"><b>' + (st.n ? st.c + ' من ' + st.n : '0') + '</b><span>' + (st.n ? 'ملاحظة مربوطة مغلقة' : 'لا ملاحظات مربوطة بعد') + '</span><span class="pill ' + (st.closed ? 'st-fixed' : 'st-open') + '">' + (st.closed ? 'مغلقة' : 'مفتوحة') + '</span></div>' +
+      '<span class="kf-bar"><i style="width:' + pct + '%"></i></span><small>' + (st.closed ? 'أُغلقت كل الملاحظات المربوطة، فأُغلقت الملاحظة الجوهرية تلقائياً.' : 'تبقى مفتوحة حتى تُغلق كل ملاحظاتها المربوطة؛ وإضافة ملاحظة مفتوحة إليها تعيد فتحها.') + '</small>';
+    $('#kfPickN').textContent = st.n ? '(' + st.n + ' مختارة)' : '';
+  }
+  function renderKfPick() {
+    var q = KD.q.trim().toLowerCase(), list = sortedObs().filter(function (o) {
+      return !q || (o.title + ' ' + locOf(o) + ' #' + o.no + ' ' + o.no).toLowerCase().indexOf(q) >= 0;
+    });
+    $('#kfPick').innerHTML = !S.obs.length ? '<p class="hint">لا توجد ملاحظات مسجلة بعد لتُربط. سجّل الملاحظات أولاً ثم ارجع هنا.</p>' : !list.length ? '<p class="hint">لا نتائج.</p>' : list.map(function (o) {
+      var on = KD.k.obs.indexOf(o.id) >= 0, w = wf(o);
+      return '<button type="button" class="kf-row" data-act="kfTog" data-obs="' + o.id + '" aria-pressed="' + on + '"><span class="kf-ck">' + (on ? IC.check : '') + '</span><span class="no">#' + o.no + '</span>' +
+        '<span class="kf-rt"><b>' + esc(o.title) + '</b><small>' + esc(locOf(o) || 'بلا موقع') + '</small></span><span class="pill sev-' + o.sev + '">' + SEV[o.sev] + '</span><span class="pill st-' + w + '">' + ST[w] + '</span></button>';
+    }).join('');
+  }
+  function renderKfPhs() {
+    var k = KD.k, l = k.obs.map(obsById).filter(Boolean).filter(function (o) { return (o.ph || []).length; });
+    $('#kfPhWrap').hidden = !k.obs.length;
+    $('#kfPhs').innerHTML = !l.length ? '<p class="hint">الملاحظات المختارة بلا صور.</p>' : l.map(function (o) {
+      return '<div class="kf-pg"><span class="kf-pl"><b>#' + o.no + '</b>' + esc(o.title) + '</span><div class="photos">' + o.ph.map(function (id) {
+        var on = k.ph.indexOf(id) >= 0;
+        return '<button type="button" class="ph kf-pb" data-act="kfPh" data-ph="' + esc(id) + '" aria-pressed="' + on + '" aria-label="' + (on ? 'إزالة الصورة من الملاحظة الجوهرية' : 'إظهار الصورة على الملاحظة الجوهرية') + '"><img data-ph="' + esc(id) + '" alt=""><span class="kf-pk">' + IC.check + '</span></button>';
+      }).join('') + '</div></div>';
+    }).join('');
+    $('#kfPhN').textContent = k.ph.length ? '(' + k.ph.length + ' مختارة)' : '';
+    hydrate($('#kfPhs'));
+  }
+  function kfTog(oid) {
+    var k = KD.k, i = k.obs.indexOf(oid), o = obsById(oid); if (!o) return;
+    if (i >= 0) { k.obs.splice(i, 1); k.ph = k.ph.filter(function (p) { return (o.ph || []).indexOf(p) < 0; }); }
+    else { k.obs.push(oid); if ((o.ph || [])[0] && k.ph.indexOf(o.ph[0]) < 0) k.ph.push(o.ph[0]); }
+    var b = $('#kfPick [data-obs="' + oid + '"]'); if (b) { b.setAttribute('aria-pressed', String(i < 0)); $('.kf-ck', b).innerHTML = i < 0 ? IC.check : ''; }
+    renderKfState(); renderKfPhs();
+  }
+  function closeKfUI() { $('#kfSheet').hidden = true; document.body.classList.remove('modal-open'); }
+  function saveKf() {
+    if (!KD) return;
+    var k = KD.k; k.title = $('#kfTitle').value.trim(); k.note = $('#kfNote').value.trim();
+    if (!k.title) { toast('اكتب عنوان الملاحظة الجوهرية.'); $('#kfTitle').focus(); return; }
+    k.up = Date.now();
+    if (KD.isNew) { k.no = S.kfNext++; S.kf.push(k); }
+    else { var i = S.kf.findIndex(function (x) { return x.id === k.id; }); if (i >= 0) S.kf[i] = k; else S.kf.push(k); }
+    kfPrune(); var tag = kfTag(k); KD = null; closeKfUI(); persist(); renderAll(); toast('حُفظت الملاحظة الجوهرية ' + tag);
+  }
+  async function deleteKf() {
+    if (!KD || KD.isNew) return;
+    if (!(await ask('حذف الملاحظة الجوهرية ' + kfTag(KD.k) + '؟ لا تُحذف الملاحظات المربوطة بها ولا صورها.', 'حذف'))) return;
+    var id = KD.k.id; S.kf = S.kf.filter(function (x) { return x.id !== id; }); KD = null; closeKfUI(); persist(); renderAll(); toast('حُذفت الملاحظة الجوهرية');
   }
 
   /* ================= owner decision (accept / reject a fix) ================= */
@@ -1725,6 +1970,7 @@ p{margin:0}
     if (ED.isNew) { o.no = S.nextNo++; S.obs.push(o); }
     else { var k = S.obs.findIndex(function (x) { return x.id === o.id; }); if (k >= 0) S.obs[k] = o; else S.obs.push(o); }
     if (o.item && o.room) delete S.res[key(o.room, o.item)];
+    applyKfLinks(o, ED.kf || []);
     for (var j = 0; j < ED.removed.length; j++) { var id = ED.removed[j]; if (!photoInUse(id)) await forgetPhoto(id); }
     if (o.room) S.last.room = o.room;
     UI.lastSec = o.sec;
@@ -1741,7 +1987,7 @@ p{margin:0}
     if (!ED || ED.isNew || ED.locked) return;
     var o = ED.obs;
     if (!(await ask('حذف الملاحظة ' + noTxt(o.no) + ' وصورها نهائياً؟', 'حذف'))) return;
-    S.obs = S.obs.filter(function (x) { return x.id !== o.id; });
+    S.obs = S.obs.filter(function (x) { return x.id !== o.id; }); kfPrune();
     var ids = (o.ph || []).concat(o.ph2 || [], ED.added, ED.removed);
     decisions(o.id).forEach(function (d) { ids = ids.concat(d.ph || []); });
     S.ev = (S.ev || []).filter(function (d) { return d.obs !== o.id; });
@@ -2084,7 +2330,7 @@ p{margin:0}
   function closePV() {
     var vd = $('#pvVid'); if (vd) { try { vd.pause(); } catch (e) { } vd.removeAttribute('src'); }
     PV = null; var v = $('#pv'); if (v) v.hidden = true;
-    var open = ['#sheet', '#dec', '#dvSheet'].some(function (q) { var el = $(q); return el && !el.hidden; });
+    var open = ['#sheet', '#dec', '#dvSheet', '#kfSheet'].some(function (q) { var el = $(q); return el && !el.hidden; });
     if (!open) document.body.classList.remove('modal-open');
   }
 
@@ -2096,10 +2342,31 @@ p{margin:0}
     });
   }
   function sevCounts(list) { var c = { c: 0, M: 0, m: 0 }; list.forEach(function (o) { c[o.sev]++; }); return c; }
+  // The key findings: first thing the developer sees. imgTag(id) draws a photo; go = the developer page, where a row scrolls to its card.
+  function kfBlockHTML(imgTag, go) {
+    if (!S.kf || !S.kf.length) return '';
+    var open = S.kf.filter(function (k) { return !kfStat(k).closed; }).length;
+    var h = '<section class="kf-sec"><h2><span>الملاحظات الجوهرية على مستوى العقار</span><span class="en">Property-wide key findings</span></h2>' +
+      '<p class="kf-sub">' + (open ? 'عيوب مشتركة أو جوهرية تؤثر على العقار كله. ' + (open === 1 ? 'واحدة منها مفتوحة' : open === 2 ? 'اثنتان منها مفتوحتان' : open + ' منها مفتوحة') + ' وتُغلق عند إغلاق كل ملاحظاتها المربوطة.' : 'أُغلقت كل الملاحظات الجوهرية.') + '</p>';
+    kfSorted().forEach(function (k) {
+      var st = kfStat(k), ph = kfPhotos(k), pct = st.n ? Math.round(st.c / st.n * 100) : 0;
+      h += '<article class="kf-card' + (st.closed ? ' is-closed' : '') + '"><div class="kf-h"><span class="r-no kf-no">' + kfTag(k) + '</span><h4>' + esc(k.title) + '</h4><span class="r-pills"><span class="r-pill ' + k.sev + '">' + SEV[k.sev] + '</span><span class="r-pill ' + (st.closed ? 'fixed' : 'open') + '">' + (st.closed ? 'مغلقة' : 'مفتوحة') + '</span></span></div>' +
+        (k.note ? '<p class="kf-note">' + esc(k.note) + '</p>' : '') +
+        '<div class="kf-cnt"><span><b>' + st.c + ' من ' + st.n + '</b> ' + (st.n ? 'ملاحظة مربوطة مغلقة' : 'لا ملاحظات مربوطة') + '</span><span class="kf-bar"><i style="width:' + pct + '%"></i></span></div>';
+      if (ph.length) h += '<div class="r-ph kf-ph">' + ph.map(function (id) { var t = imgTag(id); return t && isVid(id) ? '<span class="r-vid" data-v="' + esc(id) + '">' + t + '<i>▶ فيديو</i></span>' : t; }).join('') + '</div>';
+      var ls = kfObs(k).sort(bySevNo);
+      if (ls.length) h += '<ul class="kf-ls">' + ls.map(function (o) {
+        var w = wf(o), inner = '<span class="r-no">#' + o.no + '</span><span class="kf-lt"><b>' + esc(o.title) + '</b><small>' + esc(locOf(o) || '—') + '</small></span><span class="r-pill ' + (w === 'fixed' ? 'fixed' : 'open') + '">' + (w === 'fixed' ? 'أُغلقت' : ST_RPT[w]) + '</span>';
+        return '<li>' + (go ? '<button type="button" class="kf-go" data-act="kfGo" data-obs="' + o.id + '">' + inner + '</button>' : '<div class="kf-go">' + inner + '</div>') + '</li>';
+      }).join('') + '</ul>';
+      h += '</article>';
+    });
+    return h + '</section>';
+  }
   function obsReportHTML(o, imgTag, re) {
     var it = o.item ? ITEM[o.item] : null, w = wf(o);
     var h = '<article class="r-obs"><div class="r-obs-h"><span class="r-no">#' + o.no + '</span><h4>' + esc(o.title) + '</h4><span class="r-pills"><span class="r-pill ' + o.sev + '">' + SEV[o.sev] + '</span>' +
-      (re ? '<span class="r-pill ' + w + '">' + ST_RPT[w] + '</span>' : '') + '</span></div><dl>' +
+      (re ? '<span class="r-pill ' + w + '">' + ST_RPT[w] + '</span>' : '') + kfOf(o).map(function (k) { return '<span class="r-pill kf">ضمن ' + kfTag(k) + '</span>'; }).join('') + '</span></div><dl>' +
       '<dt>الموقع</dt><dd>' + esc(locOf(o) || '—') + '</dd>' +
       '<dt>القسم</dt><dd>' + esc(SEC[o.sec].ar) + '</dd>' +
       (o.note ? '<dt>الوصف</dt><dd>' + esc(o.note) + '</dd>' : '') +
@@ -2174,6 +2441,7 @@ p{margin:0}
     h += '<section class="r-sum"><div class="r-tile"><b>' + obs.length + '</b><span>إجمالي الملاحظات</span></div><div class="r-tile c"><b>' + cnt.c + '</b><span>حرجة</span></div><div class="r-tile M"><b>' + cnt.M + '</b><span>رئيسية</span></div><div class="r-tile m"><b>' + cnt.m + '</b><span>ثانوية</span></div></section>';
     if (re) h += '<section class="r-sum"><div class="r-tile ok"><b>' + stc.fixed + '</b><span>أُغلقت</span></div><div class="r-tile M"><b>' + stc.review + '</b><span>بانتظار تحقق المالك</span></div><div class="r-tile c"><b>' + stc.notfixed + '</b><span>لم يُقبل إصلاحها</span></div><div class="r-tile"><b>' + stc.open + '</b><span>مفتوحة</span></div></section>';
     h += '<p class="r-note">الملاحظات مرتبة حسب الدور ثم الغرفة، وعلى مخطط كل دور موقعها. رقم كل ملاحظة ثابت للمتابعة؛ يُرجى الرد على كل ملاحظة برقمها مع تاريخ الإغلاق المتوقع.</p>';
+    h += kfBlockHTML(imgTag, false);
     if (!obs.length) h += '<p class="r-empty">لا ملاحظات مسجلة بعد.</p>';
     var groups = placeGroups(obs);
     groups.filter(function (g) { return g.id === 'house'; }).forEach(function (g) {
@@ -2342,6 +2610,7 @@ p{margin:0}
   async function pdfPhotoMap(M, say, get) {
     var ids = [];
     M.obs.forEach(function (o) { pdfPhotos(o).forEach(function (p) { if (p && ids.indexOf(p) < 0) ids.push(p); }); });
+    S.kf.forEach(function (k) { kfPhotos(k).slice(0, 6).forEach(function (p) { if (ids.indexOf(p) < 0) ids.push(p); }); });
     for (var k = 0; k < ids.length; k++) {
       say('تجهيز الصور ' + (k + 1) + ' / ' + ids.length + '…');
       try { M.ph[ids[k]] = await (get ? get(ids[k]) : photoDataURL(ids[k], 900, 0.8)); } catch (e) { M.ph[ids[k]] = ''; }
@@ -2563,6 +2832,27 @@ p{margin:0}
         return { head: h, more: h.replace('</span></div>', ' · تابع</span></div>'), cards: x.list.map(function (o) { return pdfCard(o, M); }) };
       }));
   }
+  // key findings: the page right after the cover. One card each: title, counter, note, the chosen photos and the linked observations.
+  function pdfKfCard(k, M) {
+    var st = kfStat(k), ph = kfPhotos(k).slice(0, 6), pct = st.n ? Math.round(st.c / st.n * 100) : 0, ls = kfObs(k).sort(bySevNo);
+    return '<article class="kfc' + (st.closed ? ' done' : '') + '"><div class="kfc-h"><span class="kfc-no">' + kfTag(k) + '</span><h3>' + esc(k.title) + '</h3><span class="chip sev-' + k.sev + '">' + SEV[k.sev] + '</span>' +
+      '<span class="chip st-' + (st.closed ? 'fixed' : 'open') + '">' + (st.closed ? 'مغلقة' : 'مفتوحة') + '</span></div>' +
+      (k.note ? '<p class="kfc-n">' + esc(k.note) + '</p>' : '') +
+      '<div class="kfc-c"><b class="mono">' + st.c + ' / ' + st.n + '</b><span>' + (st.n ? 'ملاحظة مربوطة مغلقة' : 'لا ملاحظات مربوطة') + '</span><i><u style="width:' + pct + '%"></u></i></div>' +
+      (ph.length ? '<div class="kfc-p">' + ph.map(function (id) { return M.ph[id] ? '<div class="ph" style="background-image:url(' + M.ph[id] + ')">' + (isVid(id) ? '<span class="pdf-vid">▶ فيديو</span>' : '') + '</div>' : '<div class="noph">—</div>'; }).join('') + '</div>' : '') +
+      (ls.length ? '<div class="kfc-l">' + ls.map(function (o) { var w = M.W[o.id] || wf(o); return '<span class="' + (w === 'fixed' ? 'ok' : '') + '"><b class="mono">#' + o.no + '</b>' + esc(o.title || '—') + '</span>'; }).join('') + '</div>' : '') + '</article>';
+  }
+  function pdfKf(B, M) {
+    if (!S.kf.length) return;
+    var open = S.kf.filter(function (k) { return !kfStat(k).closed; }).length, T = 'الملاحظات الجوهرية';
+    var head = '<div class="fl-head"><h2>' + T + ' على مستوى العقار</h2><span>' + S.kf.length + ' · المفتوحة ' + open + '</span></div>';
+    var at = B.at(T, head);
+    function more() { return B.at(T, '<div class="fl-head"><h2>' + T + '</h2><span>تابع</span></div>'); }
+    kfSorted().forEach(function (k, i) {
+      var el = B.add(at.host, pdfKfCard(k, M));
+      if (i && !B.fits(at.pg, el)) { el.remove(); at = more(); at.host.appendChild(el); }
+    });
+  }
   function pdfLoose(B, M, list, title, sub) { // observations outside the floors: the whole house, or old ones with no room
     var at = B.at(title, '<div class="fl-head"><h2>' + esc(title) + '</h2><span>' + sub + ' · ' + nObs(list.length) + '</span></div>');
     function more(head) { return function () { return B.at(title, head ? '<div class="fl-head"><h2>' + esc(title) + '</h2><span>تابع</span></div>' : ''); }; }
@@ -2599,6 +2889,7 @@ p{margin:0}
       say('ترتيب الصفحات…');
       var B = pdfBook(doc);
       pdfCover(B, M);
+      pdfKf(B, M);
       M.floors.forEach(function (g) { pdfFloor(B, M, g); });
       if (M.house.length) pdfLoose(B, M, M.house, 'البيت كله', 'ملاحظات عامة لا تخص غرفة');
       if (M.none.length) pdfLoose(B, M, M.none, 'ملاحظات بلا غرفة', 'من فحص سابق بلا مخطط');
@@ -2762,7 +3053,7 @@ p{margin:0}
     if (CFG && C.up[id]) { delete C.up[id]; if (C.del.indexOf(id) < 0) C.del.push(id); }
   }
   function hasContent() { var m = S.meta; return S.obs.length > 0 || Object.keys(S.res).length > 0 || !!(m.prop || m.unit || m.dev || m.addr || m.insp); }
-  function cloudState() { return { v: S.v, meta: S.meta, res: S.res, obs: S.obs, nextNo: S.nextNo, last: S.last, reMode: S.reMode, ev: S.ev }; }
+  function cloudState() { return { v: S.v, meta: S.meta, res: S.res, obs: S.obs, nextNo: S.nextNo, last: S.last, reMode: S.reMode, ev: S.ev, kf: S.kf, kfNext: S.kfNext }; }
   function refPhotos() { return ownPhotoIds(); }
   function markDirty() { if (!CFG) return; C.dirty = true; SYNC.seq++; schedulePush(2500); renderSync(); }
   function schedulePush(ms) { if (!CFG) return; clearTimeout(SYNC.t); SYNC.t = setTimeout(push, ms); }
@@ -3026,7 +3317,7 @@ p{margin:0}
   function devNeeds(w) { return w === 'open' || w === 'notfixed' || w === 'reopened'; }
   function devCardHTML(o) {
     var w = wf(o), it = o.item ? ITEM[o.item] : null, th = threadHTML(o, 'dev', DV.id);
-    var h = '<article class="oc dv-card st-' + w + '" id="ob-' + o.id + '"><div class="dv-top"><span class="no">#' + o.no + '</span><span class="pill sev-' + o.sev + '">' + SEV[o.sev] + '</span><span class="pill st-' + w + '">' + ST_DEV[w] + '</span></div>' +
+    var h = '<article class="oc dv-card st-' + w + '" id="ob-' + o.id + '"><div class="dv-top"><span class="no">#' + o.no + '</span><span class="pill sev-' + o.sev + '">' + SEV[o.sev] + '</span><span class="pill st-' + w + '">' + ST_DEV[w] + '</span>' + kfOf(o).map(function (k) { return '<span class="pill kf-pill">ضمن ' + kfTag(k) + '</span>'; }).join('') + '</div>' +
       '<h4 class="dv-t">' + esc(o.title) + '</h4><p class="oc-loc">' + esc(locOf(o) || '—') + '</p>' +
       (o.note ? '<p class="dv-note">' + esc(o.note) + '</p>' : '') +
       (it ? '<p class="dv-crit"><b>المعيار:</b> ' + esc(it.ok) + '</p>' : '') +
@@ -3046,6 +3337,7 @@ p{margin:0}
     var h = '<section class="card dv-intro"><h2>' + esc(S.meta.prop || H.name) + '<span class="en">Developer</span></h2>' +
       '<p class="land-p">لكل ملاحظة: بعد إصلاحها اضغط «تم الإصلاح» وأرفق صورة تُظهر الإصلاح. يصل ردك للمالك فيؤكده أو يرفضه مع ملاحظته، ويظهر قراره هنا.</p>' +
       '<div class="dv-sum"><div class="stat c"><b>' + cnt.need + '</b><span>تحتاج ردك</span></div><div class="stat M"><b>' + cnt.review + '</b><span>بانتظار المالك</span></div><div class="stat ok"><b>' + cnt.fixed + '</b><span>أُغلقت</span></div></div></section>';
+    h += S.kf.length ? '<div class="rpt dv-kf">' + kfBlockHTML(function (p) { return '<img src="' + esc(pubURL(DV.id, p)) + '" alt="" loading="lazy">'; }, true) + '</div>' : '';
     h += '<div class="chips" id="dvFilter">' + F.map(function (f) { return '<button type="button" class="chip" data-act="devFilter" data-v="' + f[0] + '" aria-pressed="' + (DV.filter === f[0]) + '">' + f[1] + '<span class="n">' + f[2] + '</span></button>'; }).join('') + '</div>';
     if (!all.length) h += '<div class="empty"><b>لا ملاحظات بعد</b></div>';
     else if (!list.length) h += '<div class="empty"><b>لا ملاحظات في هذا التصنيف</b></div>';
@@ -3224,6 +3516,27 @@ p{margin:0}
     },
     newObs: function (el) { openSheet(newObsFor(el.getAttribute('data-item'), el.getAttribute('data-room')), true); },
     newInRoom: function () { openSheet(newObsFor(null, UI.room), true); },
+    newKf: function () { openKf(null); },
+    editKf: function (el) { var k = kfById(el.getAttribute('data-kf')); if (k) openKf(k); },
+    kfClose: function () { KD = null; closeKfUI(); },
+    kfSave: function () { saveKf(); },
+    kfDel: function () { deleteKf(); },
+    kfSev: function (el) { if (!KD) return; KD.k.sev = el.getAttribute('data-v'); $$('#kfSev button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === el)); }); },
+    kfTog: function (el) { if (KD) kfTog(el.getAttribute('data-obs')); },
+    kfPh: function (el) {
+      if (!KD) return; var id = el.getAttribute('data-ph'), i = KD.k.ph.indexOf(id);
+      if (i >= 0) KD.k.ph.splice(i, 1); else KD.k.ph.push(id);
+      el.setAttribute('aria-pressed', String(i < 0)); $('#kfPhN').textContent = KD.k.ph.length ? '(' + KD.k.ph.length + ' مختارة)' : '';
+    },
+    shKf: function (el) {
+      if (!ED || ED.locked) return; var id = el.getAttribute('data-kf'), i = ED.kf.indexOf(id);
+      if (i >= 0) ED.kf.splice(i, 1); else ED.kf.push(id);
+      el.setAttribute('aria-pressed', String(i < 0));
+    },
+    kfGo: function (el) {
+      var id = el.getAttribute('data-obs'); if (DV && DV.filter !== 'all') { DV.filter = 'all'; renderDev(); }
+      var t = document.getElementById('ob-' + id); if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'center' }); t.classList.add('flash'); setTimeout(function () { t.classList.remove('flash'); }, 1600); }
+    },
     newFree: function () { openSheet(newObsFor(null, null), true); },
     editObs: function (el) { var o = S.obs.filter(function (x) { return x.id === el.getAttribute('data-obs'); })[0]; if (o) openSheet(o, false); },
     closeSheet: function () { cancelSheet(); },
@@ -3336,10 +3649,13 @@ p{margin:0}
     if (e.key !== 'Escape' || !$('#mk')) return;
     if (!$('#mk').hidden) { if (!$('#mkText').hidden) mkTextUI(false); else closeMk(); return; }
     if (!$('#dlg').hidden) { $('#dlgNo').click(); return; }
+    if (!$('#kfSheet').hidden) { KD = null; closeKfUI(); return; }
     if (!$('#dec').hidden) { cancelDecide(); return; }
     if (!$('#sheet').hidden) { cancelSheet(); return; }
     if (UI.tab === 'house' && UI.room) closeRoom();
   });
+
+  document.addEventListener('input', function (e) { if (e.target && e.target.id === 'kfQ' && KD) { KD.q = e.target.value; renderKfPick(); } });
 
   /* ================= boot ================= */
   // Live site (cloud.json "single"): one inspection, created beforehand; the page itself carries no id.
