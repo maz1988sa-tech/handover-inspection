@@ -1239,7 +1239,8 @@ p{margin:0}
 
   /* ================= storage: IndexedDB with memory fallback ================= */
   var Store = (function () {
-    var db = null, mode = 'mem', mem = { kv: new Map(), ph: new Map() };
+    var db = null, mode = 'mem', mem = { kv: new Map(), ph: new Map() }, lastTry = 0, why = '';
+    async function migrate() { for (var st in mem) { var ks = Array.from(mem[st].keys()); for (var i = 0; i < ks.length; i++) { try { await run(st, 'readwrite', function (o) { return o.put(mem[st].get(ks[i]), ks[i]); }); mem[st].delete(ks[i]); } catch (e) { return; } } } }
     function open() {
       return new Promise(function (resolve) {
         var done = false; function fin(v) { if (!done) { done = true; resolve(v); } }
@@ -1247,7 +1248,7 @@ p{margin:0}
         try {
           var req = indexedDB.open('property-handover-inspection', 1);
           req.onupgradeneeded = function () { var d = req.result; if (!d.objectStoreNames.contains('kv')) d.createObjectStore('kv'); if (!d.objectStoreNames.contains('ph')) d.createObjectStore('ph'); };
-          req.onsuccess = function () { db = req.result; fin(true); };
+          req.onsuccess = function () { db = req.result; db.onclose = function () { db = null; }; db.onversionchange = function () { try { db.close(); } catch (e) { } db = null; }; fin(true); };
           req.onerror = function () { fin(false); };
           req.onblocked = function () { fin(false); };
         } catch (e) { fin(false); }
@@ -1256,6 +1257,7 @@ p{margin:0}
     function run(store, rw, op) {
       return new Promise(function (resolve, reject) {
         try {
+          if (!db) throw new Error('closed');
           var t = db.transaction(store, rw), r = op(t.objectStore(store));
           t.oncomplete = function () { resolve(r ? r.result : undefined); };
           t.onerror = function () { reject(t.error); }; t.onabort = function () { reject(t.error); };
@@ -1266,13 +1268,31 @@ p{margin:0}
       init: async function () { var ok = await open(); mode = ok ? 'idb' : 'mem'; return mode; },
       mode: function () { return mode; },
       get: async function (s, k) { if (mem[s].has(k) || mode === 'mem') return mem[s].get(k); try { return await run(s, 'readonly', function (o) { return o.get(k); }); } catch (e) { return undefined; } },
-      put: async function (s, k, v) { if (mode === 'idb') { try { await run(s, 'readwrite', function (o) { return o.put(v, k); }); mem[s].delete(k); return true; } catch (e) { mode = 'mem'; showMemWarn(); } } mem[s].set(k, v); return false; },
+      // a failed write is retried once on a fresh connection (Safari closes it when the page is backgrounded); memory mode is the last resort and heals itself
+      put: async function (s, k, v) {
+        if (mode === 'mem' && Date.now() - lastTry > 8000) { lastTry = Date.now(); if (await open()) { mode = 'idb'; hideMemWarn(); await migrate(); } }
+        if (mode === 'idb') {
+          for (var t = 0; t < 2; t++) {
+            try { if (!db) { if (!(await open())) throw new Error('reopen'); } await run(s, 'readwrite', function (o) { return o.put(v, k); }); mem[s].delete(k); return true; }
+            catch (e) { why = (e && e.name) || 'error'; try { if (db) db.close(); } catch (x) { } db = null; }
+          }
+          mode = 'mem'; lastTry = Date.now(); showMemWarn(why);
+        }
+        mem[s].set(k, v); return false;
+      },
       del: async function (s, k) { mem[s].delete(k); if (mode === 'idb') { try { await run(s, 'readwrite', function (o) { return o.delete(k); }); } catch (e) { } } },
       keys: async function (s) { var out = Array.from(mem[s].keys()); if (mode === 'idb') { try { out = out.concat(await run(s, 'readonly', function (o) { return o.getAllKeys(); })); } catch (e) { } } return out; },
       clear: async function (s) { mem[s].clear(); if (mode === 'idb') { try { await run(s, 'readwrite', function (o) { return o.clear(); }); } catch (e) { } } }
     };
   })();
-  function showMemWarn() { var w = $('#memWarn'); if (w) w.hidden = false; }
+  function showMemWarn(why) {
+    var w = $('#memWarn'); if (!w) return; w.hidden = false;
+    var cloud = !!(CFG && C && C.id && C.key);
+    w.textContent = cloud ? 'تعذّر الحفظ على هذا الجهاز مؤقتاً' + (why ? ' (' + why + ')' : '') + '، لكن الفحص محفوظ في السحابة عند ظهور «محفوظ». سيعيد التطبيق المحاولة تلقائياً.'
+      : 'التخزين في هذا المتصفح غير متاح: ستضيع الملاحظات عند الإغلاق. صدّر نسخة احتياطية من تبويب «التقرير» قبل الخروج.';
+  }
+  function hideMemWarn() { var w = $('#memWarn'); if (w) w.hidden = true; }
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { }
 
   /* ================= state ================= */
   // v2: results are kept per place, "room|item" (or "house|item"); every observation carries its room
