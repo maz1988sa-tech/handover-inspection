@@ -603,6 +603,27 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .pv-stage.is-vid::after{display:none}
 
 .brand-e .ver{margin-inline-start:8px;padding:1px 6px;border-radius:99px;background:var(--surface);color:var(--ink-3);font-size:10px;letter-spacing:0;text-transform:none}
+
+/* developer page: key findings kept short, floor tabs, a plan that says it can be tapped */
+.dv-kf .kf-compact .kf-ls,.dv-kf .kf-compact .kf-ph>*:nth-child(n+5){display:none}
+.dv-kf .kf-compact.open .kf-ls{display:grid}.dv-kf .kf-compact.open .kf-ph>*:nth-child(n+5){display:block}
+.dv-kf .kf-compact:not(.open) .kf-ph{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dv-kf .kf-compact:not(.open) .kf-ph img{aspect-ratio:1;object-fit:cover;width:100%;height:auto;max-height:none}
+.kf-more{width:100%;justify-content:center}
+.kf-more .m-c{display:none}.kf-compact.open .kf-more .m-o{display:none}.kf-compact.open .kf-more .m-c{display:inline}
+.dv-ftabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+.dv-ft{appearance:none;border:1px solid var(--line);background:var(--bg);border-radius:10px;min-height:46px;padding:4px 6px;font:700 13px/1.25 var(--font-body);color:var(--ink-2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.dv-ft i{font:600 11px/1 var(--font-data);font-style:normal;color:var(--ink-3)}
+.dv-ft[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}.dv-ft[aria-pressed="true"] i{color:#C9D1DE}
+.dv-tap{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#FFF1F0;border:1.5px solid #B42318;display:grid;gap:3px;color:#0D1525}
+.dv-tap b{font:800 16px/1.5 var(--font-body)}
+.dv-tap small{font-size:13px;line-height:1.6;color:#465267}
+.dv-tap-i{display:none}
+.dv-plan .r-mk{animation:mkPulse 1.6s ease-in-out infinite;cursor:pointer}
+.dv-plan .r-mk.ok{animation-name:mkPulseOk}
+@keyframes mkPulse{0%,100%{box-shadow:0 0 0 0 rgba(180,35,24,.55);background:rgba(180,35,24,.16)}50%{box-shadow:0 0 0 6px rgba(180,35,24,0);background:rgba(180,35,24,.34)}}
+@keyframes mkPulseOk{0%,100%{box-shadow:0 0 0 0 rgba(19,115,51,.55);background:rgba(19,115,51,.16)}50%{box-shadow:0 0 0 6px rgba(19,115,51,0);background:rgba(19,115,51,.34)}}
+@media (prefers-reduced-motion:reduce){.dv-plan .r-mk{animation:none}}
 </style>
 <style id="rptcss">.rpt{direction:rtl;font:400 14px/1.6 "IBM Plex Sans Arabic","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif;color:#0D1525;background:#fff}
 .rpt *{box-sizing:border-box}
@@ -853,7 +874,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v19</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v20</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -2403,14 +2424,15 @@ p{margin:0}
   }
   function sevCounts(list) { var c = { c: 0, M: 0, m: 0 }; list.forEach(function (o) { c[o.sev]++; }); return c; }
   // The key findings: first thing the developer sees. imgTag(id) draws a photo; go = the developer page, where a row scrolls to its card.
-  function kfBlockHTML(imgTag, go) {
+  function kfBlockHTML(imgTag, go, compact) {
     if (!S.kf || !S.kf.length) return '';
     var open = S.kf.filter(function (k) { return !kfStat(k).closed; }).length;
     var h = '<section class="kf-sec"><h2><span>الملاحظات الجوهرية على مستوى العقار</span><span class="en">Property-wide key findings</span></h2>' +
       '<p class="kf-sub">' + (open ? 'عيوب مشتركة أو جوهرية تؤثر على العقار كله. ' + (open === 1 ? 'واحدة منها مفتوحة' : open === 2 ? 'اثنتان منها مفتوحتان' : open + ' منها مفتوحة') + ' وتُغلق عند إغلاق كل ملاحظاتها المربوطة.' : 'أُغلقت كل الملاحظات الجوهرية.') + '</p>';
     kfSorted().forEach(function (k) {
       var st = kfStat(k), ph = kfPhotos(k), pct = st.n ? Math.round(st.c / st.n * 100) : 0;
-      h += '<article class="kf-card' + (st.closed ? ' is-closed' : '') + '"><div class="kf-h"><span class="r-no kf-no">' + kfTag(k) + '</span><h4>' + esc(k.title) + '</h4><span class="r-pills"><span class="r-pill ' + k.sev + '">' + SEV[k.sev] + '</span><span class="r-pill ' + (st.closed ? 'fixed' : 'open') + '">' + (st.closed ? 'مغلقة' : 'مفتوحة') + '</span></span></div>' +
+      var more = compact && (ph.length > 4 || kfObs(k).length);
+      h += '<article class="kf-card' + (st.closed ? ' is-closed' : '') + (compact ? ' kf-compact' : '') + '"><div class="kf-h"><span class="r-no kf-no">' + kfTag(k) + '</span><h4>' + esc(k.title) + '</h4><span class="r-pills"><span class="r-pill ' + k.sev + '">' + SEV[k.sev] + '</span><span class="r-pill ' + (st.closed ? 'fixed' : 'open') + '">' + (st.closed ? 'مغلقة' : 'مفتوحة') + '</span></span></div>' +
         (k.note ? '<p class="kf-note">' + esc(k.note) + '</p>' : '') +
         '<div class="kf-cnt"><span><b>' + st.c + ' من ' + st.n + '</b> ' + (st.n ? 'ملاحظة مربوطة مغلقة' : 'لا ملاحظات مربوطة') + '</span><span class="kf-bar"><i style="width:' + pct + '%"></i></span></div>';
       if (ph.length) h += '<div class="r-ph kf-ph">' + ph.map(function (id) { var t = imgTag(id); return t && isVid(id) ? '<span class="r-vid" data-v="' + esc(id) + '">' + t + '<i>▶ فيديو</i></span>' : t; }).join('') + '</div>';
@@ -2419,6 +2441,7 @@ p{margin:0}
         var w = wf(o), inner = '<span class="r-no">#' + o.no + '</span><span class="kf-lt"><b>' + esc(o.title) + '</b><small>' + esc(locOf(o) || '—') + '</small></span><span class="r-pill ' + (w === 'fixed' ? 'fixed' : 'open') + '">' + (w === 'fixed' ? 'أُغلقت' : ST_RPT[w]) + '</span>';
         return '<li>' + (go ? '<button type="button" class="kf-go" data-act="kfGo" data-obs="' + o.id + '">' + inner + '</button>' : '<div class="kf-go">' + inner + '</div>') + '</li>';
       }).join('') + '</ul>';
+      if (more) h += '<button type="button" class="btn ghost kf-more" data-act="kfMore" aria-expanded="false"><span class="m-o">عرض كل الصور والملاحظات المربوطة (' + ls.length + ')</span><span class="m-c">إخفاء التفاصيل</span></button>';
       h += '</article>';
     });
     return h + '</section>';
@@ -2447,7 +2470,7 @@ p{margin:0}
     if (!devReplies(o.id).length && w !== 'fixed') h += '<div class="r-resp"><span>رد المطوّر: ................................................</span><span>تاريخ الإغلاق: ......................</span></div>';
     return h + '</article>';
   }
-  function floorPlanHTML(f, gs) {
+  function floorPlanHTML(f, gs, dev) {
     var mk = gs.map(function (g) {
       var rects = g.r.hs[f.id] || [], big = biggest(rects), ok = !g.list.some(live);
       return rects.map(function (q, k) {
@@ -2459,8 +2482,9 @@ p{margin:0}
       return '<li><a href="#rm-' + g.r.id + '">' + esc(g.r.ar) + '</a><span class="r-cnts">' +
         (c.c ? '<span class="r-cnt c">' + c.c + ' حرج</span>' : '') + (c.M ? '<span class="r-cnt M">' + c.M + ' رئيسي</span>' : '') + (c.m ? '<span class="r-cnt m">' + c.m + ' ثانوي</span>' : '') + '</span></li>';
     }).join('');
-    return '<div class="r-fgrid"><figure class="r-plan"><img src="' + f.img + '" alt="مخطط ' + esc(f.ar) + '">' + mk + '</figure>' +
-      '<div class="r-fside"><p class="r-fnote">المربعات على المخطط تبيّن الغرف التي فيها ملاحظات والرقم عددها؛ اضغط الغرفة للانتقال إلى ملاحظاتها.</p><ol class="r-rooms">' + li + '</ol></div></div>';
+    return (dev ? '<p class="dv-tap"><span class="dv-tap-i"></span><b>للانتقال إلى ملاحظات أي غرفة: اضغط على مربعها في المخطط</b><small>المربعات النابضة هي الغرف التي فيها ملاحظات، والرقم عدد ملاحظاتها.</small></p>' : '') +
+      '<div class="r-fgrid"><figure class="r-plan"><img src="' + f.img + '" alt="مخطط ' + esc(f.ar) + '">' + mk + '</figure>' +
+      '<div class="r-fside">' + (dev ? '' : '<p class="r-fnote">المربعات على المخطط تبيّن الغرف التي فيها ملاحظات والرقم عددها؛ اضغط الغرفة للانتقال إلى ملاحظاتها.</p>') + '<ol class="r-rooms">' + li + '</ol></div></div>';
   }
   function roomBlockHTML(g, imgTag, re) {
     var head = (g.r && g.r.id !== 'house') ? '<h3 class="r-rh"><span>' + esc(g.r.ar) + '</span><span>' + nObs(g.list.length) + '</span></h3>' : '';
@@ -3296,7 +3320,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v19</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v20</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3397,7 +3421,7 @@ p{margin:0}
     var h = '<section class="card dv-intro"><h2>' + esc(S.meta.prop || H.name) + '<span class="en">Developer</span></h2>' +
       '<p class="land-p">لكل ملاحظة: بعد إصلاحها اضغط «تم الإصلاح» وأرفق صورة تُظهر الإصلاح. يصل ردك للمالك فيؤكده أو يرفضه مع ملاحظته، ويظهر قراره هنا.</p>' +
       '<div class="dv-sum"><div class="stat c"><b>' + cnt.need + '</b><span>تحتاج ردك</span></div><div class="stat M"><b>' + cnt.review + '</b><span>بانتظار المالك</span></div><div class="stat ok"><b>' + cnt.fixed + '</b><span>أُغلقت</span></div></div></section>';
-    h += S.kf.length ? '<div class="rpt dv-kf">' + kfBlockHTML(function (p) { return '<img src="' + esc(pubURL(DV.id, p)) + '" alt="" loading="lazy">'; }, true) + '</div>' : '';
+    h += S.kf.length ? '<div class="rpt dv-kf">' + kfBlockHTML(function (p) { return '<img src="' + esc(pubURL(DV.id, p)) + '" alt="" loading="lazy">'; }, true, true) + '</div>' : '';
     h += '<div class="chips" id="dvFilter">' + F.map(function (f) { return '<button type="button" class="chip" data-act="devFilter" data-v="' + f[0] + '" aria-pressed="' + (DV.filter === f[0]) + '">' + f[1] + '<span class="n">' + f[2] + '</span></button>'; }).join('') + '</div>';
     if (!all.length) h += '<div class="empty"><b>لا ملاحظات بعد</b></div>';
     else if (!list.length) h += '<div class="empty"><b>لا ملاحظات في هذا التصنيف</b></div>';
@@ -3405,11 +3429,17 @@ p{margin:0}
       var groups = placeGroups(list);
       var block = function (g) { return '<div class="dv-room"' + (g.r ? ' id="rm-' + g.r.id + '"' : '') + '><h3 class="grp-h"><span>' + esc(g.r ? placeLabel(g.id) : 'بلا غرفة') + '</span><span class="grp-r"><span class="grp-n">' + g.list.length + '</span></span></h3>' + g.list.map(devCardHTML).join('') + '</div>'; };
       groups.filter(function (g) { return g.id === 'house'; }).forEach(function (g) { h += block(g); });
-      FLOORS.forEach(function (f) {
-        var gs = groups.filter(function (g) { return g.r && g.r.id !== 'house' && g.r.fl === f.id; });
-        if (!gs.length) return;
-        h += '<section class="dv-floor"><h2 class="dv-fh">' + esc(f.ar) + '</h2><div class="rpt dv-plan">' + floorPlanHTML(f, gs) + '</div>' + gs.map(block).join('') + '</section>';
-      });
+      var fls = FLOORS.map(function (f) { return { f: f, gs: groups.filter(function (g) { return g.r && g.r.id !== 'house' && g.r.fl === f.id; }) }; }).filter(function (x) { return x.gs.length; });
+      if (fls.length) {
+        if (!fls.some(function (x) { return x.f.id === DV.floor; })) DV.floor = fls[0].f.id;
+        h += '<nav class="dv-ftabs" id="dvFloors" aria-label="الأدوار">' + fls.map(function (x) {
+          var n = x.gs.reduce(function (a, g) { return a + g.list.length; }, 0);
+          return '<button type="button" class="dv-ft" data-act="dvFloor" data-v="' + x.f.id + '" aria-pressed="' + (DV.floor === x.f.id) + '"><span>' + esc(x.f.ar) + '</span><i>' + n + '</i></button>';
+        }).join('') + '</nav>';
+        fls.filter(function (x) { return x.f.id === DV.floor; }).forEach(function (x) {
+          h += '<section class="dv-floor"><h2 class="dv-fh">' + esc(x.f.ar) + '</h2><div class="rpt dv-plan">' + floorPlanHTML(x.f, x.gs, true) + '</div>' + x.gs.map(block).join('') + '</section>';
+        });
+      }
       groups.filter(function (g) { return g.id === '_none'; }).forEach(function (g) { h += block(g); });
     }
     $('#dvMain').innerHTML = h; chipInView('#dvFilter');
@@ -3593,8 +3623,10 @@ p{margin:0}
       if (i >= 0) ED.kf.splice(i, 1); else ED.kf.push(id);
       el.setAttribute('aria-pressed', String(i < 0));
     },
+    kfMore: function (el) { var c = el.closest('.kf-card'), o = !c.classList.contains('open'); c.classList.toggle('open', o); el.setAttribute('aria-expanded', String(o)); },
+    dvFloor: function (el) { if (!DV) return; DV.floor = el.getAttribute('data-v'); renderDev(); var t = $('#dvFloors'); if (t) t.scrollIntoView({ block: 'start' }); },
     kfGo: function (el) {
-      var id = el.getAttribute('data-obs'); if (DV && DV.filter !== 'all') { DV.filter = 'all'; renderDev(); }
+      var id = el.getAttribute('data-obs'); if (DV) { var oo = S.obs.filter(function (x) { return x.id === id; })[0], rr = oo && ROOM[oo.room]; if (rr && rr.fl && DV.floor !== rr.fl) DV.floor = rr.fl; if (DV.filter !== 'all' || (rr && rr.fl)) { DV.filter = 'all'; renderDev(); } }
       var t = document.getElementById('ob-' + id); if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'center' }); t.classList.add('flash'); setTimeout(function () { t.classList.remove('flash'); }, 1600); }
     },
     newFree: function () { openSheet(newObsFor(null, null), true); },
@@ -3737,7 +3769,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v19</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v20</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
