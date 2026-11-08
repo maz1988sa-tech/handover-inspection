@@ -601,6 +601,8 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .dv-card.flash{outline:3px solid var(--accent);outline-offset:2px}
 
 .pv-stage.is-vid::after{display:none}
+
+.brand-e .ver{margin-inline-start:8px;padding:1px 6px;border-radius:99px;background:var(--surface);color:var(--ink-3);font-size:10px;letter-spacing:0;text-transform:none}
 </style>
 <style id="rptcss">.rpt{direction:rtl;font:400 14px/1.6 "IBM Plex Sans Arabic","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif;color:#0D1525;background:#fff}
 .rpt *{box-sizing:border-box}
@@ -851,7 +853,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection</span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v17</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -3325,7 +3327,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection</span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v17</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3770,7 +3772,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection</span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v17</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
