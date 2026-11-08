@@ -624,6 +624,9 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 @keyframes mkPulse{0%,100%{box-shadow:0 0 0 0 rgba(180,35,24,.55);background:rgba(180,35,24,.16)}50%{box-shadow:0 0 0 6px rgba(180,35,24,0);background:rgba(180,35,24,.34)}}
 @keyframes mkPulseOk{0%,100%{box-shadow:0 0 0 0 rgba(19,115,51,.55);background:rgba(19,115,51,.16)}50%{box-shadow:0 0 0 6px rgba(19,115,51,0);background:rgba(19,115,51,.34)}}
 @media (prefers-reduced-motion:reduce){.dv-plan .r-mk{animation:none}}
+
+.upd{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:200;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0D1525;color:#fff;border-radius:12px;padding:10px 12px;font:600 14px/1.4 var(--font-body);box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.upd button{appearance:none;border:0;border-radius:9px;background:#fff;color:#0D1525;min-height:40px;padding:0 16px;font:700 14px var(--font-body);cursor:pointer}
 </style>
 <style id="rptcss">.rpt{direction:rtl;font:400 14px/1.6 "IBM Plex Sans Arabic","Noto Sans Arabic","SF Arabic","Segoe UI",Tahoma,sans-serif;color:#0D1525;background:#fff}
 .rpt *{box-sizing:border-box}
@@ -874,7 +877,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v20</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v21</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1512,6 +1515,22 @@ p{margin:0}
       setTimeout(function () { n.focus(); }, 30);
     });
   }
+
+  /* ================= stale copy: a phone can keep an old page in its cache; offer the new one ================= */
+  var UPD_AT = 0;
+  async function updCheck() {
+    if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
+    try {
+      var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v21') return;
+      var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
+      b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
+      document.body.appendChild(b);
+      document.getElementById('updGo').onclick = function () { location.href = location.pathname + '?u=' + Date.now() + location.hash; };
+    } catch (e) { }
+  }
+  setTimeout(updCheck, 2500);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') updCheck(); });
 
   /* ================= top bar ================= */
   function renderTop() {
@@ -3320,7 +3339,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v20</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v21</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3769,7 +3788,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v20</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v21</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
