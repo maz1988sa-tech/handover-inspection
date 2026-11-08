@@ -853,7 +853,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v18</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v19</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -2018,9 +2018,35 @@ p{margin:0}
     for (var k = 0; k < ids.length; k++) { if (!photoInUse(ids[k])) await forgetPhoto(ids[k]); }
     ED = null; closeSheetUI(); persist(); renderAll(); toast('حُذفت الملاحظة');
   }
-  async function addPhotos(files, target) {
+  // ---- remember which gallery files were already added, so a repeat pick is flagged (a web page cannot delete from the gallery) ----
+  var SEEN = null;
+  async function seenMap() { if (!SEEN) { try { SEEN = JSON.parse((await Store.get('kv', 'seen')) || '{}') || {}; } catch (e) { SEEN = {}; } } return SEEN; }
+  function fileSig(f) { return f && f.name && f.size ? [f.name, f.size, f.lastModified || 0].join('|') : ''; }
+  function obsOfPhoto(id) {
+    var list = S.obs.slice(); if (ED && ED.obs && list.indexOf(ED.obs) < 0) list.push(ED.obs);
+    for (var i = 0; i < list.length; i++) { var o = list[i]; if ((o.ph || []).indexOf(id) >= 0 || (o.ph2 || []).indexOf(id) >= 0) return o; }
+    return null;
+  }
+  async function seenWhere(f) { // the observation that already holds this exact file, or null (also null once that photo was deleted)
+    var sg = window.__seenOff ? '' : fileSig(f); if (!sg) return null; var id = (await seenMap())[sg]; return id ? obsOfPhoto(id) : null;
+  }
+  async function seenMark(f, id) {
+    var sg = fileSig(f); if (!sg) return; var m = await seenMap(); delete m[sg]; m[sg] = id;
+    var ks = Object.keys(m); if (ks.length > 3000) ks.slice(0, ks.length - 3000).forEach(function (k) { delete m[k]; });
+    try { Store.put('kv', 'seen', JSON.stringify(m)); } catch (e) { }
+  }
+  async function dupGate(list) { // returns the files to add: asks when some were added before
+    var dups = [], fresh = [], nos = [];
+    for (var i = 0; i < list.length; i++) { var o = await seenWhere(list[i]); if (o) { dups.push(list[i]); if (nos.indexOf(o.no) < 0) nos.push(o.no); } else fresh.push(list[i]); }
+    if (!dups.length) return list;
+    var where = nos.length === 1 ? ' (الملاحظة رقم ' + nos[0] + ')' : '';
+    var msg = dups.length === 1 && !fresh.length ? 'هذه الصورة أضفتها من قبل' + where + '. تخطّيها؟' : dups.length + ' من ' + list.length + ' سبق إضافتها' + where + '. تخطّي المكرر؟';
+    return (await ask(msg, 'تخطّي المكرر', 'أضفها مرة أخرى', 'primary')) ? fresh : list;
+  }
+  async function addPhotos(files, target, track) {
     files = Array.prototype.slice.call(files || []);
     if (!files.length) return;
+    if (track) { files = await dupGate(files); if (!files.length) { toast('لم تُضف صور؛ كلها مكررة'); return; } }
     toast(files.length > 1 ? 'جارٍ تجهيز ' + files.length + ' صور…' : 'جارٍ تجهيز الصورة…', true);
     var n = 0;
     for (var k = 0; k < files.length; k++) {
@@ -2028,7 +2054,7 @@ p{margin:0}
         var r = await compress(files[k], 1600, 0.72);
         var id = 'p_' + uid();
         await Store.put('ph', id, { buf: await blobToBuf(r.blob), type: 'image/jpeg', w: r.w, h: r.h, at: Date.now() });
-        if (target === 'draft') { if (!ED) { await Store.del('ph', id); break; } ED.obs.ph.push(id); ED.added.push(id); }
+        if (target === 'draft') { if (!ED) { await Store.del('ph', id); break; } ED.obs.ph.push(id); ED.added.push(id); if (track) seenMark(files[k], id); }
         else if (target === 'dec') { if (!DEC) { await Store.del('ph', id); break; } DEC.ph.push(id); DEC.added.push(id); }
         n++;
       } catch (e) { toast('تعذّرت قراءة صورة؛ جرّب صورة أخرى.'); }
@@ -2075,8 +2101,11 @@ p{margin:0}
   }
   async function addVideo(file) {
     if (!file || !ED) return;
-    var type = vidType(file);
+    var type = vidType(file), file0 = file;
     if (!type) { toast('هذا الملف ليس فيديو مدعوماً؛ اختر مقطعاً من الكاميرا.'); return; }
+    var vo = await seenWhere(file);
+    if (vo && !(await ask('هذا المقطع أضفته من قبل (الملاحظة رقم ' + vo.no + '). تخطّيه؟', 'تخطّيه', 'أضفه مرة أخرى', 'primary'))) vo = null;
+    if (vo) { toast('لم يُضف المقطع؛ مكرر'); return; }
     toast('جارٍ تجهيز الفيديو…', true);
     try {
       var pst; try { pst = await videoPoster(file); } catch (e) { pst = await plainPoster(); }
@@ -2084,7 +2113,7 @@ p{margin:0}
       await Store.put('ph', 'vid:' + id, { buf: file, type: type, size: file.size, at: Date.now() });
       await Store.put('ph', id, { buf: await blobToBuf(pst.blob), type: 'image/jpeg', w: pst.w, h: pst.h, at: Date.now() });
       if (!ED) { await Store.del('ph', id); await Store.del('ph', 'vid:' + id); return; }
-      ED.obs.ph.push(id); ED.added.push(id); renderSheetPhotos();
+      ED.obs.ph.push(id); ED.added.push(id); seenMark(file0, id); renderSheetPhotos();
       toast('أُضيف الفيديو');
     } catch (e) { toast('تعذّر حفظ الفيديو على الجهاز؛ تأكد من وجود مساحة كافية.'); }
   }
@@ -3267,7 +3296,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v18</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v19</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3708,7 +3737,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v18</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v19</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
@@ -3726,7 +3755,7 @@ p{margin:0}
   }
   function startApp() {
     $('#inCam').addEventListener('change', function (e) { addPhotos(e.target.files, 'draft'); });
-    $('#inGal').addEventListener('change', function (e) { addPhotos(e.target.files, 'draft'); });
+    $('#inGal').addEventListener('change', function (e) { addPhotos(e.target.files, 'draft', true); });
     $('#inVid').addEventListener('change', function (e) { addVideo(e.target.files && e.target.files[0]); });
     $('#inDecCam').addEventListener('change', function (e) { addPhotos(e.target.files, 'dec'); });
     $('#inDecGal').addEventListener('change', function (e) { addPhotos(e.target.files, 'dec'); });
