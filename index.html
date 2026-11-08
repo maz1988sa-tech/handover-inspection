@@ -853,7 +853,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v17</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v18</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -2080,13 +2080,6 @@ p{margin:0}
     toast('جارٍ تجهيز الفيديو…', true);
     try {
       var pst; try { pst = await videoPoster(file); } catch (e) { pst = await plainPoster(); }
-      var lim = vidLimit();
-      if (CFG && file.size > lim) {   // above the storage file limit: re-encode to fit, so it can be uploaded
-        var sm = null; try { sm = await shrinkVideo(file, lim); } catch (e) { sm = null; }
-        if (!ED) return;
-        if (sm) { file = sm; type = (sm.type || 'video/mp4').split(';')[0]; }
-        else toast('تعذّر تصغير المقطع على هذا الجهاز؛ سيبقى عندك ولن يصل للمطوّر. صوّر مقطعاً أقصر.');
-      }
       var id = 'v_' + uid();
       await Store.put('ph', 'vid:' + id, { buf: file, type: type, size: file.size, at: Date.now() });
       await Store.put('ph', id, { buf: await blobToBuf(pst.blob), type: 'image/jpeg', w: pst.w, h: pst.h, at: Date.now() });
@@ -2094,59 +2087,6 @@ p{margin:0}
       ED.obs.ph.push(id); ED.added.push(id); renderSheetPhotos();
       toast('أُضيف الفيديو');
     } catch (e) { toast('تعذّر حفظ الفيديو على الجهاز؛ تأكد من وجود مساحة كافية.'); }
-  }
-  // ---- shrink a clip to the storage limit: play it into a canvas and record that again at a bitrate sized from its length ----
-  function vidLimit() { return window.__vidLimit || 47 * 1000 * 1000; }
-  function recMime() {
-    if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) return '';
-    return ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].filter(function (m) { try { return MediaRecorder.isTypeSupported(m); } catch (e) { return false; } })[0] || '';
-  }
-  function recOnce(file, mime, vbr, maxSide, label, bg) {
-    return new Promise(function (resolve, reject) {
-      var url = URL.createObjectURL(file), v = document.createElement('video'), ctx2 = null, ac = null, done = false, chunks = [], rec, t0 = Date.now();
-      v.src = url; v.playsInline = true; v.preload = 'auto'; v.setAttribute('playsinline', ''); v.style.cssText = 'position:fixed;left:-9999px;width:2px;height:2px';
-      document.body.appendChild(v);
-      function end(err, blob) { if (done) return; done = true; try { v.pause(); } catch (e) { } try { if (ac) ac.close(); } catch (e) { } v.remove(); URL.revokeObjectURL(url); err ? reject(err) : resolve(blob); }
-      v.onerror = function () { end(new Error('decode')); };
-      v.onloadedmetadata = function () {
-        var w = v.videoWidth, h = v.videoHeight, sc = Math.min(1, maxSide / Math.max(w, h)), cw = Math.max(2, Math.round(w * sc / 2) * 2), ch = Math.max(2, Math.round(h * sc / 2) * 2);
-        var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch; ctx2 = cv.getContext('2d');
-        var stream = cv.captureStream(30);
-        try {   // the sound goes through the page's audio graph so it is recorded but not played aloud
-          var AC = window.AudioContext || window.webkitAudioContext;
-          if (AC) { ac = new AC(); var src = ac.createMediaElementSource(v), dst = ac.createMediaStreamDestination(); src.connect(dst); dst.stream.getAudioTracks().forEach(function (t) { stream.addTrack(t); }); if (ac.resume) ac.resume().catch(function () { }); }
-        } catch (e) { }
-        try { rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: vbr, audioBitsPerSecond: 96000 }); } catch (e) { return end(e); }
-        rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
-        rec.onstop = function () { end(null, new Blob(chunks, { type: mime.split(';')[0] })); };
-        rec.onerror = function () { end(new Error('rec')); };
-        function draw() {
-          if (done) return;
-          if (!bg && !ED || bg && !PV) { try { rec.state !== 'inactive' && rec.stop(); } catch (e) { } return end(new Error('cancel')); }
-          try { ctx2.drawImage(v, 0, 0, cw, ch); } catch (e) { }
-          var pct = v.duration ? Math.min(99, Math.round(v.currentTime / v.duration * 100)) : 0;
-          toast(label + ' ' + pct + '٪ — أبقِ الشاشة مفتوحة', true);
-          if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(draw); else requestAnimationFrame(draw);
-        }
-        v.onended = function () { setTimeout(function () { try { rec.state !== 'inactive' && rec.stop(); } catch (e) { end(e); } }, 300); };
-        rec.start(1000);
-        v.play().then(draw, function () { v.muted = true; v.play().then(draw, function (e) { end(e); }); });
-      };
-    });
-  }
-  async function shrinkVideo(file, limit, bg) {
-    var mime = recMime(); if (!mime) return null;
-    var dur = await new Promise(function (res) { var v = document.createElement('video'), u = URL.createObjectURL(file); v.preload = 'metadata'; v.onloadedmetadata = function () { res(v.duration); URL.revokeObjectURL(u); }; v.onerror = function () { res(0); URL.revokeObjectURL(u); }; v.src = u; });
-    if (!isFinite(dur) || dur < 1 || dur > 20 * 60) return null;
-    var vbr = Math.max(250000, Math.min(8000000, Math.floor(limit * 8 * 0.88 / dur) - 96000)), best = null;
-    for (var pass = 0; pass < 3; pass++) {
-      var side = vbr > 3500000 ? 1920 : vbr > 1800000 ? 1280 : 960;
-      var blob = await recOnce(file, mime, vbr, side, pass ? 'إعادة الضغط' : 'تصغير الفيديو', bg);
-      if (!best || blob.size < best.size) best = blob;
-      if (blob.size <= limit) return blob;
-      vbr = Math.max(150000, Math.floor(vbr * (limit / blob.size) * 0.85));
-    }
-    return best && best.size <= limit ? best : null;
   }
   function vidRemoteId() { return VIEW_ID === 'dev' ? (DV && DV.id) : (VIEW_ID || C.id); }
   function vidPubURL(id, pid) { return CFG.url + '/storage/v1/object/public/' + (CFG.bucket || 'photos') + '/' + id + '/' + encodeURIComponent(pid) + '.mp4'; }
@@ -2311,7 +2251,7 @@ p{margin:0}
       '<div class="pv-stage" id="pvStage"><img id="pvImg" alt="" draggable="false"><video id="pvVid" controls playsinline preload="metadata" hidden></video></div>' +
       '<div class="pv-foot"><button type="button" class="btn pv-nav" id="pvPrev" data-act="pvPrev" aria-label="الصورة السابقة">' + IC.back + '<span>السابقة</span></button>' +
       '<div class="pv-mid"><button type="button" class="btn primary pv-mark" id="pvMark" data-act="pvMark" hidden>' + IC.pen + '<span id="pvMarkT">تعليم</span></button>' +
-      '<button type="button" class="btn primary pv-mark" id="pvShrink" data-act="pvShrink" hidden>ضغط ورفع للمطوّر</button>' +
+      '<button type="button" class="btn primary pv-mark" id="pvUp" data-act="pvUp" hidden>رفع للمطوّر</button>' +
       '<span class="pv-hint" id="pvHint">قرّب بإصبعين أو انقر مرتين</span></div>' +
       '<button type="button" class="btn pv-nav" id="pvNext" data-act="pvNext" aria-label="الصورة التالية"><span>التالية</span>' + IC.fwd + '</button></div>';
     ($('.app') || document.body).appendChild(d);
@@ -2349,7 +2289,7 @@ p{margin:0}
     $('#pvT').textContent = who + (n > 1 ? ' · ' + (PV.i + 1) + ' من ' + n : '');
     $('#pvPrev').hidden = $('#pvNext').hidden = n < 2;
     var mk = pvMarkKind(); $('#pvMark').hidden = !mk; $('#pvHint').hidden = !!mk;
-    $('#pvShrink').hidden = true;
+    $('#pvUp').hidden = true;
     $('#pvMarkT').textContent = mk === 'reply' ? 'تعليم ورد' : 'تعليم الصورة';
     $('#pvHint').textContent = PV.vid ? 'الفيديو لا يُعلَّم عليه؛ صوّر لقطة للتعليم' : !mk && !VIEW_ID && PV.ctx.kind === 'own' && ED && ED.locked ? 'الملاحظة مغلقة؛ أعد فتحها لتعليم الصورة' : 'قرّب بإصبعين أو انقر مرتين';
     if (PV.vid) {
@@ -2360,8 +2300,8 @@ p{margin:0}
       var rid = vidRemoteId(), local = vu.indexOf('blob:') === 0, inCloud = true;
       // is the clip on the server at all? clips above the storage plan's file limit never get there
       if (CFG && rid) { try { var hd = await fetch(vidPubURL(rid, it.id), { method: 'HEAD' }); inCloud = hd.ok; } catch (e) { inCloud = true; } if (!PV || PV.items[PV.i] !== it) return; }
-      if (!inCloud && !local) { $('#pvHint').hidden = false; $('#pvHint').textContent = 'هذا المقطع لم يصل إلى السحابة (أكبر من الحد المسموح). اطلب من المالك مقطعاً أقصر أو لقطة صورة.'; toast('المقطع غير متاح لهذا الرابط: لم يُرفع لكبر حجمه.'); return; }
-      if (!inCloud && local) { $('#pvHint').hidden = false; $('#pvHint').textContent = 'هذا المقطع على جهازك فقط ولا يراه المطوّر (أكبر من الحد المسموح).'; if (!VIEW_ID && recMime()) $('#pvShrink').hidden = false; }
+      if (!inCloud && !local) { $('#pvHint').hidden = false; $('#pvHint').textContent = 'هذا المقطع لم يصل إلى السحابة . اطلب من المالك رفعه من جهازه.'; toast('المقطع غير متاح لهذا الرابط: لم يُرفع بعد.'); return; }
+      if (!inCloud && local) { $('#pvHint').hidden = false; $('#pvHint').textContent = 'هذا المقطع على جهازك فقط ولا يراه المطوّر بعد. اضغط «رفع للمطوّر».'; if (!VIEW_ID) $('#pvUp').hidden = false; }
       vd.onerror = function () { if (PV && PV.items[PV.i] === it) toast('تعذّر تشغيل الفيديو على هذا الجهاز.'); };
       vd.src = vu; return;
     }
@@ -3177,7 +3117,7 @@ p{margin:0}
       if (!C.pulled && (await pull()) !== 'ok') throw new Error('pull');
       var ids = refPhotos().filter(function (p) { return !C.up[p]; });
       SYNC.pending = ids.length; renderSync();
-      for (var k = 0; k < ids.length; k++) { await sendPhoto(ids[k]); if (isVid(ids[k]) && (await sendVideo(ids[k])) === 'big') toast('السحابة رفضت مقطعاً لكبر حجمه؛ بقي على جهازك ولم يظهر للمطوّر، وظهرت لقطة منه فقط.'); C.up[ids[k]] = 1; SYNC.pending = ids.length - k - 1; renderSync(); }
+      for (var k = 0; k < ids.length; k++) { await sendPhoto(ids[k]); if (isVid(ids[k]) && (await sendVideo(ids[k])) === 'big') toast('السحابة رفضت مقطعاً لكبر حجمه؛ بقي على جهازك ولم يظهر للمطوّر. ارفع «الحد العام لحجم الملف» في إعدادات التخزين.'); C.up[ids[k]] = 1; SYNC.pending = ids.length - k - 1; renderSync(); }
       var seq = SYNC.seq;
       C.at = await rpc('hi_save', { p_id: C.id, p_key: C.key, p_state: cloudState() });
       if (seq === SYNC.seq) C.dirty = false;
@@ -3327,7 +3267,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v17</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v18</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3656,18 +3596,14 @@ p{margin:0}
     decAct: function (el) { if (!DEC) return; DEC.act = el.getAttribute('data-v'); decApply(); },
     decMarkDev: function (el) { if (DEC) openMarkup(el.getAttribute('data-ph'), { kind: 'reply', oid: DEC.oid }); },
     pvClose: function () { closePV(); },
-    pvShrink: async function () {
-      if (!PV || PV.busy) return; var it = PV.items[PV.i], id = it.id; PV.busy = true; $('#pvShrink').hidden = true;
+    pvUp: async function () {
+      if (!PV || PV.busy) return; var it = PV.items[PV.i], id = it.id; PV.busy = true; $('#pvUp').hidden = true;
       try {
-        var rec = await Store.get('ph', 'vid:' + id); if (!rec) { toast('المقطع غير موجود على هذا الجهاز.'); return; }
-        var sm = await shrinkVideo(new Blob([rec.buf], { type: rec.type || 'video/mp4' }), vidLimit(), true);
-        if (!sm) { toast('تعذّر تصغير المقطع على هذا الجهاز. صوّر مقطعاً أقصر.'); return; }
-        await Store.put('ph', 'vid:' + id, { buf: sm, type: (sm.type || 'video/mp4').split(';')[0], size: sm.size, at: Date.now() });
-        var k = 'vid:' + id; if (URLS.has(k)) { try { URL.revokeObjectURL(URLS.get(k)); } catch (e) { } URLS.delete(k); }
-        toast('جارٍ رفع المقطع المصغّر…', true);
+        if (!(await Store.get('ph', 'vid:' + id))) { toast('المقطع غير موجود على هذا الجهاز.'); return; }
+        toast('جارٍ رفع المقطع… أبقِ الشاشة مفتوحة', true);
         var rr = await sendVideo(id);
-        toast(rr === 'big' ? 'ما زال المقطع أكبر من الحد المسموح.' : 'رُفع المقطع وصار يظهر للمطوّر.');
-      } catch (e) { toast('تعذّر ضغط المقطع أو رفعه. حاول مرة أخرى والشاشة مفتوحة.'); }
+        toast(rr === 'big' ? 'رفضت السحابة المقطع لكبر حجمه؛ تأكد من رفع «الحد العام لحجم الملف» في إعدادات التخزين.' : 'رُفع المقطع وصار يظهر للمطوّر.');
+      } catch (e) { toast('تعذّر رفع المقطع. حاول مرة أخرى والشاشة مفتوحة.'); }
       finally { if (PV) { PV.busy = false; pvShow(PV.i); } }
     },
     pvPrev: function () { if (PV) pvShow(PV.i - 1); },
@@ -3772,7 +3708,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v17</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v18</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
