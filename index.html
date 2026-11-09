@@ -375,6 +375,12 @@ a{color:var(--accent)}
 .dlg{background:rgba(13,21,37,.42);display:grid;place-items:center;padding:16px}
 .dlg-card{background:var(--bg);border-radius:16px;padding:18px;width:min(420px,100%);display:grid;gap:14px;box-shadow:0 10px 40px rgba(13,21,37,.25)}
 .dlg-card p{margin:0;font-size:15px;line-height:1.6}
+.pdf-opts{display:grid;gap:8px}
+.pdf-opts .btn{width:100%}
+.pdf-sub{font-size:13px!important;color:var(--ink-2);margin-top:4px!important}
+.pdf-fl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pdf-fl .btn{display:grid;gap:2px;justify-items:center;line-height:1.3}
+.pdf-fl .btn small{font-size:11.5px;font-weight:500;color:var(--ink-2)}
 .toast{position:fixed;inset-inline:16px;bottom:calc(var(--tab-h) + 14px + env(safe-area-inset-bottom,0px));z-index:76;margin:0 auto;max-width:420px;background:var(--ink);color:#fff;border-radius:12px;padding:11px 14px;font-size:14px;text-align:center;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.show{opacity:1;transform:none}
 /* inside a sheet or the photo viewer the toast sits mid-screen, clear of the photo buttons at the bottom */
@@ -828,25 +834,43 @@ p{margin:0}
 .d-room{display:flex;align-items:baseline;gap:2.5mm;font:700 10.5pt 'Noto Kufi Arabic',sans-serif;color:#1747A6;border-bottom:.3mm solid #D9DFE8;padding-bottom:1.6mm;margin-bottom:2mm;min-height:7mm}
 .d-room:not(:first-child){margin-top:5mm}
 .d-room span{font:500 8pt 'IBM Plex Sans Arabic',sans-serif;color:#6B7689}
-.orow{min-height:76mm;max-height:240mm;border:.3mm solid #D9DFE8;border-radius:2.5mm;padding:3.5mm;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:2.5mm;position:relative}
-.orow+.orow{margin-top:4mm}
-.dreg+.orow{margin-top:6mm}
-.orow-g{display:grid;grid-template-columns:62mm minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:3.5mm;min-height:0}
-.orow-i{display:grid;gap:1.4mm;align-content:start;font-size:8pt;min-height:0;overflow:hidden}
-.orow-i .top{display:flex;gap:1.6mm;align-items:center;flex-wrap:wrap}
-.orow-i .top .pin{min-width:6.5mm;height:6.5mm;font-size:8.5pt;box-shadow:none}
-.orow-i h3{font-size:10.5pt}
-.orow-i .k{color:#6B7689;font-weight:600}
-.orow figure{margin:0;position:relative;min-height:0;height:100%}
-.orow figure .ph,.orow figure .noph{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
-.orow figcaption{position:absolute;top:1.5mm;right:1.5mm;font:700 7pt 'IBM Plex Sans Arabic',sans-serif;background:rgba(13,21,37,.78);color:#fff;border-radius:1mm;padding:.8mm 1.8mm}
-.orow .stamp{position:absolute;left:6mm;top:6mm;transform:rotate(-8deg);border:.7mm solid;border-radius:2mm;padding:1.2mm 3mm;font:700 10pt 'Noto Kufi Arabic',sans-serif;background:rgba(255,255,255,.9)}
+.oc2{border:.3mm solid #D9DFE8;border-radius:2.5mm;padding:2.5mm 2mm 2mm;display:grid;gap:2.5mm}
+.oc2+.oc2{margin-top:4mm}
+.o-head{display:flex;gap:4mm;align-items:flex-start;justify-content:space-between;padding:0 1mm}
+.o-hi{display:grid;gap:1.4mm;align-content:start;font-size:8.6pt;min-width:0;flex:1}
+.o-hi .top{display:flex;gap:1.6mm;align-items:center;flex-wrap:wrap}
+.o-hi .top .pin{min-width:6.5mm;height:6.5mm;font-size:8.5pt;box-shadow:none}
+.o-hi h3{font-size:11pt}
+.o-hi .k{color:#6B7689;font-weight:600}
+.o-hi .ds{white-space:pre-line}
+.o-mini{display:flex;align-items:center;gap:2mm;padding:0 1mm;font-size:9pt}
+.o-mini .pin{box-shadow:none}
+.o-mini span{color:#6B7689;font-size:8pt}
+.o-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3mm;align-items:start}
+.o-col{display:grid;gap:2.2mm;align-content:start;min-width:0}
+.o-col h4{font:700 8.4pt 'Noto Kufi Arabic',sans-serif;color:#1747A6;border-bottom:.35mm solid #1747A6;padding-bottom:1mm}
+.o-col.dev h4{color:#137333;border-bottom-color:#137333}
+.it{display:grid;gap:1.4mm;min-width:0}
+.cap{display:flex;justify-content:space-between;gap:2mm;font-size:7.6pt;color:#465267}
+.cap b{font-weight:700;color:#0D1525}
+.nt{font-size:8.3pt;line-height:1.65;white-space:pre-line;border-radius:1.2mm;padding:1.6mm 2mm;color:#1F2937}
+.nt.ow{background:#F3F5F9}.nt.dv{background:#EDF7F0}
+.fg{margin:0;display:grid;gap:1mm}
+.fg .px{width:100%;max-height:175mm;background:#E9EDF3}
+.vl{display:grid;gap:.6mm;background:#0D1525;color:#fff;border-radius:1.2mm;padding:1.4mm 2mm}
+.vl b{font-size:8pt}
+.vl span{font:400 5.6pt/1.35 'IBM Plex Mono',monospace;color:#B8C2D3;direction:ltr;text-align:left;overflow-wrap:anywhere;word-break:break-all}
+.vl.off{background:#F3F5F9;color:#465267}
+.vl.off span{font:400 7.4pt 'IBM Plex Sans Arabic',sans-serif;color:#6B7689;direction:rtl;text-align:right}
+.noph2{border:.3mm dashed #C9D0DB;border-radius:1.5mm;color:#98A2B3;font-size:8pt;background:#FAFBFD;text-align:center;padding:5mm 2mm}
+.oc2 .stamp{flex:0 0 auto;transform:rotate(-6deg);border:.7mm solid;border-radius:2mm;padding:1.2mm 3mm;font:700 10pt 'Noto Kufi Arabic',sans-serif;background:#fff;white-space:nowrap}
 .stamp.ok{color:#137333;border-color:#137333}.stamp.no{color:#B42318;border-color:#B42318}.stamp.rv{color:#1747A6;border-color:#1747A6}.stamp.op{color:#465267;border-color:#98A2B3}
-.tl{display:flex;align-items:center;font-size:7.4pt;color:#465267;min-width:0;overflow:hidden}
+.tl{display:flex;align-items:center;font-size:7.4pt;color:#465267;min-width:0;overflow:hidden;padding:0 1mm}
 .tl .s{display:flex;align-items:center;gap:1.5mm;white-space:nowrap}
 .tl .s i{width:2.6mm;height:2.6mm;border-radius:50%;background:#98A2B3;flex:0 0 auto}
 .tl .s i.dev{background:#1747A6}.tl .s i.ok{background:#137333}.tl .s i.no{background:#B42318}
 .tl .ln{flex:1;height:.3mm;background:#D9DFE8;margin:0 2mm;min-width:4mm}
+.b-top .scope{font:700 12pt 'Noto Kufi Arabic',sans-serif;color:#FFD9A0}
 
 /* sign-off */
 .so-lead{font-size:9.5pt;line-height:1.8;color:#465267;margin:4mm 0 7mm}
@@ -872,12 +896,13 @@ p{margin:0}
 .kfc-l span{font-size:7.2pt;background:#F3F5F9;border-radius:1.2mm;padding:.9mm 2mm;color:#344054}
 .kfc-l span b{margin-inline-end:1.2mm;color:#0D1525}
 .kfc-l span.ok{background:#E3F2E7;color:#137333}
+.dreg+.oc2{margin-top:6mm}
 </script>
 <div class="app" dir="rtl" lang="ar">
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v25</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v26</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1135,6 +1160,13 @@ p{margin:0}
     <div class="mk-stage" id="mkStage"><canvas id="mkCanvas"></canvas></div>
   </div>
 
+  <div class="dlg" id="pdfDlg" hidden role="dialog" aria-modal="true" aria-labelledby="pdfTtl">
+    <div class="dlg-card">
+      <p id="pdfTtl"><b>تصدير تقرير PDF</b><br>كل الصور بحجمها الكامل. اختر ما تريد تصديره:</p>
+      <div class="pdf-opts" id="pdfOpts"></div>
+      <button type="button" class="btn ghost" id="pdfNo">تراجع</button>
+    </div>
+  </div>
   <div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg">
     <div class="dlg-card">
       <p id="dlgMsg"></p>
@@ -1525,7 +1557,7 @@ p{margin:0}
     if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
     try {
       var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v25') return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v26') return;
       var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
       b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
       document.body.appendChild(b);
@@ -2693,7 +2725,8 @@ p{margin:0}
   // and bound into one PDF (jsPDF). Both libraries load from the CDN on first use.
   var PDF_LIB = {
     h2c: ['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'],
-    pdf: ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js']
+    pdf: ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'],
+    zip: ['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js']
   };
   var PDF_FONTS = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@600;700&display=block';
   var PDF_FACES = ['400 10px "IBM Plex Sans Arabic"', '500 10px "IBM Plex Sans Arabic"', '600 10px "IBM Plex Sans Arabic"', '700 10px "IBM Plex Sans Arabic"',
@@ -2736,35 +2769,77 @@ p{margin:0}
     await pdfFonts(f.contentDocument);
     return f;
   }
-  // the photo before (the owner's first) and after (the developer's latest reply, or a re-inspection photo)
-  function pdfPhotos(o) {
-    var dev = devReplies(o.id).filter(function (e) { return e.ph.length; });
-    return [(o.ph || [])[0] || '', dev.length ? dev[dev.length - 1].ph[0] : ((o.ph2 || [])[0] || '')];
+  // every photo and clip of an observation, in the order the report prints them: the owner's column (his own, then those he
+  // added when deciding) and the developer's column (each reply, then the owner's after-the-fix photos)
+  function pdfObsIds(o) {
+    var ids = (o.ph || []).slice();
+    thread(o).forEach(function (t) { (t.ph || []).forEach(function (p) { ids.push(p); }); });
+    (o.ph2 || []).forEach(function (p) { ids.push(p); });
+    return ids;
   }
-  function pdfModel() {
+  function pdfModel(scope) {
     var obs = sortedObs(), W = {}, m = S.meta;
     obs.forEach(function (o) { W[o.id] = wf(o); });
-    return {
-      obs: obs, W: W, ph: {}, issued: today(),
+    var M = {
+      obs: obs, W: W, ph: {}, dim: {}, issued: today(), sub: '', files: 0,
       ref: 'HI-' + (String(m.unit || '').replace(/[^0-9A-Za-z-]/g, '') || '000') + '-' + String(m.date || today()).replace(/-/g, ''),
       floors: FLOORS.map(function (f) { return { f: f, list: obs.filter(function (o) { var r = ROOM[o.room]; return r && r.id !== 'house' && r.fl === f.id; }) }; }),
       house: obs.filter(function (o) { return o.room === 'house'; }),
-      none: obs.filter(function (o) { return !ROOM[o.room]; })
+      none: obs.filter(function (o) { return !ROOM[o.room]; }),
+      parts: { kf: true, floors: true, house: true, none: true, sign: true }, scope: scope || 'all'
+    };
+    if (M.scope === 'gen') { M.parts.floors = false; M.sub = 'الملخص والملاحظات العامة'; }
+    else if (M.scope !== 'all') {
+      var g = M.floors.filter(function (x) { return x.f.id === M.scope; })[0];
+      if (!g) throw pdfError('الدور المطلوب غير موجود.');
+      M.floors = [g]; M.obs = g.list; M.house = []; M.none = []; M.parts = { kf: false, floors: true, house: false, none: false, sign: false }; M.sub = g.f.ar + ' فقط';
+    }
+    return M;
+  }
+  function pdfDrawn(M) { // the observations whose cards are printed in this file
+    var l = []; if (M.parts.floors) M.floors.forEach(function (g) { l = l.concat(g.list); });
+    if (M.parts.house) l = l.concat(M.house); if (M.parts.none) l = l.concat(M.none);
+    return l;
+  }
+  async function imgSize(b) { // the photo's own width and height, as the phone saved them
+    if (window.createImageBitmap) { try { var bm = await createImageBitmap(b); var d = [bm.width, bm.height]; if (bm.close) bm.close(); return d; } catch (e) { } }
+    var u = URL.createObjectURL(b); try { var im = await loadImg(u); return [im.naturalWidth, im.naturalHeight]; } finally { URL.revokeObjectURL(u); }
+  }
+  // Photos are measured first (so every box has its real shape), and enter the PDF at the end, page by page, as the original bytes.
+  async function pdfPhotoMap(M, say) {
+    var ids = [];
+    pdfDrawn(M).forEach(function (o) { pdfObsIds(o).forEach(function (p) { if (ids.indexOf(p) < 0) ids.push(p); }); });
+    for (var k = 0; k < ids.length; k++) {
+      say('قياس الصور ' + (k + 1) + ' / ' + ids.length + '…');
+      try { var b = await M.blob(ids[k]); if (b) M.dim[ids[k]] = await imgSize(b); } catch (e) { }
+    }
+    var kfIds = []; if (M.parts.kf) S.kf.forEach(function (kk) { kfPhotos(kk).slice(0, 6).forEach(function (p) { if (kfIds.indexOf(p) < 0) kfIds.push(p); }); });
+    for (var q = 0; q < kfIds.length; q++) { // the key findings keep small cropped thumbnails inside the page itself
+      say('تجهيز صور الملاحظات الجوهرية ' + (q + 1) + ' / ' + kfIds.length + '…');
+      try { var kb = await M.blob(kfIds[q]); M.ph[kfIds[q]] = kb ? await blobToDataURL((await compress(kb, 900, 0.8)).blob) : ''; } catch (e) { M.ph[kfIds[q]] = ''; }
+    }
+    return ids.length;
+  }
+  function pdfBlobGetter(remote) { // the owner's photos come from the device (or his cloud copy); the read-only link fetches each from the cloud once
+    if (!remote) return photoBlob;
+    var cache = new Map();
+    return async function (id) {
+      if (cache.has(id)) return cache.get(id);
+      var res = await fetch(pubURL(remote, id)); if (!res.ok) return null;
+      var b = await res.blob(); cache.set(id, b); return b;
     };
   }
-  async function pdfPhotoMap(M, say, get) {
-    var ids = [];
-    M.obs.forEach(function (o) { pdfPhotos(o).forEach(function (p) { if (p && ids.indexOf(p) < 0) ids.push(p); }); });
-    S.kf.forEach(function (k) { kfPhotos(k).slice(0, 6).forEach(function (p) { if (ids.indexOf(p) < 0) ids.push(p); }); });
-    for (var k = 0; k < ids.length; k++) {
-      say('تجهيز الصور ' + (k + 1) + ' / ' + ids.length + '…');
-      try { M.ph[ids[k]] = await (get ? get(ids[k]) : photoDataURL(ids[k], 900, 0.8)); } catch (e) { M.ph[ids[k]] = ''; }
-    }
+  function pdfSniff(u) { return u[0] === 0xFF && u[1] === 0xD8 ? 'JPEG' : (u[0] === 0x89 && u[1] === 0x50 && u[2] === 0x4E && u[3] === 0x47) ? 'PNG' : ''; }
+  async function pdfImage(M, id) { // the stored photo as it is; only an odd format or an oversized one is re-encoded
+    var b = await M.blob(id), d = M.dim[id]; if (!b || !d) return null;
+    var u = new Uint8Array(await b.arrayBuffer()), fmt = pdfSniff(u);
+    if (!fmt || Math.max(d[0], d[1]) > 2600) { var r = await compress(b, 2400, 0.9); u = new Uint8Array(await r.blob.arrayBuffer()); fmt = 'JPEG'; }
+    return { data: u, fmt: fmt, w: d[0], h: d[1] };
   }
-  async function remotePhotoDataURL(id, pid) { // the read-only link: photos straight from the cloud
-    var res = await fetch(pubURL(id, pid)); if (!res.ok) return '';
-    var b = await res.blob();
-    try { var r = await compress(b, 900, 0.8); return await blobToDataURL(r.blob); } catch (e) { return await blobToDataURL(b); }
+  function vidLink(id) { // the public address of an uploaded clip, or '' while it is only on the owner's device
+    var rid = VIEW_ID ? vidRemoteId() : C.id;
+    if (!CFG || !rid || !(VIEW_ID || C.up[id])) return '';
+    return vidPubURL(rid, id);
   }
   function pdfByRoom(list) { // spaces in walk order, each space's observations by number
     var by = {}, ids = [];
@@ -2857,27 +2932,82 @@ p{margin:0}
       return { h: '<tr><td>' + esc(r.ar) + '</td><td class="n mono">' + p.done + '/' + p.all + '</td><td class="n mono ' + (n ? 'bad' : 'nil') + '">' + n + '</td></tr>' };
     });
   }
-  function pdfCard(o, M) { // one observation: what and where, the photo before and after, and its history with the developer
-    var s = M.W[o.id], t = thread(o), phs = pdfPhotos(o);
-    function box(id, empty) {
-      if (!id) return '<div class="noph">' + empty + '</div>';
-      return M.ph[id] ? '<div class="ph" style="background-image:url(' + M.ph[id] + ')">' + (isVid(id) ? '<span class="pdf-vid">▶ فيديو</span>' : '') + '</div>' : '<div class="noph">تعذّر تحميل الصورة</div>';
+  // One observation: a header (what and where, as written), then two columns with every photo and clip, each at its own shape:
+  // the owner's on the right, the developer's replies on the left. Long ones carry on over the next pages.
+  function pdfFig(id, M) {
+    var d = M.dim[id];
+    if (!d) return '<div class="noph">تعذّر تحميل ' + (isVid(id) ? 'الفيديو' : 'الصورة') + '</div>';
+    var px = '<div class="px" style="aspect-ratio:' + d[0] + '/' + d[1] + '"></div>';
+    if (!isVid(id)) return '<figure class="fg" data-pid="' + esc(id) + '">' + px + '</figure>';
+    var u = vidLink(id);
+    return '<figure class="fg v" data-pid="' + esc(id) + '">' + px + (u
+      ? '<div class="vl" data-url="' + esc(u) + '"><b>▶ افتح الفيديو</b><span dir="ltr">' + esc(u) + '</span></div>'
+      : '<div class="vl off"><b>▶ فيديو</b><span>لم يُرفع إلى السحابة بعد؛ هو على جهاز المالك فقط</span></div>') + '</figure>';
+  }
+  var PDF_ACT = { accept: 'أكّد المالك', reject: 'رفض المالك', reopen: 'أعاد الفتح' };
+  function pdfCols(o, M) {
+    var s = M.W[o.id], own = [], dev = [], nOwn = 0, nDev = 0;
+    function group(arr, cls, cap, when, note, ids) {
+      var top = '<div class="cap"><b>' + cap + '</b>' + (when ? '<span class="mono">' + when + '</span>' : '') + '</div>' + (note ? '<p class="nt ' + cls + '">' + esc(note) + '</p>' : '');
+      if (!ids.length) { arr.push('<div class="it">' + top + '</div>'); return; }
+      ids.forEach(function (id, k) { arr.push('<div class="it">' + (k ? '' : top) + pdfFig(id, M) + '</div>'); });
     }
-    var steps = [['', 'رُصدت', dayOf(o.at)]];
-    t.forEach(function (x) { steps.push(x.by === 'dev' ? ['dev', 'رد المطوّر', dayOf(x.at)] : [x.act === 'accept' ? 'ok' : 'no', { accept: 'أكّد المالك', reject: 'رفض المالك', reopen: 'أعاد الفتح' }[x.act], dayOf(x.at)]); });
+    (o.ph || []).forEach(function (id) { own.push('<div class="it">' + pdfFig(id, M) + '</div>'); nOwn++; });
+    thread(o).forEach(function (t) {
+      if (t.by === 'dev') { group(dev, 'dv', 'رد المطوّر', dayOf(t.at), t.note, t.ph || []); nDev += (t.ph || []).length; }
+      else if (t.note || (t.ph || []).length) { group(own, 'ow', PDF_ACT[t.act] || 'قرار المالك', dayOf(t.at), t.note, t.ph || []); nOwn += (t.ph || []).length; }
+    });
+    if ((o.ph2 || []).length) { group(dev, 'dv', 'صور المالك بعد الإصلاح', '', '', o.ph2); nDev += o.ph2.length; }
+    if (!own.length) own.push('<div class="it"><div class="noph2">بلا صور</div></div>');
+    if (!dev.length) dev.push('<div class="it"><div class="noph2">' + (s === 'fixed' ? 'أُغلقت دون رد من المطوّر' : 'لم يرد المطوّر بعد') + '</div></div>');
+    return { own: own, dev: dev, hOwn: 'صور المالك' + (nOwn ? ' (' + nOwn + ')' : ''), hDev: 'رد المطوّر' + (nDev ? ' (' + nDev + ')' : '') };
+  }
+  function pdfTimeline(o, M) {
+    var s = M.W[o.id], t = thread(o), steps = [['', 'رُصدت', dayOf(o.at)]];
+    t.forEach(function (x) { steps.push(x.by === 'dev' ? ['dev', 'رد المطوّر', dayOf(x.at)] : [x.act === 'accept' ? 'ok' : 'no', PDF_ACT[x.act], dayOf(x.at)]); });
     if (s === 'fixed' && !t.some(function (x) { return x.act === 'accept'; })) steps.push(['ok', 'أُغلقت', dayOf(o.up)]);
     if (s === 'open' || s === 'notfixed' || s === 'reopened') steps.push(['', 'بانتظار المطوّر', '']);
     if (s === 'review') steps.push(['', 'بانتظار تحقق المالك', '']);
     if (steps.length > 6) steps = [steps[0], ['', '…', '']].concat(steps.slice(-4));
-    var said = t.filter(function (x) { return x.note; }).pop();
-    return '<article class="orow"><div class="orow-g"><div class="orow-i"><div class="top">' + pdfPin(o, M) + '<span class="chip sev-' + o.sev + '">' + SEV[o.sev] + '</span></div>' +
+    return '<div class="tl">' + steps.map(function (x) { return '<span class="s"><i class="' + x[0] + '"></i>' + x[1] + (x[2] ? ' <span class="mono">' + x[2] + '</span>' : '') + '</span>'; }).join('<span class="ln"></span>') + '</div>';
+  }
+  function pdfHead(o, M, first) {
+    var s = M.W[o.id];
+    if (!first) return '<div class="o-mini">' + pdfPin(o, M) + '<b>' + esc(o.title || '—') + '</b><span>تابع</span></div>';
+    return '<div class="o-head"><div class="o-hi"><div class="top">' + pdfPin(o, M) + '<span class="chip sev-' + o.sev + '">' + SEV[o.sev] + '</span></div>' +
       '<h3>' + esc(o.title || '—') + '</h3><span><span class="k">الموقع: </span>' + esc((ROOM[o.room] ? o.detail : locOf(o)) || '—') + '</span>' +
-      (o.note ? '<span><span class="k">الوصف: </span>' + esc(o.note) + '</span>' : '') +
-      (said ? '<span><span class="k">' + (said.by === 'dev' ? 'رد المطوّر' : 'قرار المالك') + ': </span>' + esc(said.note) + '</span>' : '') + '</div>' +
-      '<figure>' + box(phs[0], 'بلا صورة') + '<figcaption>قبل</figcaption></figure>' +
-      '<figure>' + box(phs[1], s === 'fixed' ? 'أُغلقت بلا صورة' : devReplies(o.id).length ? 'رد بلا صورة' : 'لم يرد المطوّر بعد') + '<figcaption>بعد</figcaption></figure></div>' +
-      '<div class="tl">' + steps.map(function (x) { return '<span class="s"><i class="' + x[0] + '"></i>' + x[1] + (x[2] ? ' <span class="mono">' + x[2] + '</span>' : '') + '</span>'; }).join('<span class="ln"></span>') + '</div>' +
-      '<span class="stamp ' + PDF_STAMP[s] + '">' + PDF_ST[s] + '</span></article>';
+      (o.note ? '<span class="ds"><span class="k">الوصف: </span>' + esc(o.note) + '</span>' : '') + '</div>' +
+      '<span class="stamp ' + PDF_STAMP[s] + '">' + PDF_ST[s] + '</span></div>';
+  }
+  // lead: the space heading already placed above this card (it moves with the card); onMove(at): puts it back on a new page
+  function pdfObsFlow(B, at, cont, o, M, lead, onMove) {
+    var Q = pdfCols(o, M), first = true, forced = false, guard = 0, last = null;
+    while ((Q.own.length || Q.dev.length) && guard++ < 80) {
+      var art = B.add(at.host, '<article class="oc2' + (first ? '' : ' cont') + '">' + pdfHead(o, M, first) +
+        '<div class="o-cols"><div class="o-col own"><h4>' + Q.hOwn + (first ? '' : ' · تابع') + '</h4></div><div class="o-col dev"><h4>' + Q.hDev + (first ? '' : ' · تابع') + '</h4></div></div></article>');
+      var cols = { own: art.querySelector('.own'), dev: art.querySelector('.dev') }, placed = 0;
+      function put(col, k) { var el = B.add(col, Q[k][0]); if (B.fits(at.pg, art) || (forced && !placed)) { Q[k].shift(); placed++; return true; } el.remove(); return false; }
+      if (!first && !Q.dev.length) { // the developer has nothing more (or never replied): the owner's remaining photos use both columns
+        var hd = cols.dev.querySelector('h4'); hd.textContent = Q.hOwn + ' · تابع'; cols.dev.className = 'o-col own';
+        while (Q.own.length) {
+          var a1 = cols.own, a2 = cols.dev;
+          if (a1.getBoundingClientRect().height > a2.getBoundingClientRect().height) { a1 = cols.dev; a2 = cols.own; }
+          if (!put(a1, 'own') && !put(a2, 'own')) break;
+        }
+      } else ['own', 'dev'].forEach(function (k) { while (Q[k].length) { if (!put(cols[k], k)) break; } });
+      if (!placed) { // the card cannot even start here: it goes whole to a new page, and its space heading with it
+        art.remove(); if (lead) { lead.remove(); lead = null; }
+        at = cont(); if (onMove) onMove(at); forced = true; continue;
+      }
+      first = false; lead = null; last = art;
+      if (Q.own.length || Q.dev.length) { at = cont(); forced = true; }
+    }
+    var tl = B.add(last, pdfTimeline(o, M)); fitTimeline(last);
+    if (!B.fits(at.pg, last)) { // the history alone goes on to the next page, under a small repeat of the title
+      tl.remove(); at = cont();
+      var tail = B.add(at.host, '<article class="oc2 cont">' + pdfHead(o, M, false) + '</article>'); B.add(tail, pdfTimeline(o, M)); fitTimeline(tail);
+    }
+    return at;
   }
   function pdfBook(doc) {
     var B = { pages: [] };
@@ -2919,16 +3049,11 @@ p{margin:0}
     }
   }
   // Observation cards space by space: a space heading never ends a page, and repeats («تابع») when its cards carry over.
-  function flowCards(B, at, cont, groups) {
+  function flowCards(B, at, cont, groups, M) {
     groups.forEach(function (g) {
-      g.cards.forEach(function (html, k) {
-        var empty = !at.host.children.length, head = (k === 0 && g.head) ? B.add(at.host, g.head) : null, el = B.add(at.host, html);
-        fitTimeline(el);
-        if (empty || B.fits(at.pg, el)) return;
-        el.remove(); if (head) head.remove();
-        at = cont();
-        if (g.head) B.add(at.host, k === 0 ? g.head : g.more);
-        at.host.appendChild(el);
+      g.obs.forEach(function (o, k) {
+        var lead = (k === 0 && g.head) ? B.add(at.host, g.head) : null;
+        at = pdfObsFlow(B, at, cont, o, M, lead, function (a) { if (g.head) B.add(a.host, k === 0 ? g.head : g.more); });
       });
     });
     return at;
@@ -2953,12 +3078,12 @@ p{margin:0}
         var e = g.list.length ? null : pdfNoObs(g.f);
         return '<figure>' + pdfPlan(g.f, w, M, true) + '<span>' + esc(g.f.ar) + (e ? '<small class="' + e.cls + '">' + e.cap + '</small>' : '') + '</span></figure>';
       }).join('') + '</div>' + (obs.length ? pdfLegend(M, true) : '<p class="b-none">لا ملاحظات مسجلة في هذا الفحص.</p>') + '</div>';
-      pg.pb.innerHTML = '<div class="b-cover"><div class="b-top"><span class="eye">HANDOVER INSPECTION · FLOOR BOOK</span><h1>تقرير استلام العقار</h1><span class="prop">' + esc(prop) + '</span>' +
+      pg.pb.innerHTML = '<div class="b-cover"><div class="b-top"><span class="eye">HANDOVER INSPECTION · FLOOR BOOK</span><h1>تقرير استلام العقار</h1>' + (M.sub ? '<span class="scope">' + esc(M.sub) + '</span>' : '') + '<span class="prop">' + esc(prop) + '</span>' +
         (addr ? '<span class="addr">' + esc(addr) + '</span>' : '') + '</div>' +
         '<div class="b-mid"><div class="b-info">' + info.map(function (x) { return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
         '<div class="b-sum"><div><b>' + obs.length + '</b><span>ملاحظة</span></div><div class="c"><b>' + count(obs, function (o) { return o.sev === 'c'; }) + '</b><span>حرجة</span></div>' +
         '<div class="M"><b>' + (obs.length - fixed) + '</b><span>لم تُغلق بعد</span></div><div class="ok"><b>' + fixed + '</b><span>أُغلقت</span></div></div>' + map + '</div>' +
-        '<div class="b-foot">' + table + '<p>لكل دور صفحة فيها مخططه وأرقام ملاحظاته، ثم بطاقة لكل ملاحظة بصورها وما تمّ فيها مع المطوّر؛ الرقم نفسه على المخطط والبطاقة.</p></div></div>';
+        '<div class="b-foot">' + table + '<p>' + (M.scope === 'gen' ? 'تفاصيل كل دور (مخططه وبطاقات ملاحظاته بكل صورها) في ملفه الخاص؛ هذا الملف للملخص والملاحظات العامة.' : 'لكل دور صفحة فيها مخططه وأرقام ملاحظاته، ثم بطاقة لكل ملاحظة بكل صورها وكل ردود المطوّر عليها؛ الرقم نفسه على المخطط والبطاقة.') + '</p></div></div>';
       return pg.pb.querySelector('.b-foot').getBoundingClientRect().bottom <= pg.pb.getBoundingClientRect().bottom + 0.5;
     }
     [40, 34, 28].some(draw); // smaller plans when many locations need the room
@@ -2971,11 +3096,11 @@ p{margin:0}
     var rows = n ? pdfRegRows(g.list, M, true) : [{ h: '<tr class="none"><td colspan="4"><b class="' + e.cls + '">' + e.t + '</b><span>' + e.s + '</span></td></tr>' }];
     var col = flowTable(B, { pg: at.pg, host: grid.firstChild }, more, { cls: 'dreg', head: PDF_REG_HEAD, rows: rows });
     flowTable(B, col, more, { cls: 'rooms-t', lead: '<p class="d-sub">ما فُحص في غرف هذا الدور</p>', head: '<tr><th>الغرفة</th><th class="n">المفحوص</th><th class="n">ملاحظات</th></tr>', rows: pdfRoomRows(f) });
-    if (n) flowCards(B, B.at(f.ar, '<div class="d-sec"><i></i><h2>ملاحظات ' + esc(f.ar) + '</h2><span>غرفةً غرفة · الصورة قبل وبعد</span></div>'), function () { return B.at(f.ar); },
+    if (n) flowCards(B, B.at(f.ar, '<div class="d-sec"><i></i><h2>ملاحظات ' + esc(f.ar) + '</h2><span>غرفةً غرفة · كل الصور</span></div>'), function () { return B.at(f.ar); },
       pdfByRoom(g.list).map(function (x) {
         var h = '<div class="d-room">' + esc(x.r.ar) + '<span>' + nObs(x.list.length) + '</span></div>';
-        return { head: h, more: h.replace('</span></div>', ' · تابع</span></div>'), cards: x.list.map(function (o) { return pdfCard(o, M); }) };
-      }));
+        return { head: h, more: h.replace('</span></div>', ' · تابع</span></div>'), obs: x.list };
+      }), M);
   }
   // key findings: the page right after the cover. One card each: title, counter, note, the chosen photos and the linked observations.
   function pdfKfCard(k, M) {
@@ -3002,7 +3127,7 @@ p{margin:0}
     var at = B.at(title, '<div class="fl-head"><h2>' + esc(title) + '</h2><span>' + sub + ' · ' + nObs(list.length) + '</span></div>');
     function more(head) { return function () { return B.at(title, head ? '<div class="fl-head"><h2>' + esc(title) + '</h2><span>تابع</span></div>' : ''); }; }
     at = flowTable(B, at, more(true), { cls: 'dreg', head: PDF_REG_HEAD, rows: pdfRegRows(list, M, false) });
-    flowCards(B, at, more(false), [{ head: '', cards: list.slice().sort(function (a, b) { return a.no - b.no; }).map(function (o) { return pdfCard(o, M); }) }]);
+    flowCards(B, at, more(false), [{ head: '', obs: list.slice().sort(function (a, b) { return a.no - b.no; }) }], M);
   }
   function pdfSign(B) {
     var m = S.meta, dots = function (n) { return '<span class="dots">' + new Array(n + 1).join('.') + '</span>'; };
@@ -3021,27 +3146,34 @@ p{margin:0}
       B.add(pg.el, '<div class="ftr"><span>صفحة <span class="n">' + (k + 1) + '</span> من <span class="n">' + n + '</span></span><span>تقرير استلام العقار · <span class="mono">' + M.issued + '</span></span></div>');
     });
   }
-  async function buildPDF(say, getPhoto) {
-    var M = pdfModel();
-    await pdfPhotoMap(M, say, getPhoto);
-    say('تجهيز أداة PDF…');
+  async function pdfLibs(doc) {
     var noLib = function () { throw pdfError('تعذّر تحميل أداة PDF؛ تحقق من الاتصال بالإنترنت ثم أعد المحاولة.'); };
     if (!(window.jspdf && window.jspdf.jsPDF)) await loadScript(document, PDF_LIB.pdf).catch(noLib);
+    if (doc && !doc.defaultView.html2canvas) await loadScript(doc, PDF_LIB.h2c).catch(noLib);
+  }
+  // opts: scope ('all' | 'gen' | a floor id), remote (the read-only link's id: photos come from the cloud)
+  async function buildPDF(say, opts) {
+    opts = opts || {};
+    var M = pdfModel(opts.scope);
+    M.blob = opts.blob || pdfBlobGetter(opts.remote);
+    await pdfPhotoMap(M, say);
+    say('تجهيز أداة PDF…');
+    await pdfLibs(null);
     var f = await pdfFrame();
     try {
       var win = f.contentWindow, doc = f.contentDocument;
-      await loadScript(doc, PDF_LIB.h2c).catch(noLib);
+      await pdfLibs(doc);
       say('ترتيب الصفحات…');
       var B = pdfBook(doc);
       pdfCover(B, M);
-      pdfKf(B, M);
-      M.floors.forEach(function (g) { pdfFloor(B, M, g); });
-      if (M.house.length) pdfLoose(B, M, M.house, 'البيت كله', 'ملاحظات عامة لا تخص غرفة');
-      if (M.none.length) pdfLoose(B, M, M.none, 'ملاحظات بلا غرفة', 'من فحص سابق بلا مخطط');
-      pdfSign(B);
+      if (M.parts.kf) pdfKf(B, M);
+      if (M.parts.floors) M.floors.forEach(function (g) { pdfFloor(B, M, g); });
+      if (M.parts.house && M.house.length) pdfLoose(B, M, M.house, 'البيت كله', 'ملاحظات عامة لا تخص غرفة');
+      if (M.parts.none && M.none.length) pdfLoose(B, M, M.none, 'ملاحظات بلا غرفة', 'من فحص سابق بلا مخطط');
+      if (M.parts.sign) pdfSign(B);
       pdfChrome(B, M);
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
-      pdf.setProperties({ title: 'Property handover report ' + M.ref, creator: 'Property Handover Inspection' });
+      pdf.setProperties({ title: 'Property handover report ' + M.ref + (M.sub ? ' · ' + M.sub : ''), creator: 'Property Handover Inspection' });
       for (var k = 0; k < B.pages.length; k++) {
         say('تجهيز الصفحة ' + (k + 1) + ' من ' + B.pages.length + '…');
         var el = B.pages[k].el;
@@ -3053,30 +3185,88 @@ p{margin:0}
         if (k) pdf.addPage('a4', 'portrait');
         pdf.addImage(c.toDataURL('image/jpeg', 0.88), 'JPEG', 0, 0, 210, 297, 'pg' + k, 'NONE');
         c.width = c.height = 0;
+        await pdfOverlay(pdf, M, el);
       }
-      return { blob: pdf.output('blob'), pages: B.pages.length };
+      return { blob: pdf.output('blob'), pages: B.pages.length, M: M };
     } finally { f.remove(); }
   }
-  async function pdfDeliver(blob, n) {
-    var name = 'Handover-Report_' + fileStamp() + '.pdf';
-    if (IN_ARTIFACT) return saveFile(name, blob, 'application/pdf');
-    var f = null; try { f = new File([blob], name, { type: 'application/pdf' }); } catch (e) { }
-    if (!(CAN_SHARE && f && navigator.canShare({ files: [f] }))) return saveFile(name, blob, 'application/pdf');
+  // On top of each page's picture: every photo at full resolution inside its box, the play badge and the link of each clip
+  async function pdfOverlay(pdf, M, el) {
+    var pr = el.getBoundingClientRect(), sc = 210 / pr.width, figs = el.querySelectorAll('figure.fg[data-pid]');
+    function mm(r) { return { x: (r.left - pr.left) * sc, y: (r.top - pr.top) * sc, w: r.width * sc, h: r.height * sc }; }
+    for (var k = 0; k < figs.length; k++) {
+      var id = figs[k].getAttribute('data-pid'), px = figs[k].querySelector('.px'), r = mm(px.getBoundingClientRect()), img = null;
+      try { img = await pdfImage(M, id); } catch (e) { }
+      if (img) {
+        var z = Math.min(r.w / img.w, r.h / img.h), iw = img.w * z, ih = img.h * z;
+        pdf.addImage(img.data, img.fmt, r.x + (r.w - iw) / 2, r.y + (r.h - ih) / 2, iw, ih, 'i' + id, 'NONE');
+        M.files++;
+      }
+      if (isVid(id)) {
+        var cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+        pdf.setFillColor(17, 24, 39); pdf.circle(cx, cy, 7, 'F');
+        pdf.setFillColor(255, 255, 255); pdf.triangle(cx - 2.4, cy - 3.6, cx - 2.4, cy + 3.6, cx + 4, cy, 'F');
+        var vl = figs[k].querySelector('.vl[data-url]');
+        if (vl) {
+          var u = vl.getAttribute('data-url'), q = mm(vl.getBoundingClientRect());
+          pdf.link(r.x, r.y, r.w, r.h, { url: u }); pdf.link(q.x, q.y, q.w, q.h, { url: u });
+        }
+      }
+    }
+  }
+  async function pdfDeliver(blob, n, name, what) {
+    var mime = /\.zip$/.test(name) ? 'application/zip' : 'application/pdf';
+    if (IN_ARTIFACT) return saveFile(name, blob, mime);
+    var f = null; try { f = new File([blob], name, { type: mime }); } catch (e) { }
+    if (!(CAN_SHARE && f && navigator.canShare({ files: [f] }))) return saveFile(name, blob, mime);
     var mb = (blob.size / 1048576).toFixed(1).replace(/\.0$/, '');
-    if (await ask('تقرير PDF جاهز: ' + nPages(n) + ' (' + mb + ' ميغابايت). أرسله الآن عبر واتساب أو البريد، أو احفظه على جهازك.', 'مشاركة', 'حفظ على الجهاز', 'primary')) {
+    if (await ask(what + ' جاهز (' + mb + ' ميغابايت). أرسله الآن أو احفظه على جهازك.', 'مشاركة', 'حفظ على الجهاز', 'primary')) {
       try { await navigator.share({ files: [f], title: 'تقرير استلام العقار' }); toast('تمت المشاركة'); return true; }
       catch (e) { if (e && e.name === 'AbortError') return false; }
     }
-    return saveFile(name, blob, 'application/pdf');
+    return saveFile(name, blob, mime);
   }
-  function exPDF(getPhoto) { // getPhoto: only on the read-only link, which keeps nothing on the device
+  // what to export: the whole report, one floor, or every floor as its own file in one ZIP
+  function pdfChoose() {
+    return new Promise(function (resolve) {
+      var d = $('#pdfDlg'), list = $('#pdfOpts'), per = pdfModel('all').floors;
+      var html = '<button type="button" class="btn primary" data-pdf="all">التقرير كاملًا — ملف واحد</button>';
+      html += '<p class="pdf-sub">دور واحد</p><div class="pdf-fl">' + per.map(function (g) { return '<button type="button" class="btn" data-pdf="' + g.f.id + '">' + esc(g.f.ar) + '<small>' + nObs(g.list.length) + '</small></button>'; }).join('') + '</div>';
+      html += '<button type="button" class="btn" data-pdf="each">كل دور في ملف مستقل — ملف ZIP واحد</button>';
+      list.innerHTML = html; d.hidden = false;
+      function done(v) { d.hidden = true; list.onclick = null; $('#pdfNo').onclick = null; resolve(v); }
+      list.onclick = function (e) { var b = e.target.closest('[data-pdf]'); if (b) done(b.getAttribute('data-pdf')); };
+      $('#pdfNo').onclick = function () { done(null); };
+    });
+  }
+  function exPDF(remote) { // remote: only on the read-only link (the report's id), which keeps nothing on the device
     return guard(async function () {
-      if (!getPhoto) await flush();
-      var r;
-      try { r = await buildPDF(function (msg) { toast(msg, true); }, getPhoto); }
-      catch (e) { toast(e && e.pdf ? e.message : 'تعذّر إنشاء PDF: ' + (e && e.message ? e.message : e)); return; }
-      $('#toast').classList.remove('show');
-      await pdfDeliver(r.blob, r.pages);
+      var pick = await pdfChoose(); if (!pick) return;
+      if (!remote) await flush();
+      var say = function (msg) { toast(msg, true); }, stamp = fileStamp(), one = 'Handover-Report_' + stamp;
+      try {
+        if (pick !== 'each') {
+          var r = await buildPDF(say, { scope: pick, remote: remote });
+          $('#toast').classList.remove('show');
+          var fl = FL[pick];
+          await pdfDeliver(r.blob, r.pages, one + (fl ? '_' + fl.en.replace(/\s+/g, '-') : pick === 'gen' ? '_General' : '') + '.pdf', 'تقرير PDF (' + nPages(r.pages) + ')');
+          return;
+        }
+        var full = pdfModel('all'), jobs = [];
+        full.floors.forEach(function (g, k) { if (g.list.length) jobs.push({ scope: g.f.id, name: one + '_' + (k + 1) + '-' + g.f.en.replace(/\s+/g, '-') + '.pdf', label: g.f.ar }); });
+        jobs.push({ scope: 'gen', name: one + '_0-General.pdf', label: 'الملخص والملاحظات العامة' });
+        if (!(window.JSZip)) { say('تجهيز أداة الضغط…'); await loadScript(document, PDF_LIB.zip).catch(function () { throw pdfError('تعذّر تحميل أداة الضغط؛ تحقق من الاتصال بالإنترنت ثم أعد المحاولة.'); }); }
+        var zip = new window.JSZip(), pages = 0;
+        for (var k = 0; k < jobs.length; k++) {
+          var tag = 'الملف ' + (k + 1) + ' من ' + jobs.length + ' · ' + jobs[k].label + ' — ';
+          var out = await buildPDF(function (m) { say(tag + m); }, { scope: jobs[k].scope, remote: remote });
+          zip.file(jobs[k].name, out.blob); pages += out.pages; out = null; // each file is bound and released before the next floor's photos load
+        }
+        say('تجميع الملفات في ملف ZIP…');
+        var zb = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+        $('#toast').classList.remove('show');
+        await pdfDeliver(zb, pages, one + '_floors.zip', jobs.length + ' ملفات PDF في ملف ZIP');
+      } catch (e) { toast(e && e.pdf ? e.message : 'تعذّر إنشاء PDF: ' + (e && e.message ? e.message : e)); }
     });
   }
   async function importBackup(file) {
@@ -3390,10 +3580,11 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v25</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v26</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
+      '<div class="dlg" id="pdfDlg" hidden role="dialog" aria-modal="true" aria-labelledby="pdfTtl"><div class="dlg-card"><p id="pdfTtl"><b>تصدير تقرير PDF</b><br>كل الصور بحجمها الكامل. اختر ما تريد تصديره:</p><div class="pdf-opts" id="pdfOpts"></div><button type="button" class="btn ghost" id="pdfNo">تراجع</button></div></div>' +
       '<div class="toast" id="toast" role="status" aria-live="polite"></div>';
     VIEW_ID = id;
     VIEW_NOTE = note;
@@ -3787,7 +3978,7 @@ p{margin:0}
     copyShare: function () { copyText(devURL(), 'نُسخ رابط المطوّر'); },
     copyOwner: function () { copyText(ownerURL(), 'نُسخ رابطك الخاص؛ احفظه ولا تشاركه'); },
     vReload: function () { vLoad(); },
-    vPDF: function () { exPDF(function (pid) { return remotePhotoDataURL(VIEW_ID, pid); }); }
+    vPDF: function () { exPDF(VIEW_ID); }
   };
   document.addEventListener('click', function (e) {
     // plan links inside the report preview / developer view: scroll without touching the address (it holds the owner link)
@@ -3820,6 +4011,7 @@ p{margin:0}
     }
     if (e.key !== 'Escape' || !$('#mk')) return;
     if (!$('#mk').hidden) { if (!$('#mkText').hidden) mkTextUI(false); else closeMk(); return; }
+    if ($('#pdfDlg') && !$('#pdfDlg').hidden) { $('#pdfNo').click(); return; }
     if (!$('#dlg').hidden) { $('#dlgNo').click(); return; }
     if (!$('#kfSheet').hidden) { KD = null; closeKfUI(); return; }
     if (!$('#dec').hidden) { cancelDecide(); return; }
@@ -3839,7 +4031,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v25</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v26</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
