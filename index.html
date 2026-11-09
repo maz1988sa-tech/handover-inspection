@@ -877,7 +877,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v21</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v22</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1522,7 +1522,7 @@ p{margin:0}
     if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
     try {
       var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v21') return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v22') return;
       var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
       b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
       document.body.appendChild(b);
@@ -2609,7 +2609,19 @@ p{margin:0}
       toast('تجهيز النسخة ' + (k + 1) + ' / ' + ids.length + '…', true);
       var b = await photoBlob(ids[k]); if (b) photos[ids[k]] = await blobToDataURL(b);
     }
-    return JSON.stringify({ app: 'property-handover-inspection', v: 2, exported: new Date().toISOString(), state: S, events: E, photos: photos });
+    var vids = [], blobs = [], vi = ids.filter(isVid);
+    for (var q = 0; q < vi.length; q++) {
+      toast('تجهيز المقاطع ' + (q + 1) + ' / ' + vi.length + '…', true);
+      var rec = await Store.get('ph', 'vid:' + vi[q]), vb = null;
+      if (rec && rec.buf) vb = rec.buf instanceof Blob ? rec.buf : new Blob([rec.buf], { type: rec.type || 'video/mp4' });
+      else if (CFG && C.id) { try { var rr = await fetch(vidPubURL(C.id, vi[q])); if (rr.ok) vb = await rr.blob(); } catch (e) { } }
+      if (vb && vb.size) { vids.push({ id: vi[q], type: (rec && rec.type) || vb.type || 'video/mp4', size: vb.size }); blobs.push(vb); }
+    }
+    var head = { app: 'property-handover-inspection', v: vids.length ? 3 : 2, exported: new Date().toISOString(), state: S, events: E, photos: photos };
+    if (!vids.length) return JSON.stringify(head); // no clips: the plain readable JSON, as before
+    head.vids = vids;
+    var hb = new TextEncoder().encode(JSON.stringify(head));
+    return new Blob(['PHB1' + ('0000000000' + hb.length).slice(-10), hb].concat(blobs), { type: 'application/json' }); // clips follow the header as raw bytes: no base64 bloat, no clip loaded into memory
   }
   function fileStamp() { return (S.meta.date || today()); }
 
@@ -3039,11 +3051,20 @@ p{margin:0}
   }
   async function importBackup(file) {
     await guard(async function () {
-      var txt = await fileText(file), j;
-      try { j = JSON.parse(txt); } catch (e) { toast('الملف ليس نسخة احتياطية صالحة'); return; }
+      var j, clips = [], bodyAt = 0, packed = (await fileText(file.slice(0, 4))) === 'PHB1';
+      try {
+        if (packed) { var hl = parseInt(await fileText(file.slice(4, 14)), 10); j = JSON.parse(await fileText(file.slice(14, 14 + hl))); bodyAt = 14 + hl; }
+        else j = JSON.parse(await fileText(file));
+      } catch (e) { toast('الملف ليس نسخة احتياطية صالحة'); return; }
       if (!j || j.app !== 'property-handover-inspection' || !j.state) { toast('الملف ليس نسخة احتياطية من هذه الأداة'); return; }
       if (!(await ask('استيراد النسخة سيستبدل البيانات الحالية على هذا الجهاز. متابعة؟', 'استيراد'))) return;
+      if (packed) { var at = bodyAt; (j.vids || []).forEach(function (v) { clips.push({ id: v.id, type: v.type, size: v.size, blob: file.slice(at, at + v.size, v.type) }); at += v.size; }); if (at > file.size) { toast('ملف النسخة ناقص: لم يكتمل نسخه'); return; } }
+      var keep = [], inBk = {}; clips.forEach(function (c) { inBk['vid:' + c.id] = 1; });
+      (await Store.keys('ph')).forEach(function (k) { if (String(k).indexOf('vid:') === 0 && !inBk[k] && keep.indexOf(k) < 0) keep.push(k); }); // clips only on this device and not in the file stay
+      var kept = []; for (var kk = 0; kk < keep.length; kk++) kept.push([keep[kk], await Store.get('ph', keep[kk])]);
       await Store.clear('ph'); URLS.forEach(function (u) { URL.revokeObjectURL(u); }); URLS.clear();
+      for (var cc = 0; cc < kept.length; cc++) if (kept[cc][1]) await Store.put('ph', kept[cc][0], kept[cc][1]);
+      for (var cv = 0; cv < clips.length; cv++) { toast('استيراد المقاطع ' + (cv + 1) + ' / ' + clips.length + '…', true); await Store.put('ph', 'vid:' + clips[cv].id, { buf: clips[cv].blob, type: clips[cv].type, size: clips[cv].size, at: Date.now() }); }
       var ids = Object.keys(j.photos || {});
       for (var k = 0; k < ids.length; k++) { toast('استيراد الصور ' + (k + 1) + ' / ' + ids.length + '…', true); await Store.put('ph', ids[k], { buf: dataURLToBuf(j.photos[ids[k]]), type: 'image/jpeg', at: Date.now() }); }
       S = normalize(j.state); if (!CFG) setEvents(j.events); if (CFG) C.up = {}; await flush(); markDirty(); renderAll(); toast('اكتمل الاستيراد: ' + nObs(S.obs.length));
@@ -3339,7 +3360,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v21</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v22</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3788,7 +3809,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v21</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v22</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
