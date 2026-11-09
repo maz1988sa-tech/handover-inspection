@@ -877,7 +877,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v23</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v24</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1524,7 +1524,7 @@ p{margin:0}
     if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
     try {
       var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v23') return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v24') return;
       var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
       b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
       document.body.appendChild(b);
@@ -2177,7 +2177,7 @@ p{margin:0}
   async function openMarkup(id, target) {
     var u = await photoURL(id); if (!u) { toast('تعذّر فتح الصورة'); return; }
     var im = await loadImg(u);
-    MK = { id: id, img: im, ops: [], cur: null, s: 1, dpr: 1, tool: 'pen', color: MK_COLORS[0], pend: null, target: target || { kind: 'obs' } };
+    MK = { id: id, img: im, ops: [], cur: null, s: 1, dpr: 1, tool: 'rect', color: '#FFFFFF', pend: null, target: target || { kind: 'obs' } };
     $('#mkHint').textContent = MK.target.kind === 'reply' ? 'علّم ثم «حفظ» لإرفاقها بردك' : 'ارسم أو ضع دائرة/مستطيلاً حول العيب، أو أضف نصاً';
     $('#mkText').hidden = true; mkTools();
     $('#mk').hidden = false; fitOverlays(); layoutMk(); drawMk();
@@ -3382,7 +3382,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v23</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v24</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3831,7 +3831,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v23</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v24</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
