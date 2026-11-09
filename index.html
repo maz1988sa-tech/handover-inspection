@@ -360,8 +360,8 @@ a{color:var(--accent)}
 .mk-hint{font-size:13px;color:var(--ink-3);text-align:center;min-width:0}
 .mk-stage{flex:1 1 auto;min-height:0;display:grid;place-items:center;padding:12px;overflow:hidden;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 .mk-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));background:var(--bg);border-bottom:1px solid var(--line)}
-.mk-seg{flex:0 1 220px}
-.mk-seg button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.mk-seg{flex:1 1 auto;max-width:360px}
+.mk-seg button{display:inline-flex;align-items:center;justify-content:center;gap:4px;flex:1 1 0;min-width:0;padding-inline:4px;white-space:nowrap}
 .mk-seg svg{width:16px;height:16px;flex:0 0 auto}
 .mk-colors{display:flex;gap:12px;align-items:center}
 .sw{appearance:none;width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--c);cursor:pointer;padding:0;flex:0 0 auto}
@@ -877,7 +877,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v22</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v23</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1116,6 +1116,8 @@ p{margin:0}
     <div class="mk-tools" id="mkTools">
       <div class="seg mk-seg" role="group" aria-label="الأداة">
         <button type="button" data-act="mkTool" data-v="pen" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1L19 8.5 15.5 5 5 15.5z"/><path d="m13.5 7 3.5 3.5"/></svg>قلم</button>
+        <button type="button" data-act="mkTool" data-v="circle" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/></svg>دائرة</button>
+        <button type="button" data-act="mkTool" data-v="rect" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1"/></svg>مستطيل</button>
         <button type="button" data-act="mkTool" data-v="text" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg>نص</button>
       </div>
       <div class="mk-colors" role="group" aria-label="اللون">
@@ -1522,7 +1524,7 @@ p{margin:0}
     if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
     try {
       var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v22') return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v23') return;
       var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
       b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
       document.body.appendChild(b);
@@ -2176,7 +2178,7 @@ p{margin:0}
     var u = await photoURL(id); if (!u) { toast('تعذّر فتح الصورة'); return; }
     var im = await loadImg(u);
     MK = { id: id, img: im, ops: [], cur: null, s: 1, dpr: 1, tool: 'pen', color: MK_COLORS[0], pend: null, target: target || { kind: 'obs' } };
-    $('#mkHint').textContent = MK.target.kind === 'reply' ? 'علّم ثم «حفظ» لإرفاقها بردك' : 'ارسم حول العيب أو أضف نصاً';
+    $('#mkHint').textContent = MK.target.kind === 'reply' ? 'علّم ثم «حفظ» لإرفاقها بردك' : 'ارسم أو ضع دائرة/مستطيلاً حول العيب، أو أضف نصاً';
     $('#mkText').hidden = true; mkTools();
     $('#mk').hidden = false; fitOverlays(); layoutMk(); drawMk();
   }
@@ -2231,6 +2233,12 @@ p{margin:0}
         x.fillStyle = op.c; lines.forEach(function (l, i) { x.fillText(l, cx, y0 + i * lh); });
         x.restore(); return;
       }
+      if (op.t === 'circle' || op.t === 'rect') {
+        x.strokeStyle = op.c; x.lineWidth = lw; x.beginPath();
+        if (op.t === 'circle') x.arc(op.x, op.y, Math.max(1, op.r), 0, Math.PI * 2);
+        else x.rect(Math.min(op.x, op.x2), Math.min(op.y, op.y2), Math.abs(op.x2 - op.x), Math.abs(op.y2 - op.y));
+        x.stroke(); return;
+      }
       var q = op.pts; if (!q || !q.length) return;
       x.strokeStyle = op.c; x.fillStyle = op.c; x.lineWidth = lw;
       if (q.length === 1) { x.beginPath(); x.arc(q[0][0], q[0][1], lw / 2, 0, Math.PI * 2); x.fill(); return; }
@@ -2272,10 +2280,24 @@ p{margin:0}
       if (!MK) return; e.preventDefault();
       if (MK.tool === 'text') { MK.pend = mkPoint(e); if ($('#mkText').hidden) mkTextUI(true); else drawMk(); return; }
       try { c.setPointerCapture(e.pointerId); } catch (er) { }
-      MK.cur = { t: 'pen', c: MK.color, pts: [mkPoint(e)] }; drawMk();
+      var p0 = mkPoint(e);
+      if (MK.tool === 'circle') MK.cur = { t: 'circle', c: MK.color, x: p0[0], y: p0[1], r: 0 }; // press = centre, drag = radius
+      else if (MK.tool === 'rect') MK.cur = { t: 'rect', c: MK.color, x: p0[0], y: p0[1], x2: p0[0], y2: p0[1] }; // press = one corner, drag = the opposite
+      else MK.cur = { t: 'pen', c: MK.color, pts: [p0] };
+      drawMk();
     });
-    c.addEventListener('pointermove', function (e) { if (!MK || !MK.cur) return; e.preventDefault(); MK.cur.pts.push(mkPoint(e)); drawMk(); });
-    function end() { if (!MK || !MK.cur) return; MK.ops.push(MK.cur); MK.cur = null; drawMk(); }
+    c.addEventListener('pointermove', function (e) {
+      if (!MK || !MK.cur) return; e.preventDefault(); var p = mkPoint(e), o = MK.cur;
+      if (o.t === 'circle') o.r = Math.hypot(p[0] - o.x, p[1] - o.y);
+      else if (o.t === 'rect') { o.x2 = p[0]; o.y2 = p[1]; }
+      else o.pts.push(p);
+      drawMk();
+    });
+    function end() {
+      if (!MK || !MK.cur) return; var o = MK.cur; MK.cur = null;
+      var tiny = (o.t === 'circle' && o.r < 6) || (o.t === 'rect' && Math.abs(o.x2 - o.x) < 6 && Math.abs(o.y2 - o.y) < 6); // an accidental tap draws nothing
+      if (!tiny) MK.ops.push(o); drawMk();
+    }
     c.addEventListener('pointerup', end); c.addEventListener('pointercancel', end);
     $('#mkTextIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); mkAddText(); } });
     window.addEventListener('resize', function () { if (MK) { layoutMk(); drawMk(); } });
@@ -3360,7 +3382,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v22</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v23</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -3809,7 +3831,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v22</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v23</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
