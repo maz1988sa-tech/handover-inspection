@@ -560,6 +560,8 @@ button.th{appearance:none;border:0;padding:0;cursor:zoom-in;font:inherit;color:i
 .ph.is-vid::after{top:calc(50% - 20px)}
 .pv-stage.is-vid{touch-action:auto}
 #pvVid{max-width:calc(100% - 24px);max-height:calc(100% - 24px);background:#000;border-radius:8px}
+.pv.imm .pv-bar,.pv.imm .pv-foot{display:none}
+.pv.imm #pvVid{max-width:none;max-height:none;width:100%;height:100%;border-radius:0;object-fit:contain}
 
 /* ---- property-wide key findings ---- */
 .kf-list{display:grid;gap:8px;margin-bottom:12px}
@@ -902,7 +904,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v26</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v27</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1557,7 +1559,7 @@ p{margin:0}
     if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
     try {
       var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v26') return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v27') return;
       var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
       b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
       document.body.appendChild(b);
@@ -2386,7 +2388,7 @@ p{margin:0}
       '<span class="pv-hint" id="pvHint">قرّب بإصبعين أو انقر مرتين</span></div>' +
       '<button type="button" class="btn pv-nav" id="pvNext" data-act="pvNext" aria-label="الصورة التالية"><span>التالية</span>' + IC.fwd + '</button></div>';
     ($('.app') || document.body).appendChild(d);
-    bindPV();
+    bindPV(); pvVidBind();
   }
   // which marking the viewer offers for this photo (owner's app only)
   function pvMarkKind() {
@@ -2404,6 +2406,20 @@ p{margin:0}
     $('#pv').hidden = false; document.body.classList.add('modal-open'); fitOverlays();
     pvShow(idx || 0);
   }
+  // a clip that starts playing takes the whole screen: bars and the player's own buttons go away at once; a tap brings them back for a moment
+  function pvChrome(show) {
+    var pv = $('#pv'), vd = $('#pvVid'); if (!pv || !PV) return;
+    pv.classList.toggle('imm', !show); if (show) vd.setAttribute('controls', ''); else vd.removeAttribute('controls');
+  }
+  function pvVidBind() {
+    var vd = $('#pvVid'); if (vd._b) return; vd._b = 1;
+    vd.addEventListener('play', function () { if (PV && PV.vid) { clearTimeout(PV.ct); pvChrome(false); } });
+    ['pause', 'ended'].forEach(function (ev) { vd.addEventListener(ev, function () { if (PV && PV.vid) { clearTimeout(PV.ct); pvChrome(true); } }); });
+    vd.addEventListener('click', function () {
+      if (!PV || !PV.vid || vd.paused || vd.hasAttribute('controls')) return;
+      pvChrome(true); clearTimeout(PV.ct); PV.ct = setTimeout(function () { if (PV && PV.vid && !vd.paused) pvChrome(false); }, 2500);
+    });
+  }
   function pvFit() {
     var img = $('#pvImg'), st = $('#pvStage'); if (!img.naturalWidth) return;
     var f = Math.min((st.clientWidth - 24) / img.naturalWidth, (st.clientHeight - 24) / img.naturalHeight);
@@ -2415,6 +2431,7 @@ p{margin:0}
     var it = PV.items[PV.i], img = $('#pvImg'), vd = $('#pvVid');
     img.style.transform = ''; img.removeAttribute('src'); img.style.width = img.style.height = '';
     try { vd.pause(); } catch (e) { } vd.removeAttribute('src'); vd.removeAttribute('poster');
+    pvChrome(true); clearTimeout(PV.ct);
     PV.vid = isVid(it.id); vd.hidden = !PV.vid; img.hidden = PV.vid; $('#pvStage').classList.toggle('is-vid', PV.vid);
     var who = PV.vid ? 'فيديو الملاحظة' : it.id && it.id.indexOf('d_') === 0 ? 'صورة المطوّر' : PV.ctx.kind === 'own' ? 'صورة الملاحظة' : PV.ctx.kind === 'dec' ? 'صورة ردك' : 'الصورة';
     $('#pvT').textContent = who + (n > 1 ? ' · ' + (PV.i + 1) + ' من ' + n : '');
@@ -3580,7 +3597,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v26</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v27</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -4031,7 +4048,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v26</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v27</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
