@@ -772,11 +772,22 @@ p{margin:0}
 
 /* cover */
 .b-cover{height:100%;display:grid;grid-template-rows:auto 1fr auto}
-.b-top{background:#0D1525;color:#fff;padding:16mm 14mm 9mm;display:grid;gap:2mm}
-.b-top .eye{font:600 8pt/1 'IBM Plex Mono',monospace;letter-spacing:.6mm;color:#9DB4E8}
-.b-top h1{font-size:24pt}
-.b-top .prop{font:700 14pt 'Noto Kufi Arabic',sans-serif;color:#C9D7F5}
-.b-top .addr{font-size:9.5pt;color:#B8C2D3}
+.b-top{background:#0D1525;color:#fff;padding:8mm 14mm 6mm;display:flex;justify-content:space-between;align-items:center;gap:8mm}
+.b-id{display:grid;gap:1.4mm;min-width:0}
+.b-top .eye{font:600 6.8pt/1 'IBM Plex Mono',monospace;letter-spacing:.5mm;color:#9DB4E8}
+.b-top h1{font-size:18pt;display:flex;align-items:center;gap:3mm;flex-wrap:wrap}
+.b-line{display:flex;align-items:baseline;gap:3mm;flex-wrap:wrap}
+.b-top .prop{font:700 10.5pt 'Noto Kufi Arabic',sans-serif;color:#C9D7F5}
+.b-top .addr{font-size:8.5pt;color:#B8C2D3}
+.b-tip{flex:0 0 auto;max-width:76mm;display:flex;align-items:center;gap:2.8mm;border:.3mm solid rgba(157,180,232,.45);border-radius:2.5mm;padding:2.6mm 3.2mm;background:rgba(157,180,232,.08)}
+.b-tip b{display:block;font:600 8.4pt/1.5 'IBM Plex Sans Arabic',sans-serif;color:#fff}
+.b-tip span{display:block;font-size:7.6pt;line-height:1.5;color:#B8C2D3}
+.tap{flex:0 0 auto;display:block;position:relative;width:4.4mm;height:4.4mm;border-radius:50%;border:.35mm solid currentColor}
+.tap::after{content:'';position:absolute;top:1.1mm;right:1.1mm;bottom:1.1mm;left:1.1mm;border-radius:50%;background:currentColor}
+.b-tip .tap{color:#9DB4E8}
+.tip{display:flex;align-items:center;gap:1.8mm;font:500 7.6pt/1.45 'IBM Plex Sans Arabic',sans-serif;color:#1747A6;margin:0 0 2mm}
+.tip .tap{width:3.6mm;height:3.6mm;border-width:.3mm}
+.tip .tap::after{top:.85mm;right:.85mm;bottom:.85mm;left:.85mm}
 .b-mid{padding:6mm 14mm 0;display:grid;gap:5mm;align-content:start}
 .b-info{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3mm;font-size:8.6pt}
 .b-info div{display:grid;gap:.6mm;border-bottom:.25mm solid #E6EAF0;padding-bottom:2mm;min-width:0}
@@ -787,16 +798,19 @@ p{margin:0}
 .b-sum span{font-size:8pt;color:#465267}
 .b-sum .M{background:#FEF0E1}.b-sum .M b{color:#A84B06}.b-sum .ok{background:#E3F2E7}.b-sum .ok b{color:#137333}
 .b-map h3{font-size:10.5pt;margin-bottom:3mm}
-.b-map .row{display:flex;gap:6mm;justify-content:center;align-items:flex-start}
+.b-map .row{display:flex;gap:4mm;justify-content:center;align-items:flex-start}
 .b-map figure{margin:0;display:grid;gap:1.5mm;justify-items:center;font:600 8pt 'Noto Kufi Arabic',sans-serif;color:#465267}
+.b-map figure .go{color:#1747A6;background:#F1F5FD;border:.3mm solid #C9D7F5;border-radius:3mm;padding:.4mm 2.8mm}
 .b-none{font-size:10pt;color:#465267;padding:8mm 0}
-.b-map figure small{display:block;text-align:center;font:500 7.5pt 'IBM Plex Sans Arabic',sans-serif;margin-top:.5mm}
+.b-map figure small{display:block;text-align:center;font:500 7.5pt 'IBM Plex Sans Arabic',sans-serif;margin-top:-.6mm}
 .b-map figure small.ok{color:#137333}.b-map figure small.todo{color:#A84B06}
-.b-foot{padding:0 14mm 17mm;display:grid;gap:4mm;align-content:end}
+.b-foot{padding:0 14mm 16mm;display:grid;gap:4mm;align-content:end}
 .b-foot p{font-size:8pt;color:#6B7689;line-height:1.7;margin:0}
+.b-tab .tip{margin-bottom:1.6mm;color:#1747A6;font-size:7.6pt;line-height:1.45}
 .btab{width:100%;border-collapse:collapse;font-size:8.6pt}
 .btab th{background:#F3F5F9;color:#465267;font-weight:600;padding:2mm;text-align:right}
 .btab td{padding:2mm;border-bottom:.25mm solid #E6EAF0}
+.btab tr[data-go] td:first-child{color:#1747A6;font-weight:600}
 .btab .n{text-align:center}
 
 /* floor page: the table on the right, the plan on the left */
@@ -871,7 +885,7 @@ p{margin:0}
 .tl .s i{width:2.6mm;height:2.6mm;border-radius:50%;background:#98A2B3;flex:0 0 auto}
 .tl .s i.dev{background:#1747A6}.tl .s i.ok{background:#137333}.tl .s i.no{background:#B42318}
 .tl .ln{flex:1;height:.3mm;background:#D9DFE8;margin:0 2mm;min-width:4mm}
-.b-top .scope{font:700 12pt 'Noto Kufi Arabic',sans-serif;color:#FFD9A0}
+.b-top .scope{font:700 9pt/1 'Noto Kufi Arabic',sans-serif;color:#FFD9A0;border:.3mm solid rgba(255,217,160,.55);border-radius:3mm;padding:1.2mm 2.6mm}
 
 /* sign-off */
 .so-lead{font-size:9.5pt;line-height:1.8;color:#465267;margin:4mm 0 7mm}
@@ -903,7 +917,7 @@ p{margin:0}
   <header class="top">
     <div class="top-in">
       <div class="brand">
-        <span class="brand-e">Property Handover Inspection<span class="ver">v28</span></span>
+        <span class="brand-e">Property Handover Inspection<span class="ver">v29</span></span>
         <span class="brand-t">فحص استلام العقار</span>
         <span class="brand-p" id="propLine">لم تُحدَّد بيانات العقار</span>
       </div>
@@ -1558,7 +1572,7 @@ p{margin:0}
     if (!/^https?:/.test(location.protocol) || Date.now() - UPD_AT < 60000 || document.getElementById('updBar')) return; UPD_AT = Date.now();
     try {
       var r = await fetch(location.pathname + '?c=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v28') return;
+      var m = (await r.text()).match(/class="ver">(v\d+)/); if (!m || m[1] === 'v29') return;
       var b = document.createElement('div'); b.id = 'updBar'; b.className = 'upd';
       b.innerHTML = '<span>يتوفر تحديث جديد (' + m[1] + ')</span><button type="button" id="updGo">تحديث الآن</button>';
       document.body.appendChild(b);
@@ -3106,39 +3120,52 @@ p{margin:0}
     });
     return at;
   }
+  // A one-line note above an interactive table or list: what a tap on it does.
+  function pdfTip(t) { return '<p class="tip"><i class="tap"></i><span>' + t + '</span></p>'; }
   function pdfCover(B, M) {
     var m = S.meta, obs = M.obs, fixed = obs.filter(function (o) { return M.W[o.id] === 'fixed'; }).length;
     var prop = m.prop || H.name; if (m.unit && prop.indexOf(m.unit) < 0) prop += ' — ' + m.unit;
     var addr = m.addr || H.sub;
     var info = [['المالك / الفاحص', esc(m.insp || '—')], ['المطوّر', esc(m.dev || '—')], ['تاريخ الفحص', '<span class="mono">' + esc(m.date || '—') + '</span>'], ['رقم التقرير', '<span class="mono">' + esc(M.ref) + '</span>']];
+    // each row jumps to its own section when this file has one
     var groups = M.floors.map(function (g) { return [g.f.ar, g.list, M.parts.floors ? g.f.id : '']; });
-    if (M.house.length) groups.push(['البيت كله', M.house]);
-    if (M.none.length) groups.push(['بلا غرفة', M.none]);
+    if (M.house.length) groups.push(['البيت كله', M.house, M.parts.house ? '_house' : '']);
+    if (M.none.length) groups.push(['بلا غرفة', M.none, M.parts.none ? '_none' : '']);
     function count(list, f) { return list.filter(f).length; }
-    var table = '<table class="btab"><thead><tr><th>الملاحظات حسب الموقع</th><th class="n">العدد</th><th class="n">أُغلقت</th><th class="n">لم تُغلق</th></tr></thead><tbody>' +
+    var linked = groups.some(function (g) { return g[2]; });
+    var table = '<div class="b-tab">' + (linked ? pdfTip('الجدول تفاعلي: اضغط على أي موقع للانتقال إلى صفحته') : '') +
+      '<table class="btab"><thead><tr><th>الملاحظات حسب الموقع</th><th class="n">العدد</th><th class="n">أُغلقت</th><th class="n">لم تُغلق</th></tr></thead><tbody>' +
       groups.map(function (g) {
         var l = g[1], x = count(l, function (o) { return M.W[o.id] === 'fixed'; });
         return '<tr' + (g[2] ? ' data-go="f:' + esc(g[2]) + '"' : '') + '><td>' + esc(g[0]) + '</td><td class="n mono">' + l.length + '</td><td class="n mono">' + x + '</td><td class="n mono">' + (l.length - x) + '</td></tr>';
-      }).join('') + '</tbody></table>';
+      }).join('') + '</tbody></table></div>';
+    // the band: what the file is on the right; on the left, how to use the map (only when the floors are in this file)
+    var tip = M.parts.floors ? '<div class="b-tip"><i class="tap"></i><div><b>اضغط على أي فراغ في المخطط للانتقال إليه مباشرة</b><span>وعلى اسم الدور تحت المخطط لفتح مخططه</span></div></div>' : '';
+    var top = '<div class="b-top"><div class="b-id"><span class="eye">HANDOVER INSPECTION · FLOOR BOOK</span><h1>تقرير استلام العقار' + (M.sub ? '<span class="scope">' + esc(M.sub) + '</span>' : '') + '</h1>' +
+      '<div class="b-line"><span class="prop">' + esc(prop) + '</span>' + (addr ? '<span class="addr">' + esc(addr) + '</span>' : '') + '</div></div>' + tip + '</div>';
     var pg = B.page('', 'cover');
     function draw(w) {
       var map = '<div class="b-map"><h3>خريطة الملاحظات</h3><div class="row">' + M.floors.map(function (g) {
         var e = g.list.length ? null : pdfNoObs(g.f);
-        return '<figure>' + pdfPlan(g.f, w, M, true) + '<span>' + esc(g.f.ar) + (e ? '<small class="' + e.cls + '">' + e.cap + '</small>' : '') + '</span></figure>';
+        return '<figure>' + pdfPlan(g.f, w, M, true) + '<span' + (M.parts.floors ? ' class="go" data-go="f:' + esc(g.f.id) + '"' : '') + '>' + esc(g.f.ar) + '</span>' +
+          (e ? '<small class="' + e.cls + '">' + e.cap + '</small>' : '') + '</figure>';
       }).join('') + '</div>' + (obs.length ? pdfLegend(M, true) : '<p class="b-none">لا ملاحظات مسجلة في هذا الفحص.</p>') + '</div>';
-      pg.pb.innerHTML = '<div class="b-cover"><div class="b-top"><span class="eye">HANDOVER INSPECTION · FLOOR BOOK</span><h1>تقرير استلام العقار</h1>' + (M.sub ? '<span class="scope">' + esc(M.sub) + '</span>' : '') + '<span class="prop">' + esc(prop) + '</span>' +
-        (addr ? '<span class="addr">' + esc(addr) + '</span>' : '') + '</div>' +
+      pg.pb.innerHTML = '<div class="b-cover">' + top +
         '<div class="b-mid"><div class="b-info">' + info.map(function (x) { return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
         '<div class="b-sum"><div><b>' + obs.length + '</b><span>ملاحظة</span></div>' +
         '<div class="M"><b>' + (obs.length - fixed) + '</b><span>لم تُغلق بعد</span></div><div class="ok"><b>' + fixed + '</b><span>أُغلقت</span></div></div>' + map + '</div>' +
         '<div class="b-foot">' + table + '<p>' + (M.scope === 'gen' ? 'تفاصيل كل دور (مخططه وبطاقات ملاحظاته بكل صورها) في ملفه الخاص؛ هذا الملف للملخص والملاحظات العامة.' : 'لكل دور صفحة فيها مخططه وأرقام ملاحظاته، ثم بطاقة لكل ملاحظة بكل صورها وكل ردود المطوّر عليها؛ الرقم نفسه على المخطط والبطاقة.') + '</p></div></div>';
       return pg.pb.querySelector('.b-foot').getBoundingClientRect().bottom <= pg.pb.getBoundingClientRect().bottom + 0.5;
     }
-    [40, 34, 28].some(draw); // smaller plans when many locations need the room
+    // the plans as wide as the row allows (4 mm apart), shrinking only when the page needs the room
+    var nf = Math.max(1, M.floors.length), ws = [];
+    for (var w = Math.min(64, Math.floor((182 - (nf - 1) * 4) / nf * 2) / 2); w > 26; w -= 2.5) ws.push(w);
+    ws.push(26); ws.some(draw);
   }
   function pdfFloor(B, M, g) {
     var f = g.f, n = g.list.length, e = n ? null : pdfNoObs(f);
     var at = B.at(f.ar, '<div class="fl-head" data-fl="' + esc(f.id) + '"><h2>' + esc(f.ar) + '</h2><span>' + (n ? nObs(n) : 'لا ملاحظات') + '</span></div>');
+    if (n) B.add(at.host, pdfTip('الجدول والمخطط تفاعليان: اضغط على أي ملاحظة أو فراغ للانتقال إليه مباشرة'));
     var grid = B.add(at.host, '<div class="d-floor"><div></div><div class="d-plan">' + pdfPlan(f, 78, M) + (n ? pdfLegend(M, false) : '') + '</div></div>');
     function more() { return B.at(f.ar, '<div class="fl-head"><h2>' + esc(f.ar) + '</h2><span>تابع</span></div>'); }
     var rows = n ? pdfRegRows(g.list, M, true) : [{ h: '<tr class="none"><td colspan="4"><b class="' + e.cls + '">' + e.t + '</b><span>' + e.s + '</span></td></tr>' }];
@@ -3164,16 +3191,17 @@ p{margin:0}
     var open = S.kf.filter(function (k) { return !kfStat(k).closed; }).length, T = 'الملاحظات الجوهرية';
     var head = '<div class="fl-head"><h2>' + T + ' على مستوى العقار</h2><span>' + S.kf.length + ' · المفتوحة ' + open + '</span></div>';
     var at = B.at(T, head);
+    if (M.parts.floors) B.add(at.host, pdfTip('اضغط على أي ملاحظة مربوطة للانتقال إلى بطاقتها'));
     function more() { return B.at(T, '<div class="fl-head"><h2>' + T + '</h2><span>تابع</span></div>'); }
     S.kf.slice().sort(function (a, b) { return a.no - b.no; }).forEach(function (k, i) {
       var el = B.add(at.host, pdfKfCard(k, M));
       if (i && !B.fits(at.pg, el)) { el.remove(); at = more(); at.host.appendChild(el); }
     });
   }
-  function pdfLoose(B, M, list, title, sub) { // observations outside the floors: the whole house, or old ones with no room
-    var at = B.at(title, '<div class="fl-head"><h2>' + esc(title) + '</h2><span>' + sub + ' · ' + nObs(list.length) + '</span></div>');
+  function pdfLoose(B, M, list, title, sub, key) { // observations outside the floors: the whole house, or old ones with no room
+    var at = B.at(title, '<div class="fl-head" data-fl="' + key + '"><h2>' + esc(title) + '</h2><span>' + sub + ' · ' + nObs(list.length) + '</span></div>');
     function more(head) { return function () { return B.at(title, head ? '<div class="fl-head"><h2>' + esc(title) + '</h2><span>تابع</span></div>' : ''); }; }
-    at = flowTable(B, at, more(true), { cls: 'dreg', head: PDF_REG_HEAD, rows: pdfRegRows(list, M, false) });
+    at = flowTable(B, at, more(true), { cls: 'dreg', head: PDF_REG_HEAD, rows: pdfRegRows(list, M, false), lead: pdfTip('الجدول تفاعلي: اضغط على أي ملاحظة للانتقال إلى بطاقتها') });
     flowCards(B, at, more(false), [{ head: '', obs: list.slice().sort(function (a, b) { return a.no - b.no; }) }], M);
   }
   function pdfSign(B) {
@@ -3215,8 +3243,8 @@ p{margin:0}
       pdfCover(B, M);
       if (M.parts.kf) pdfKf(B, M);
       if (M.parts.floors) M.floors.forEach(function (g) { pdfFloor(B, M, g); });
-      if (M.parts.house && M.house.length) pdfLoose(B, M, M.house, 'البيت كله', 'ملاحظات عامة لا تخص غرفة');
-      if (M.parts.none && M.none.length) pdfLoose(B, M, M.none, 'ملاحظات بلا غرفة', 'من فحص سابق بلا مخطط');
+      if (M.parts.house && M.house.length) pdfLoose(B, M, M.house, 'البيت كله', 'ملاحظات عامة لا تخص غرفة', '_house');
+      if (M.parts.none && M.none.length) pdfLoose(B, M, M.none, 'ملاحظات بلا غرفة', 'من فحص سابق بلا مخطط', '_none');
       if (M.parts.sign) pdfSign(B);
       pdfChrome(B, M);
       var T = pdfTargets(B);
@@ -3662,7 +3690,7 @@ p{margin:0}
   var VIEW_ID = '';
   async function bootViewer(id, note) {
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v28</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v29</span></span><span class="brand-t">تقرير ملاحظات الاستلام</span><span class="brand-p" id="vMeta">جارٍ التحميل…</span></div>' +
       '<div class="v-acts"><button type="button" class="btn" data-act="vReload">' + IC.refresh + 'تحديث</button><button type="button" class="btn" data-act="vPDF" disabled>' + IC.file + 'PDF</button></div></div></header>' +
       '<main class="main v-main"><div class="rpt" id="vRep"><p class="r-empty">جارٍ تحميل التقرير…</p></div></main>' +
       '<div class="dlg" id="dlg" hidden role="alertdialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="dlg-card"><p id="dlgMsg"></p><div class="row2"><button type="button" class="btn ghost" id="dlgNo">تراجع</button><button type="button" class="btn danger" id="dlgYes">تأكيد</button></div></div></div>' +
@@ -4113,7 +4141,7 @@ p{margin:0}
   function showLanding(note) {
     VIEW_ID = 'landing';
     document.body.classList.add('is-viewer');
-    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v28</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
+    $('.app').innerHTML = '<header class="top"><div class="top-in"><div class="brand"><span class="brand-e">Property Handover Inspection<span class="ver">v29</span></span><span class="brand-t">فحص استلام العقار</span></div></div></header>' +
       '<main class="main v-main"><div class="card land"><h2>صفحة خاصة</h2><p class="land-p">افتح الرابط الذي وصلك: رابط المطوّر يعرض الملاحظات ويتيح الرد عليها بالصور، ورابط المالك يفتح الفحص للتعديل.</p>' +
       (note ? '<p class="land-note">' + esc(note) + '</p>' : '') + '</div></main>';
     $('.app').style.visibility = '';
